@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
-  productGUID: 335aac18de637cb4ebfbf5b42f3c6d46
+  productGUID: 009eec74cea3a1e4b9919e2d5c82b8a7
   AndroidProfiler: 0
   defaultScreenOrientation: 4
   targetDevice: 2
@@ -452,9 +452,8 @@ PlayerSettings:
   XboxOneAllowedProductIds: []
   XboxOnePersistentLocalStorageSize: 0
   vrEditorSettings: {}
-  cloudServicesEnabled:
-    UNet: 1
-  cloudProjectId: 467a4658-8767-4b6c-b633-9e9f3e66917a
-  projectName: Shop VR Project
-  organizationId: yayapipi
+  cloudServicesEnabled: {}
+  cloudProjectId: 
+  projectName: 
+  organizationId: 
   cloudEnabled: 0
