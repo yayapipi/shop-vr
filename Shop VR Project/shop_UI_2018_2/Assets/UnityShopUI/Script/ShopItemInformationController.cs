@@ -67,14 +67,14 @@ public class ShopItemInformationController : MonoBehaviour {
             else
             {
                 WWW W = new WWW("http://140.123.101.103:88/project/public/" + picture.pic_url);
-                Debug.Log("Download image on progress");
+                //Debug.Log("Download image on progress");
                 yield return W;
 
                 if (string.IsNullOrEmpty(W.text))
                     Debug.Log("Download failed");
                 else
                 {
-                    Debug.Log("Download Succes");
+                    //Debug.Log("Download Succes");
                     Texture2D te = W.texture;
                     newPicture.GetComponent<RawImage>().texture = te;
                 }

@@ -37,14 +37,14 @@ public class ShopUserController : MonoBehaviour {
         else
         {
             WWW W = new WWW(URL);
-            Debug.Log("Download image on progress");
+            //Debug.Log("Download image on progress");
             yield return W;
 
             if (string.IsNullOrEmpty(W.text))
                 Debug.Log("Download failed");
             else
             {
-                Debug.Log("Download Succes");
+                //Debug.Log("Download Succes");
                 Texture2D te = W.texture;
                 img.texture = te;
             }

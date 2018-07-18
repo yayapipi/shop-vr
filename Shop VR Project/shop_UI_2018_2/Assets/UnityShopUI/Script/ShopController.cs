@@ -85,33 +85,28 @@ public class ShopController : MonoBehaviour
     private IEnumerator LoadUser(int id)
     {
         user_data = test.getusers(id);
-        yield return null;
-
         menuPanel.GetComponent<ShopUserController>().set(user_data);  //display texture and other data on UI
+        yield return null;
     }
 
     private IEnumerator LoadItems(string kind, int type)
     {
         isLoadingItems = true;
 
-        if(type == 0)
+        if (type == 0)
             switch (kind)
             {
                 case "default":
                     items_data = test.Rshop_item(1, "id", "asc", counter * itemsShowOnce, itemsShowOnce);
-                    yield return null;
                     break;
                 case "new":
                     items_data = test.Rshop_item(1, "created_at", "desc", counter * itemsShowOnce, itemsShowOnce);
-                    yield return null;
                     break;
                 case "hot":
                     items_data = test.Rshop_item(1, "click_times", "desc", counter * itemsShowOnce, itemsShowOnce);
-                    yield return null;
                     break;
                 case "recommend":
                     items_data = test.Rshop_item(1, "id", "asc", counter * itemsShowOnce, itemsShowOnce);
-                    yield return null;
                     break;
             }
         else
@@ -119,24 +114,20 @@ public class ShopController : MonoBehaviour
             {
                 case "default":
                     items_data = test.Rshop_item(1, type, "id", "asc", counter * itemsShowOnce, itemsShowOnce);
-                    yield return null;
                     break;
                 case "new":
                     items_data = test.Rshop_item(1, type, "created_at", "desc", counter * itemsShowOnce, itemsShowOnce);
-                    yield return null;
                     break;
                 case "hot":
                     items_data = test.Rshop_item(1, type, "click_times", "desc", counter * itemsShowOnce, itemsShowOnce);
-                    yield return null;
                     break;
                 case "recommend":
                     items_data = test.Rshop_item(1, type, "id", "asc", counter * itemsShowOnce, itemsShowOnce);
-                    yield return null;
                     break;
             }
 
         //items_data = test.Rshop_item(1, "id", "asc", counter * itemsShowOnce, itemsShowOnce);
-        //yield return null;
+        yield return null;
 
         foreach (shopitems item_data in items_data)
         {
@@ -153,7 +144,7 @@ public class ShopController : MonoBehaviour
 
         counter++;
 
-        yield return new WaitForSeconds(1);
+//        yield return new WaitForSeconds(1);
 
         isLoadingItems = false;
     }
@@ -182,7 +173,6 @@ public class ShopController : MonoBehaviour
             counter = 0;
             isLoadToEnd = false;
             isLoadingItems = false;
-
 
             foreach (Transform child in itemContent.transform)
                 Destroy(child.gameObject);

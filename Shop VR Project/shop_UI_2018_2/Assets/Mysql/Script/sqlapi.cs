@@ -221,7 +221,7 @@ public class sqlapi
                     break;
                 }
             }
-            Debug.Log("i=" + i); //counter
+            //Debug.Log("i=" + i); //counter
             sql.Close();
             Array.Resize<pics>(ref vvv, i); //array(vvv)的大小設成counter(i)的大小
             return vvv;
@@ -292,9 +292,9 @@ public class sqlapi
                     break;
                 }
             }
-            Debug.Log("i=" + i); //counter
-            Debug.Log("col=" + RT.Columns.Count);
-            Debug.Log("row=" + RT.Rows.Count);
+            //Debug.Log("i=" + i); //counter
+            //Debug.Log("col=" + RT.Columns.Count);
+            //Debug.Log("row=" + RT.Rows.Count);
             sql.Close();
             Array.Resize<shopitems>(ref vvv, i); //array(vvv)的大小設成counter(i)的大小
             return vvv;
@@ -365,9 +365,9 @@ public class sqlapi
                     break;
                 }
             }
-            Debug.Log("i=" + i); //counter
-            Debug.Log("col=" + RT.Columns.Count);
-            Debug.Log("row=" + RT.Rows.Count);
+            //Debug.Log("i=" + i); //counter
+            //Debug.Log("col=" + RT.Columns.Count);
+            //Debug.Log("row=" + RT.Rows.Count);
             sql.Close();
             Array.Resize<shopitems>(ref vvv, i); //array(vvv)的大小設成counter(i)的大小
             return vvv;

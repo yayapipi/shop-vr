@@ -8,11 +8,13 @@ public class ShopItemController : MonoBehaviour {
     private GameObject newItem;
     public GameObject shopItemInformationPrefab;
     private Transform spawnPoint;
+    private Transform shopItemInformationParent;
 
     // Use this for initialization
     void Start()
     {
         spawnPoint = this.transform.parent.parent.Find("spawn_point");
+        shopItemInformationParent = GameObject.Find("shop_main").transform.Find("sub_UI").transform;
     }
 
     // Update is called once per frame
@@ -23,7 +25,6 @@ public class ShopItemController : MonoBehaviour {
     public void set(shopitems item_data)
     {
         this.data = item_data;
-        Debug.Log("id = " + this.data.id);
 
         this.gameObject.transform.Find("name").gameObject.GetComponent<Text>().text = this.data.name;
         this.gameObject.transform.Find("cost").gameObject.GetComponent<Text>().text = ("$ " + this.data.cost);
@@ -44,14 +45,14 @@ public class ShopItemController : MonoBehaviour {
         else
         {
             WWW W = new WWW(URL);
-            Debug.Log("Download image on progress");
+            //Debug.Log("Download image on progress");
             yield return W;
 
             if (string.IsNullOrEmpty(W.text))
                 Debug.Log("Download failed");
             else
             {
-                Debug.Log("Download Succes");
+                //Debug.Log("Download Succes");
                 Texture2D te = W.texture;
                 img.texture = te;
             }
@@ -61,7 +62,7 @@ public class ShopItemController : MonoBehaviour {
     public void OpenInformation()
     {
         //newItem = Instantiate(ItemInformationUIPrefab, this.transform.parent.position - 2 * this.transform.parent.forward, this.transform.parent.rotation);
-        newItem = Instantiate(shopItemInformationPrefab, spawnPoint.position, spawnPoint.rotation);
+        newItem = Instantiate(shopItemInformationPrefab, spawnPoint.position, spawnPoint.rotation, shopItemInformationParent);
         //newItem.transform.localPosition = Vector3.zero;
         newItem.GetComponentInChildren<ShopItemInformationController>().set(this.data);  //display texture and other data on UI
     }

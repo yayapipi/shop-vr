@@ -270,13 +270,10 @@ public class SqlAccess
                 da.MissingSchemaAction = MissingSchemaAction.AddWithKey;
                 if (da != null)
                 {
-                    Debug.Log(da);
                     da.Fill(ds);
-                    Debug.Log("tt");
                 }
                 else
                     Debug.Log("da=null");
-                Debug.Log("sc2");
             }
             catch (Exception ee)
             {
