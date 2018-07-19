@@ -24,6 +24,7 @@ public class ShopController : MonoBehaviour
     private ButtonChecker itemScrollDown;
     private BoxCollider shopSwitch;
     private GameObject mask;
+    private MainController mainController;
 
     public int counter;
     public bool isLoadToEnd;
@@ -52,6 +53,7 @@ public class ShopController : MonoBehaviour
         itemScrollDown = itemScrollDownButton.GetComponent<ButtonChecker>();
         shopSwitch = this.gameObject.GetComponent<BoxCollider>();
         mask = this.transform.Find("mask").gameObject;
+        mainController = GameObject.Find("Main Camera").GetComponent<MainController>();
 
         //database
         test = new sqlapi();
@@ -195,6 +197,7 @@ public class ShopController : MonoBehaviour
 
     public void Close()
     {
+        mainController.CloseShop();
         Destroy(this.transform.parent.gameObject);
     }
 }

@@ -14,7 +14,7 @@ public class ShopItemController : MonoBehaviour {
     void Start()
     {
         spawnPoint = this.transform.parent.parent.Find("spawn_point");
-        shopItemInformationParent = GameObject.Find("shop_main").transform.Find("sub_UI").transform;
+        shopItemInformationParent = GameObject.Find("shop_main(Clone)").transform.Find("sub_UI").transform;
     }
 
     // Update is called once per frame
