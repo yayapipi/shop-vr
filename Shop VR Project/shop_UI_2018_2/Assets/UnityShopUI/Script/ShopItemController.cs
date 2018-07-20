@@ -10,28 +10,22 @@ public class ShopItemController : MonoBehaviour {
     private Transform spawnPoint;
     private Transform shopItemInformationParent;
 
-    // Use this for initialization
     void Start()
     {
-        spawnPoint = this.transform.parent.parent.Find("spawn_point");
+        spawnPoint = transform.parent.parent.Find("spawn_point");
         shopItemInformationParent = GameObject.Find("shop_main(Clone)").transform.Find("sub_UI").transform;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     public void set(shopitems item_data)
     {
-        this.data = item_data;
+        data = item_data;
 
-        this.gameObject.transform.Find("name").gameObject.GetComponent<Text>().text = this.data.name;
-        this.gameObject.transform.Find("cost").gameObject.GetComponent<Text>().text = ("$ " + this.data.cost);
+        transform.Find("name").gameObject.GetComponent<Text>().text = data.name;
+        transform.Find("cost").gameObject.GetComponent<Text>().text = ("$ " + data.cost);
 
-        StartCoroutine(LoadTextureToObject("http://140.123.101.103:88/project/public/" + this.data.pic_url, this.GetComponentInChildren<RawImage>()));
+        StartCoroutine(LoadTextureToObject("http://140.123.101.103:88/project/public/" + data.pic_url, GetComponentInChildren<RawImage>()));
 
-        this.GetComponent<Animation>().Play("item_panel");
+        GetComponent<Animation>().Play("item_panel");
     }
 
     //Download and load texture
@@ -40,7 +34,6 @@ public class ShopItemController : MonoBehaviour {
         if (Application.internetReachability == NetworkReachability.NotReachable)
         {
             Debug.Log("No Connection Internet");
-            yield return null;
         }
         else
         {
@@ -61,9 +54,7 @@ public class ShopItemController : MonoBehaviour {
 
     public void OpenInformation()
     {
-        //newItem = Instantiate(ItemInformationUIPrefab, this.transform.parent.position - 2 * this.transform.parent.forward, this.transform.parent.rotation);
         newItem = Instantiate(shopItemInformationPrefab, spawnPoint.position, spawnPoint.rotation, shopItemInformationParent);
-        //newItem.transform.localPosition = Vector3.zero;
-        newItem.GetComponentInChildren<ShopItemInformationController>().set(this.data);  //display texture and other data on UI
+        newItem.GetComponentInChildren<ShopItemInformationController>().set(data);  //display texture and other data on UI
     }
 }

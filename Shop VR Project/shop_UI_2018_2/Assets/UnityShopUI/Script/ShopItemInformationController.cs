@@ -9,42 +9,32 @@ using System.IO;
 using UnityEngine.UI;
 
 public class ShopItemInformationController : MonoBehaviour {
-    public GameObject nameObj;
-    public GameObject costObj;
-    public GameObject descriptionObj;
-    public GameObject pictureParent;
-    public GameObject ItemInformationPicturePrefab;
-    public GameObject modelSpawnPoint;
+    [Header("Related Objects")]
+    public Transform informationContent;
+    public Transform materialContent;
+    public GameObject ItemInformationMaterialPrefab;
+    public Transform modelSpawnPoint;
     private GameObject newPicture;
     private pics[] pictures;
-    private sqlapi test;
+    private sqlapi sqlConnection;
     private ShopController shopControl;
-    //private GameObject newItem;
 
-
-    // Use this for initialization
     void Start ()
     {
-        //ShopControl = this.transform.root.Find("shop_UI_panel").GetComponent<ShopController>();
-        shopControl = GameObject.Find("shop_main").GetComponentInChildren<ShopController>();
+        //ShopControl = this.transform.root.Find("shop_main(Clone)").GetComponent<ShopController>();
+        shopControl = GameObject.Find("shop_main(Clone)").GetComponentInChildren<ShopController>();
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
     public void set(shopitems data)
     {
         Start();
         shopControl.Disable();
-        nameObj.GetComponent<Text>().text = data.name;
-        costObj.GetComponent<Text>().text = ("$ " + data.cost);
-        descriptionObj.GetComponent<Text>().text = data.description; 
-
+        informationContent.Find("name").gameObject.GetComponent<Text>().text = data.name;
+        informationContent.Find("cost").gameObject.GetComponent<Text>().text = "$ " + data.cost;
+        informationContent.Find("description_text").gameObject.GetComponent<Text>().text = data.description;
 
         //get and load pictures
-        test = new sqlapi();
+        sqlConnection = GameObject.Find("Main Camera").GetComponent<MainController>().getSqlConnection();
         StartCoroutine(LoadTextures(data.id));
 
         //Load model
@@ -53,11 +43,11 @@ public class ShopItemInformationController : MonoBehaviour {
 
     private IEnumerator LoadTextures(int id)
     {
-        pictures = test.Ritem_pic(id, "id", "asc", 0, 100);
+        pictures = sqlConnection.Ritem_pic(id, "id", "asc", 0, 100);
         yield return null;
         foreach (pics picture in pictures)
         {
-            newPicture = Instantiate(ItemInformationPicturePrefab, pictureParent.transform);
+            newPicture = Instantiate(ItemInformationMaterialPrefab, materialContent);
             newPicture.transform.localPosition = Vector3.zero;
             if (Application.internetReachability == NetworkReachability.NotReachable)
             {
@@ -90,7 +80,7 @@ public class ShopItemInformationController : MonoBehaviour {
         if (www.error == null)
         {
             GameObject obj = (GameObject)bundle.LoadAsset(name);
-            Instantiate(obj, modelSpawnPoint.transform.position, modelSpawnPoint.transform.rotation, modelSpawnPoint.transform);
+            Instantiate(obj, modelSpawnPoint.position, modelSpawnPoint.rotation, modelSpawnPoint);
             //newItem = Instantiate(obj, modelSpawnPoint.transform.position, modelSpawnPoint.transform.rotation, modelSpawnPoint.transform);
             //newItem.transform.localPosition = Vector3.zero;
             //newItem.transform.rotation = Quaternion.Euler(modelViewPanel.transform.right);
@@ -109,6 +99,6 @@ public class ShopItemInformationController : MonoBehaviour {
     public void Close()
     {
         shopControl.Enable();
-        Destroy(this.transform.parent.gameObject);
+        Destroy(transform.parent.gameObject);
     }
 }

@@ -74,9 +74,18 @@ public struct shops
 
 public class sqlapi
 {
-
+    SqlAccess sql;
     string Error = null;
 
+    public sqlapi()
+    {
+        sql = new SqlAccess();
+    }
+
+    public void closeSql()
+    {
+        sql.Close();
+    }
 
     //private string[,] colum = new string[,]{{ "id", "name", "type", "price", "inventories", "description", "enabled", "added_time",
     //    "model_linkurl", "created_at", "updated_at"}};
@@ -88,7 +97,7 @@ public class sqlapi
         try
         {
             Debug.Log("sqlapi: " + "tables,id:" + tables + "," + ids);
-            SqlAccess sql = new SqlAccess();
+            //SqlAccess sql = new SqlAccess();
             DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "id" }, new string[] { "=" }, new string[] { ids.ToString() },
                 new string[] { }, new string[] { }, new string[] { }, new string[] { }).Tables[0];
             if (RT != null)
@@ -107,7 +116,7 @@ public class sqlapi
                 Debug.Log("NAME NOT FOUND");
             }
 
-            sql.Close();
+            //sql.Close();
             return vvv;
         }
         catch (Exception e)
@@ -125,7 +134,7 @@ public class sqlapi
         try
         {
             Debug.Log("sqlapi: " + "tables,id:" + tables + "," + ids);
-            SqlAccess sql = new SqlAccess();
+            //SqlAccess sql = new SqlAccess();
             DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "id" }, new string[] { "=" }, new string[] { ids.ToString() },
                  new string[] { }, new string[] { }, new string[] { }, new string[] { }).Tables[0];
             if (RT != null)
@@ -149,7 +158,7 @@ public class sqlapi
                 Debug.Log("NOT FOUND");
             }
 
-            sql.Close();
+            //sql.Close();
             return vvv;
         }
         catch (Exception e)
@@ -166,7 +175,7 @@ public class sqlapi
         try
         {
             Debug.Log("sqlapi: " + "tables,id:" + tables + "," + ids);
-            SqlAccess sql = new SqlAccess();
+            //SqlAccess sql = new SqlAccess();
             DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "id" }, new string[] { "=" }, new string[] { ids.ToString() },
                  new string[] { }, new string[] { }, new string[] { }, new string[] { }).Tables[0];
             if (RT != null)
@@ -180,7 +189,7 @@ public class sqlapi
                 Debug.Log("NAME NOT FOUND");
             }
 
-            sql.Close();
+            //sql.Close();
             return vvv;
         }
         catch (Exception e)
@@ -203,7 +212,7 @@ public class sqlapi
         try
         {
             Debug.Log("sqlapi: " + "tables,id:" + tables + "," + ids);
-            SqlAccess sql = new SqlAccess();
+            //SqlAccess sql = new SqlAccess();
             DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "pics.item_id" }, new string[] { "=" }, new string[] { ids.ToString() },
                  new string[] { orderby }, new string[] { sc }, new string[] { limitbase.ToString() }, new string[] { limitoffset.ToString() }).Tables[0];
             int i = 0;
@@ -222,7 +231,7 @@ public class sqlapi
                 }
             }
             //Debug.Log("i=" + i); //counter
-            sql.Close();
+            //sql.Close();
             Array.Resize<pics>(ref vvv, i); //array(vvv)的大小設成counter(i)的大小
             return vvv;
         }
@@ -246,7 +255,7 @@ public class sqlapi
         try
         {
             Debug.Log("sqlapi: " + "tables,id:" + tables + "," + ids);
-            SqlAccess sql = new SqlAccess();
+            //SqlAccess sql = new SqlAccess();
             DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "shop_items.shop_id", "items.id" }, new string[] { "=", "=" }, new string[] { ids.ToString(), "shop_items.item_id" },
                  new string[] { orderby }, new string[] { sc }, new string[] { limitbase.ToString() }, new string[] { limitoffset.ToString() }).Tables[0];
             int i = 0;
@@ -295,7 +304,7 @@ public class sqlapi
             //Debug.Log("i=" + i); //counter
             //Debug.Log("col=" + RT.Columns.Count);
             //Debug.Log("row=" + RT.Rows.Count);
-            sql.Close();
+            //sql.Close();
             Array.Resize<shopitems>(ref vvv, i); //array(vvv)的大小設成counter(i)的大小
             return vvv;
         }
@@ -319,7 +328,7 @@ public class sqlapi
         try
         {
             Debug.Log("sqlapi: " + "tables,id:" + tables + "," + ids + "," + type);
-            SqlAccess sql = new SqlAccess();
+            //SqlAccess sql = new SqlAccess();
             DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "shop_items.shop_id", "items.id", "items.main_type" }, new string[] { "=", "=", "="}, new string[] { ids.ToString(), "shop_items.item_id", type.ToString() },
                  new string[] { orderby }, new string[] { sc }, new string[] { limitbase.ToString() }, new string[] { limitoffset.ToString() }).Tables[0];
             int i = 0;
@@ -368,7 +377,7 @@ public class sqlapi
             //Debug.Log("i=" + i); //counter
             //Debug.Log("col=" + RT.Columns.Count);
             //Debug.Log("row=" + RT.Rows.Count);
-            sql.Close();
+            //sql.Close();
             Array.Resize<shopitems>(ref vvv, i); //array(vvv)的大小設成counter(i)的大小
             return vvv;
         }
