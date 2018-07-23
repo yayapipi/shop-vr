@@ -387,4 +387,63 @@ public class sqlapi
         }
         return vvv;
     }
+
+    /*ADD(insert)*/
+    public bool Add_shopcart(int userid, int itemid)
+    {
+        string tables = "shop_carts";
+        try
+        {
+            Debug.Log("sqlapi: " + "tables,id:" + tables + ", " + userid + ", " + itemid);
+            SqlAccess sql = new SqlAccess();
+            sql.InsertInto(tables, new string[] { "user_id", "item_id", "amount" },
+                new string[] { userid.ToString(), itemid.ToString(), "100", });
+            sql.Close();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Error = e.Message;
+            return false;
+        }
+    }
+
+    public bool Add_userinvent(int userid, int itemid)
+    {
+        string tables = "user_inventories";
+        try
+        {
+            Debug.Log("sqlapi: " + "tables,id:" + tables + ", " + userid + ", " + itemid);
+            SqlAccess sql = new SqlAccess();
+            sql.InsertInto(tables, new string[] { "user_id", "item_id", "amount", "locked" },
+                new string[] { userid.ToString(), itemid.ToString(), "1", "1" });
+            sql.Close();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Error = e.Message;
+            return false;
+        }
+    }
+
+    /*update*/
+    public bool Up_users(int ids, int money)
+    {
+        string tables = "users";
+        try
+        {
+            Debug.Log("sqlapi: " + "tables,id:" + tables + ", " + ids);
+            SqlAccess sql = new SqlAccess();
+            sql.UpdateInto("users", new string[] { "money" }, new string[] { money.ToString() }, "id", ids.ToString());
+            sql.Close();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Error = e.Message;
+            return false;
+        }
+    }
+
 }

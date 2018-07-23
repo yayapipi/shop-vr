@@ -28,10 +28,10 @@ public class NewBehaviourScript : MonoBehaviour
             //DataSet ds  = sql.SelectWhere("password_resets",new string[]{"email","token"},new string []{"id"},new string []{"="},new string []{"1"});
             //DataSet ds = sql.InsertInto("password_resets", new string[] {  "email", "token" }, new string[] { "xuanyusong@gmail.com", "xuanyusong.com" });
             sqlapi test = new sqlapi();
-
+            /*get*/
             /*user*/
-            users vvc = test.getusers(1);
-            Debug.Log("id:"+vvc.id+" name:"+vvc.name+"money:"+vvc.money+" modellink:"+vvc.user_model_link+" wordlink:"+vvc.world_asset_link);
+            //users vvc = test.getusers(3);
+            //Debug.Log("id:"+vvc.id+" name:"+vvc.name+" modellink:"+vvc.user_model_link+" wordlink:"+vvc.world_asset_link);
 
             /*pics item*/
             //pics vvc = test.getpics(3);
@@ -42,12 +42,18 @@ public class NewBehaviourScript : MonoBehaviour
             //}
 
             /*shop item*/
-            //shopitems[] vvcs = test.Rshop_item(1, "id", "asc", 0, 100);
-            //foreach (shopitems vvc in vvcs)
-            //{
-            //    Debug.Log("aa");
-            //    Debug.Log("id=" + vvc.id + ", name=" + vvc.name + ", cost=" + vvc.cost);
-            //}
+            /*shopitems[] vvcs = test.Rshop_item(1,"id","desc","3","2");
+            foreach (shopitems vvc in vvcs)
+            {
+                Debug.Log("aa");
+                Debug.Log("id=" + vvc.id + ", name=" + vvc.name + ", cost=" + vvc.cost);
+            }*/
+
+            /*add*/
+            //test.Add_userinvent(1,2);
+
+            /*update*/
+            test.Up_users(1, 20000);
             //Debug.Log("items'id=" + test.getname());
             //DataSet ds = sql.SelectWhere("items", new string[] { "*" }, new string[] { }, new string[] { }, new string[] { });
             //DataSet ds = sql.Asterisk("items");
