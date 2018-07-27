@@ -5,49 +5,121 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class KeyboardClicker : MonoBehaviour {
+    private int state;
     private EventSystem m_EventSystem;
     private GameObject rayCastObj;
     private GameObject rayCastObj_last;
-    private int state;
+    private RaycastHit obj;
+    private GameObject lastPointerDownObj;
+    private List<RaycastResult> raycastResults;
+    private PointerEventData pointer;
+    private bool hit;
 
-    // Use this for initialization
     void Start()
     {
         m_EventSystem = EventSystem.current;
         state = 0;
+
+        pointer = new PointerEventData(EventSystem.current);
+        pointer.position = new Vector2(Screen.width / 2, Screen.height / 2);
+        pointer.button = PointerEventData.InputButton.Left;
+
+        raycastResults = new List<RaycastResult>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (state == 0)
             RayDetect();
     }
 
-    /*
     public void SetState(int toState)
     {
         if (state == 1 && toState == 0)
-            line.SetActive(true);
+        {
+            //line.SetActive(true);
+        }
         else if (state == 0 && toState == 1)
-            line.SetActive(false);
-
+        {
+            //line.SetActive(false);
+        }
         state = toState;
-    }*/
+    }
 
+    /* Support hold button, but need to pass pointerEventData argument.*/
     void RayDetect()
     {
-        RaycastHit hit;
-        //Debug.DrawRay (transform.position, transform.forward * 10, Color.green);
-        if (Physics.Raycast(transform.position, transform.forward, out hit))
-        {
-            rayCastObj = hit.transform.gameObject;
+        raycastResults.Clear();
+        m_EventSystem.RaycastAll(pointer, raycastResults);
+        hit = false;
 
-            if (rayCastObj.CompareTag("Button"))
+        //obj filter
+        foreach (RaycastResult h in raycastResults)
+        {
+            //Debug.Log("NAME:" + h.gameObject.name);
+            if (h.gameObject.GetComponent<Selectable>())
+            {
+                hit = true;
+                rayCastObj = h.gameObject;
+                break;
+            }
+            if (h.gameObject.name == "mask")
+            {
+                break;
+            }
+        }
+
+        if (hit)
+        {
+            if (rayCastObj != rayCastObj_last)
+            {
+                if (rayCastObj_last && rayCastObj_last.GetComponent<Selectable>())
+                    ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
+
+                ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerEnterHandler);
+            }
+
+            //button down
+            if (Input.GetMouseButtonDown(0))
+            {
+                ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerDownHandler);
+                lastPointerDownObj = rayCastObj;
+            }
+
+            rayCastObj_last = rayCastObj;
+        }
+        else
+        {
+            if (rayCastObj_last && rayCastObj_last.GetComponent<Selectable>())
+                ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
+
+            rayCastObj = null;
+            rayCastObj_last = null;
+        }
+
+        //button up
+        if (Input.GetMouseButtonUp(0) && lastPointerDownObj != null)
+        {
+            ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
+
+            if (lastPointerDownObj == rayCastObj)
+                ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
+        }
+    }
+
+    /* Old version RayDetect */
+    /*
+    void RayDetect()
+    {
+        if (Physics.Raycast(transform.position, transform.forward, out obj))
+        {
+            rayCastObj = obj.transform.gameObject;
+
+            if (rayCastObj.GetComponent<Selectable>())
             {
                 //highlight
-                if (rayCastObj_last == null || rayCastObj_last != rayCastObj)
-                    m_EventSystem.SetSelectedGameObject(hit.transform.gameObject);
+                if (rayCastObj != rayCastObj_last)
+                    m_EventSystem.SetSelectedGameObject(rayCastObj);
 
                 //click
                 if (Input.GetMouseButtonDown(0))
@@ -64,6 +136,6 @@ public class KeyboardClicker : MonoBehaviour {
             m_EventSystem.SetSelectedGameObject(null);
             rayCastObj_last = null;
         }
-
     }
+    */
 }
