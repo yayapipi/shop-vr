@@ -8,24 +8,29 @@ public class ShopItemController : MonoBehaviour {
     private GameObject newItem;
     public GameObject shopItemInformationPrefab;
     private Transform spawnPoint;
-    private Transform shopItemInformationParent;
-
-    void Start()
-    {
-        spawnPoint = transform.parent.parent.Find("spawn_point");
-        shopItemInformationParent = GameObject.Find("shop_main(Clone)").transform.Find("sub_UI").transform;
-    }
+    private Transform sub_UI;
 
     public void set(shopitems item_data)
     {
-        data = item_data;
+        //initialize
+        spawnPoint = transform.parent.parent.Find("spawn_point");
+        sub_UI = GameObject.Find("shop_main(Clone)").transform.Find("sub_UI").transform;
 
+        //set
+        data = item_data;
         transform.Find("name").gameObject.GetComponent<Text>().text = data.name;
         transform.Find("cost").gameObject.GetComponent<Text>().text = ("$ " + data.cost);
 
+        //Load picture
         StartCoroutine(LoadTextureToObject("http://140.123.101.103:88/project/public/" + data.pic_url, GetComponentInChildren<RawImage>()));
 
         GetComponent<Animation>().Play("item_panel");
+    }
+
+    public void OpenInformation()
+    {
+        newItem = Instantiate(shopItemInformationPrefab, spawnPoint.position, spawnPoint.rotation, sub_UI);
+        newItem.GetComponentInChildren<ShopItemInformationController>().set(data);  //display texture and other data on UI
     }
 
     //Download and load texture
@@ -50,11 +55,5 @@ public class ShopItemController : MonoBehaviour {
                 img.texture = te;
             }
         }
-    }
-
-    public void OpenInformation()
-    {
-        newItem = Instantiate(shopItemInformationPrefab, spawnPoint.position, spawnPoint.rotation, shopItemInformationParent);
-        newItem.GetComponentInChildren<ShopItemInformationController>().set(data);  //display texture and other data on UI
     }
 }

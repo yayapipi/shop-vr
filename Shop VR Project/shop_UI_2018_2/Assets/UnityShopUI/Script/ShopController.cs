@@ -1,27 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
-using System.Data;
-using MySql.Data.MySqlClient;
-using MySql.Data;
-using System.IO;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 public class ShopController : MonoBehaviour {
     [Header("Related Objects")]
     public Transform itemContent;
-    public GameObject itemPanelPrefab;
+    public GameObject ShopItemPanelPrefab;
+    public GameObject cartMainPrefab;
     public GameObject menuPanel;
     public ButtonChecker itemScrollUp;
     public ButtonChecker itemScrollDown;
 
     private GameObject newItem;
     private ScrollRect itemScrollRect;
-    private BoxCollider shopSwitch;
     private GameObject mask;
     private MainController mainController;
+    private Transform sub_UI;
 
     [Header("Variables")]
     public int userID;
@@ -46,12 +41,13 @@ public class ShopController : MonoBehaviour {
         viewKind = "default";
         viewType = 0;
         itemScrollRect = itemContent.parent.GetComponentInParent<ScrollRect>();
-        shopSwitch = GetComponent<BoxCollider>();
         mask = transform.Find("mask").gameObject;
         mainController = GameObject.Find("Main Camera").GetComponent<MainController>();
+        sub_UI = transform.parent.Find("sub_UI");
 
         //database
         sqlConnection = mainController.getSqlConnection();
+
         //show user information
         StartCoroutine(LoadUser(userID));
         StartCoroutine(LoadItems(viewKind, viewType));
@@ -126,7 +122,7 @@ public class ShopController : MonoBehaviour {
 
         foreach (shopitems item_data in items_data)
         {
-            newItem = Instantiate(itemPanelPrefab, itemContent);
+            newItem = Instantiate(ShopItemPanelPrefab, itemContent);
             newItem.transform.localPosition = Vector3.zero;
             newItem.GetComponent<ShopItemController>().set(item_data);  //display texture and other data on UI
             yield return null;
@@ -176,15 +172,19 @@ public class ShopController : MonoBehaviour {
         }
     }
 
+    public void OpenCart()
+    {
+        newItem = Instantiate(cartMainPrefab, sub_UI.position - 2*transform.forward, sub_UI.rotation, sub_UI);
+        newItem.GetComponentInChildren<CartController>().set(user_data);
+    }
+
     public void Disable()
     {
-        shopSwitch.enabled = true;
         mask.SetActive(true);
     }
 
     public void Enable()
     {
-        shopSwitch.enabled = false;
         mask.SetActive(false);
     }
 

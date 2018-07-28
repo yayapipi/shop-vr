@@ -12,7 +12,7 @@ public class ShopItemInformationController : MonoBehaviour {
     [Header("Related Objects")]
     public Transform informationContent;
     public Transform materialContent;
-    public GameObject ItemInformationMaterialPrefab;
+    public GameObject shopItemInformationMaterialPrefab;
     public Transform modelSpawnPoint;
     public Text amountText;
     private GameObject newPicture;
@@ -23,26 +23,24 @@ public class ShopItemInformationController : MonoBehaviour {
     private int minAmount;
     private int maxAmount;
 
-    void Start ()
+    public void set(shopitems data)
     {
+        //initialize
         //ShopControl = this.transform.root.Find("shop_main(Clone)").GetComponent<ShopController>();
         shopControl = GameObject.Find("shop_main(Clone)").GetComponentInChildren<ShopController>();
+        sqlConnection = GameObject.Find("Main Camera").GetComponent<MainController>().getSqlConnection();
         amount = 1;
         minAmount = 1;
         maxAmount = 100;
-    }
 
-    public void set(shopitems data)
-    {
-        Start();
+        //set
         shopControl.Disable();
         informationContent.Find("name").gameObject.GetComponent<Text>().text = data.name;
         informationContent.Find("cost").gameObject.GetComponent<Text>().text = "$ " + data.cost;
         informationContent.Find("description_text").gameObject.GetComponent<Text>().text = data.description;
         UpdateAmount();
 
-        //get and load pictures
-        sqlConnection = GameObject.Find("Main Camera").GetComponent<MainController>().getSqlConnection();
+        //Get and load pictures
         StartCoroutine(LoadTextures(data.id));
 
         //Load model
@@ -78,7 +76,7 @@ public class ShopItemInformationController : MonoBehaviour {
         yield return null;
         foreach (pics picture in pictures)
         {
-            newPicture = Instantiate(ItemInformationMaterialPrefab, materialContent);
+            newPicture = Instantiate(shopItemInformationMaterialPrefab, materialContent);
             newPicture.transform.localPosition = Vector3.zero;
             if (Application.internetReachability == NetworkReachability.NotReachable)
             {

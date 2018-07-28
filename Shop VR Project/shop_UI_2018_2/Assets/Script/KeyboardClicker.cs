@@ -51,7 +51,11 @@ public class KeyboardClicker : MonoBehaviour {
         if (lastPointerDownObj != null)
         {
             if (lastPointerDownObj == rayCastObj)
+            {
                 ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
+                Debug.Log("click");
+            }
+
         }
     }
 
@@ -62,10 +66,18 @@ public class KeyboardClicker : MonoBehaviour {
         m_EventSystem.RaycastAll(pointer, raycastResults);
         hit = false;
 
+        //Sort raycast results
+        if (raycastResults.Count > 1)
+            raycastResults.Sort(RaycastComparer);
+
+        //foreach (RaycastResult h in raycastResults)
+        //{
+        //    Debug.Log("NAME:" + h.gameObject.name + " ||DISTANCE:" + h.distance);
+        //}
+
         //obj filter
         foreach (RaycastResult h in raycastResults)
         {
-            //Debug.Log("NAME:" + h.gameObject.name);
             if (h.gameObject.GetComponent<Selectable>())
             {
                 hit = true;
@@ -115,7 +127,10 @@ public class KeyboardClicker : MonoBehaviour {
             ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
 
             if (lastPointerDownObj == rayCastObj)
+            {
                 ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
+                Debug.Log("click");
+            }
 
             //StopAutoClick
             CancelInvoke("AutoClicker");
@@ -153,4 +168,40 @@ public class KeyboardClicker : MonoBehaviour {
         }
     }
     */
+
+
+    //Raycast results compare function
+    private static int RaycastComparer(RaycastResult lhs, RaycastResult rhs)
+    {
+        if (lhs.module != rhs.module)
+        {
+            if (lhs.module.eventCamera != null && rhs.module.eventCamera != null && lhs.module.eventCamera.depth != rhs.module.eventCamera.depth)
+            {
+                // need to reverse the standard compareTo
+                if (lhs.module.eventCamera.depth < rhs.module.eventCamera.depth)
+                    return 1;
+                if (lhs.module.eventCamera.depth == rhs.module.eventCamera.depth)
+                    return 0;
+                return -1;
+            }
+            if (lhs.module.sortOrderPriority != rhs.module.sortOrderPriority)
+                return rhs.module.sortOrderPriority.CompareTo(lhs.module.sortOrderPriority);
+            if (lhs.module.renderOrderPriority != rhs.module.renderOrderPriority)
+                return rhs.module.renderOrderPriority.CompareTo(lhs.module.renderOrderPriority);
+        }
+        if (lhs.sortingLayer != rhs.sortingLayer)
+        {
+            // Uses the layer value to properly compare the relative order of the layers.
+            var rid = SortingLayer.GetLayerValueFromID(rhs.sortingLayer);
+            var lid = SortingLayer.GetLayerValueFromID(lhs.sortingLayer);
+            return rid.CompareTo(lid);
+        }
+        if (lhs.sortingOrder != rhs.sortingOrder)
+            return rhs.sortingOrder.CompareTo(lhs.sortingOrder);
+        if (lhs.distance != rhs.distance)
+            return lhs.distance.CompareTo(rhs.distance);
+        if (lhs.depth != rhs.depth)
+            return rhs.depth.CompareTo(lhs.depth);
+        return lhs.index.CompareTo(rhs.index);
+    }
 }
