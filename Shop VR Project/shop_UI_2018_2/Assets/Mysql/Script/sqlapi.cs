@@ -395,10 +395,10 @@ public class sqlapi
         try
         {
             Debug.Log("sqlapi: " + "tables,id:" + tables + ", " + userid + ", " + itemid);
-            SqlAccess sql = new SqlAccess();
+            //SqlAccess sql = new SqlAccess();
             sql.InsertInto(tables, new string[] { "user_id", "item_id", "amount" },
                 new string[] { userid.ToString(), itemid.ToString(), "100", });
-            sql.Close();
+            //sql.Close();
             return true;
         }
         catch (Exception e)
@@ -414,10 +414,10 @@ public class sqlapi
         try
         {
             Debug.Log("sqlapi: " + "tables,id:" + tables + ", " + userid + ", " + itemid);
-            SqlAccess sql = new SqlAccess();
+            //SqlAccess sql = new SqlAccess();
             sql.InsertInto(tables, new string[] { "user_id", "item_id", "amount", "locked" },
                 new string[] { userid.ToString(), itemid.ToString(), "1", "1" });
-            sql.Close();
+            //sql.Close();
             return true;
         }
         catch (Exception e)
@@ -434,9 +434,9 @@ public class sqlapi
         try
         {
             Debug.Log("sqlapi: " + "tables,id:" + tables + ", " + ids);
-            SqlAccess sql = new SqlAccess();
+            //SqlAccess sql = new SqlAccess();
             sql.UpdateInto("users", new string[] { "money" }, new string[] { money.ToString() }, "id", ids.ToString());
-            sql.Close();
+            //sql.Close();
             return true;
         }
         catch (Exception e)
