@@ -14,15 +14,22 @@ public class ShopItemInformationController : MonoBehaviour {
     public Transform materialContent;
     public GameObject ItemInformationMaterialPrefab;
     public Transform modelSpawnPoint;
+    public Text amountText;
     private GameObject newPicture;
     private pics[] pictures;
     private sqlapi sqlConnection;
     private ShopController shopControl;
+    private int amount;
+    private int minAmount;
+    private int maxAmount;
 
     void Start ()
     {
         //ShopControl = this.transform.root.Find("shop_main(Clone)").GetComponent<ShopController>();
         shopControl = GameObject.Find("shop_main(Clone)").GetComponentInChildren<ShopController>();
+        amount = 1;
+        minAmount = 1;
+        maxAmount = 100;
     }
 
     public void set(shopitems data)
@@ -32,6 +39,7 @@ public class ShopItemInformationController : MonoBehaviour {
         informationContent.Find("name").gameObject.GetComponent<Text>().text = data.name;
         informationContent.Find("cost").gameObject.GetComponent<Text>().text = "$ " + data.cost;
         informationContent.Find("description_text").gameObject.GetComponent<Text>().text = data.description;
+        UpdateAmount();
 
         //get and load pictures
         sqlConnection = GameObject.Find("Main Camera").GetComponent<MainController>().getSqlConnection();
@@ -39,6 +47,29 @@ public class ShopItemInformationController : MonoBehaviour {
 
         //Load model
         StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl));
+    }
+
+    public void IncreaseAmount()
+    {
+        if(amount < maxAmount)
+        {
+            amount += 1;
+            UpdateAmount();
+        }
+    }
+
+    public void DecreaseAmount()
+    {
+        if(amount > minAmount)
+        {
+            amount -= 1;
+            UpdateAmount();
+        }
+    }
+
+    private void UpdateAmount()
+    {
+        amountText.text = "amount: " + amount;
     }
 
     private IEnumerator LoadTextures(int id)

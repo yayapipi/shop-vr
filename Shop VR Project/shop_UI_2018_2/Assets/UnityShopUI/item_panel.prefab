@@ -204,7 +204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8af7a79f2f339343bd6916cd7397d6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shopItemInformationPrefab: {fileID: 1725148671714182, guid: 50c447620e1de644badc130dc8b11908,
+  shopItemInformationPrefab: {fileID: 1857917830651570, guid: 50c447620e1de644badc130dc8b11908,
     type: 2}
 --- !u!114 &114504521359500544
 MonoBehaviour:
@@ -218,7 +218,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}

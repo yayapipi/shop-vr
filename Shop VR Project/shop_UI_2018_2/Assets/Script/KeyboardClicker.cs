@@ -46,8 +46,17 @@ public class KeyboardClicker : MonoBehaviour {
         state = toState;
     }
 
+    private void AutoClicker()
+    {
+        if (lastPointerDownObj != null)
+        {
+            if (lastPointerDownObj == rayCastObj)
+                ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
+        }
+    }
+
     /* Support hold button, but need to pass pointerEventData argument.*/
-    void RayDetect()
+    private void RayDetect()
     {
         raycastResults.Clear();
         m_EventSystem.RaycastAll(pointer, raycastResults);
@@ -84,6 +93,9 @@ public class KeyboardClicker : MonoBehaviour {
             {
                 ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerDownHandler);
                 lastPointerDownObj = rayCastObj;
+
+                //AutoClick
+                InvokeRepeating("AutoClicker", 1.5f, 0.1f);
             }
 
             rayCastObj_last = rayCastObj;
@@ -104,12 +116,15 @@ public class KeyboardClicker : MonoBehaviour {
 
             if (lastPointerDownObj == rayCastObj)
                 ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
+
+            //StopAutoClick
+            CancelInvoke("AutoClicker");
         }
     }
 
     /* Old version RayDetect */
     /*
-    void RayDetect()
+    private void RayDetect()
     {
         if (Physics.Raycast(transform.position, transform.forward, out obj))
         {
