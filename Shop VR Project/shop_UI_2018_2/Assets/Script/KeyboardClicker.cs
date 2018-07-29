@@ -51,10 +51,7 @@ public class KeyboardClicker : MonoBehaviour {
         if (lastPointerDownObj != null)
         {
             if (lastPointerDownObj == rayCastObj)
-            {
                 ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
-                Debug.Log("click");
-            }
 
         }
     }
@@ -124,13 +121,10 @@ public class KeyboardClicker : MonoBehaviour {
         //button up
         if (Input.GetMouseButtonUp(0) && lastPointerDownObj != null)
         {
-            ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
-
             if (lastPointerDownObj == rayCastObj)
-            {
                 ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
-                Debug.Log("click");
-            }
+
+            ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
 
             //StopAutoClick
             CancelInvoke("AutoClicker");

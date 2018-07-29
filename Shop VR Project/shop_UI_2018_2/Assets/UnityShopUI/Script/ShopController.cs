@@ -8,33 +8,42 @@ public class ShopController : MonoBehaviour {
     public Transform itemContent;
     public GameObject ShopItemPanelPrefab;
     public GameObject cartMainPrefab;
-    public GameObject menuPanel;
+    public ShopUserController menuPanel;
     public ButtonChecker itemScrollUp;
     public ButtonChecker itemScrollDown;
+    public Transform itemInformationSpawnPoint;
+    public Transform cartSpawnPoint;
+    public Transform messageSpawnPoint;
 
-    private GameObject newItem;
+    private GameObject newObj;
+    private GameObject cartObj;
+    private CartController cartController;
     private ScrollRect itemScrollRect;
     private GameObject mask;
     private MainController mainController;
     private Transform sub_UI;
 
     [Header("Variables")]
-    public int userID;
     [SerializeField] private string viewKind;
     [SerializeField] private int viewType;
     [SerializeField] private bool isLoadToEnd;
     [SerializeField] private bool isLoadingItems;
     [Range(100, 1000)] public int scrollSpeed;
-    private int counter;
     [Range(6, 30)] public int itemsShowOnce;
 
+    private int counter;
+    private bool isOpenCart;
     //database
     private sqlapi sqlConnection;
     private shopitems[] items_data;
     private users user_data;
 
-    void Start()
+    public void Set(MainController controller)
     {
+        //initialize
+        mainController = controller;
+        cartController = null;
+        isOpenCart = false;
         counter = 0;
         isLoadToEnd = false;
         isLoadingItems = false;
@@ -42,14 +51,12 @@ public class ShopController : MonoBehaviour {
         viewType = 0;
         itemScrollRect = itemContent.parent.GetComponentInParent<ScrollRect>();
         mask = transform.Find("mask").gameObject;
-        mainController = GameObject.Find("Main Camera").GetComponent<MainController>();
         sub_UI = transform.parent.Find("sub_UI");
-
-        //database
         sqlConnection = mainController.getSqlConnection();
 
-        //show user information
-        StartCoroutine(LoadUser(userID));
+        //set
+        menuPanel.Set();
+        //show items
         StartCoroutine(LoadItems(viewKind, viewType));
     }
 
@@ -74,11 +81,18 @@ public class ShopController : MonoBehaviour {
         }
     }
 
-    private IEnumerator LoadUser(int id)
+    //update user information
+    public void UpdateUserData()
     {
-        user_data = sqlConnection.getusers(id);
-        menuPanel.GetComponent<ShopUserController>().set(user_data);  //display texture and other data on UI
-        yield return null;
+        user_data = mainController.GetUserData();
+
+        //update menu panel
+        menuPanel.UpdateUserData();
+
+        //update cart_main
+        if (isOpenCart)
+            cartController.UpdateUserData();
+
     }
 
     private IEnumerator LoadItems(string kind, int type)
@@ -122,9 +136,9 @@ public class ShopController : MonoBehaviour {
 
         foreach (shopitems item_data in items_data)
         {
-            newItem = Instantiate(ShopItemPanelPrefab, itemContent);
-            newItem.transform.localPosition = Vector3.zero;
-            newItem.GetComponent<ShopItemController>().set(item_data);  //display texture and other data on UI
+            newObj = Instantiate(ShopItemPanelPrefab, itemContent);
+            newObj.transform.localPosition = Vector3.zero;
+            newObj.GetComponent<ShopItemController>().set(item_data, mainController, this, cartController);  //display texture and other data on UI
             yield return null;
         }
 
@@ -174,8 +188,50 @@ public class ShopController : MonoBehaviour {
 
     public void OpenCart()
     {
-        newItem = Instantiate(cartMainPrefab, sub_UI.position - 2*transform.forward, sub_UI.rotation, sub_UI);
-        newItem.GetComponentInChildren<CartController>().set(user_data);
+        if (!isOpenCart)
+        {
+            isOpenCart = true;
+            cartObj = Instantiate(cartMainPrefab, cartSpawnPoint.position, cartSpawnPoint.rotation, sub_UI);
+            cartController = cartObj.GetComponentInChildren<CartController>();
+            cartController.Set(mainController, this);
+            cartController.UpdateUserData();
+        }
+    }
+
+    public bool GetIsOpenCart()
+    {
+        return isOpenCart;
+    }
+
+    public Transform GetSubUI()
+    {
+        return sub_UI;
+    }
+
+    public void Buy(int item_id, int amount)
+    {
+        Debug.Log("Buy amount = " + amount + " item_id = " + item_id + " user_id = " + user_data.id);
+        /* call api */
+        mainController.UpdateUserData();
+    }
+
+    public void Cart(int item_id, int amount)
+    {
+        Debug.Log("Cart: amount = " + amount + " item_id = " + item_id + " user_id = " + user_data.id);
+        /* call api */
+    }
+
+    public void Checkout()
+    {
+        Debug.Log("Checkout: user_id = " + user_data.id);
+        /* call api */
+        mainController.UpdateUserData();
+    }
+
+    public void DeleteFromCart(int item_id)
+    {
+        Debug.Log("Delete item from cart: item_id = " + item_id);
+        /* call api */
     }
 
     public void Disable()
@@ -186,6 +242,12 @@ public class ShopController : MonoBehaviour {
     public void Enable()
     {
         mask.SetActive(false);
+    }
+
+    public void CloseCart()
+    {
+        isOpenCart = false;
+        cartController = null;
     }
 
     public void Close()

@@ -906,7 +906,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1951280538334674}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.22535539, y: -6.2625224e-18, z: 6.970195}
+  m_LocalPosition: {x: 0.58097017, y: 3.409677e-17, z: -2.117909}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224881003192725626}
@@ -1082,7 +1082,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 224684436525119142}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1656,7 +1656,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114643060543106046}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 114893198122704910}
+        m_MethodName: Cart
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &114495232158376970
@@ -2353,7 +2364,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114063717448136690}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 114893198122704910}
+        m_MethodName: Buy
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &114828899945902988
@@ -2593,6 +2615,10 @@ MonoBehaviour:
     type: 2}
   modelSpawnPoint: {fileID: 224791603582932434}
   amountText: {fileID: 114584843293579122}
+  messageBuyPrefab: {fileID: 1283269495442910, guid: a575d2422a3218c4dbc5ee0051f9f90a,
+    type: 2}
+  messageCartPrefab: {fileID: 1627104279998928, guid: 6347a683e35dba843815fb9bf2c13835,
+    type: 2}
 --- !u!114 &114893223707519058
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4083,7 +4109,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.0000051636657, y: 0}
+  m_AnchoredPosition: {x: 0.000008374557, y: 0}
   m_SizeDelta: {x: -17, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &224971052000073608

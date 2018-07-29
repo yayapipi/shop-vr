@@ -15,26 +15,40 @@ public class ShopItemInformationController : MonoBehaviour {
     public GameObject shopItemInformationMaterialPrefab;
     public Transform modelSpawnPoint;
     public Text amountText;
+    public GameObject messageBuyPrefab;
+    public GameObject messageCartPrefab;
+
+    private int item_id;
+    private MainController mainController;
+    private ShopController shopController;
+    private CartController cartController;
     private GameObject newPicture;
+    private GameObject newObj;
     private pics[] pictures;
     private sqlapi sqlConnection;
-    private ShopController shopControl;
     private int amount;
     private int minAmount;
     private int maxAmount;
+    private bool isOpenCart;
 
-    public void set(shopitems data)
+    public void set(shopitems data, MainController controller1, ShopController controller2, CartController controller3)
     {
         //initialize
-        //ShopControl = this.transform.root.Find("shop_main(Clone)").GetComponent<ShopController>();
-        shopControl = GameObject.Find("shop_main(Clone)").GetComponentInChildren<ShopController>();
-        sqlConnection = GameObject.Find("Main Camera").GetComponent<MainController>().getSqlConnection();
-        amount = 1;
+        mainController = controller1;
+        shopController = controller2;
+        cartController = controller3;
+        isOpenCart = shopController.GetIsOpenCart();
+        sqlConnection = mainController.getSqlConnection();
         minAmount = 1;
         maxAmount = 100;
+        amount = minAmount;
 
         //set
-        shopControl.Disable();
+        if (isOpenCart)
+            cartController.Disable();
+        else
+            shopController.Disable();
+        item_id = data.id;
         informationContent.Find("name").gameObject.GetComponent<Text>().text = data.name;
         informationContent.Find("cost").gameObject.GetComponent<Text>().text = "$ " + data.cost;
         informationContent.Find("description_text").gameObject.GetComponent<Text>().text = data.description;
@@ -70,6 +84,22 @@ public class ShopItemInformationController : MonoBehaviour {
         amountText.text = "amount: " + amount;
     }
 
+    public void Buy()
+    {
+        shopController.Buy(item_id, amount);
+        newObj = Instantiate(messageBuyPrefab, shopController.messageSpawnPoint.position, shopController.messageSpawnPoint.rotation);
+        newObj.GetComponent<MessageController>().Set("Thank you");
+        Close();
+    }
+
+    public void Cart()
+    {
+        shopController.Cart(item_id, amount);
+        newObj = Instantiate(messageCartPrefab, shopController.messageSpawnPoint.position, shopController.messageSpawnPoint.rotation);
+        newObj.GetComponent<MessageController>().Set(amount + " items");
+        Close();
+    }
+
     private IEnumerator LoadTextures(int id)
     {
         pictures = sqlConnection.Ritem_pic(id, "id", "asc", 0, 100);
@@ -78,6 +108,7 @@ public class ShopItemInformationController : MonoBehaviour {
         {
             newPicture = Instantiate(shopItemInformationMaterialPrefab, materialContent);
             newPicture.transform.localPosition = Vector3.zero;
+
             if (Application.internetReachability == NetworkReachability.NotReachable)
             {
                 Debug.Log("No Connection Internet");
@@ -127,7 +158,11 @@ public class ShopItemInformationController : MonoBehaviour {
 
     public void Close()
     {
-        shopControl.Enable();
+        if (isOpenCart)
+            cartController.Enable();
+        else
+            shopController.Enable();
+
         Destroy(transform.parent.gameObject);
     }
 }

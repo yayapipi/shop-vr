@@ -4,33 +4,45 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ShopItemController : MonoBehaviour {
-    private shopitems data;
-    private GameObject newItem;
     public GameObject shopItemInformationPrefab;
+
+    private MainController mainController;
+    private ShopController shopController;
+    private CartController cartController;
+    private shopitems item_data;
+    private GameObject newObj;
     private Transform spawnPoint;
     private Transform sub_UI;
 
-    public void set(shopitems item_data)
+    public void set(shopitems data, MainController controller1, ShopController controller2, CartController controller3)
     {
         //initialize
-        spawnPoint = transform.parent.parent.Find("spawn_point");
-        sub_UI = GameObject.Find("shop_main(Clone)").transform.Find("sub_UI").transform;
+        mainController = controller1;
+        shopController = controller2;
+        cartController = controller3;
+        sub_UI = shopController.GetSubUI();
+        spawnPoint = shopController.itemInformationSpawnPoint;
 
         //set
-        data = item_data;
-        transform.Find("name").gameObject.GetComponent<Text>().text = data.name;
-        transform.Find("cost").gameObject.GetComponent<Text>().text = ("$ " + data.cost);
+        item_data = data;
+        transform.Find("name").gameObject.GetComponent<Text>().text = item_data.name;
+        transform.Find("cost").gameObject.GetComponent<Text>().text = ("$ " + item_data.cost);
 
         //Load picture
-        StartCoroutine(LoadTextureToObject("http://140.123.101.103:88/project/public/" + data.pic_url, GetComponentInChildren<RawImage>()));
+        StartCoroutine(LoadTextureToObject("http://140.123.101.103:88/project/public/" + item_data.pic_url, GetComponentInChildren<RawImage>()));
 
-        GetComponent<Animation>().Play("item_panel");
     }
 
     public void OpenInformation()
     {
-        newItem = Instantiate(shopItemInformationPrefab, spawnPoint.position, spawnPoint.rotation, sub_UI);
-        newItem.GetComponentInChildren<ShopItemInformationController>().set(data);  //display texture and other data on UI
+        newObj = Instantiate(shopItemInformationPrefab, spawnPoint.position, spawnPoint.rotation, sub_UI);
+        newObj.GetComponentInChildren<ShopItemInformationController>().set(item_data, mainController, shopController, cartController);
+    }
+
+    public void DeleteFromCart()
+    {
+        shopController.DeleteFromCart(item_data.id);
+        Destroy(transform.gameObject);
     }
 
     //Download and load texture
@@ -55,5 +67,7 @@ public class ShopItemController : MonoBehaviour {
                 img.texture = te;
             }
         }
+
+        GetComponent<Animation>().Play("item_panel");
     }
 }

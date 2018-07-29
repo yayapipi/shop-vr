@@ -8,15 +8,17 @@ public class CartController : MonoBehaviour
     [Header("Related Objects")]
     public Transform itemContent;
     public GameObject cartItemPanelPrefab;
-    public GameObject CartItemInformationPrefab;
     public ButtonChecker itemScrollUp;
     public ButtonChecker itemScrollDown;
 
+    private MainController mainController;
+    private ShopController shopController;
     private GameObject newItem;
     private GameObject mask;
-    private MainController mainController;
     private Transform sub_UI;
-    private ShopController shopControl;
+
+    //for test
+    private shopitems data;
 
     [Header("Variables")]
     public int userID;
@@ -29,7 +31,13 @@ public class CartController : MonoBehaviour
 
     void Update()
     {
-        //if (Input.GetKeyDown("space"))
+        //RightClick
+        if (Input.GetMouseButtonDown(1))
+        {
+            newItem = Instantiate(cartItemPanelPrefab, itemContent);
+            newItem.transform.localPosition = Vector3.zero;
+            newItem.GetComponent<ShopItemController>().set(data, mainController, shopController, this);  //display texture and other data on UI
+        }
 
         if (itemScrollUp.buttonPressed)
         {
@@ -42,23 +50,47 @@ public class CartController : MonoBehaviour
         }
     }
 
-    public void set(users data)
+    public void Set(MainController controller1, ShopController controller2)
     {
+        //for test
+        data.id = 2;
+        data.name = "bear";
+        data.main_type = 2;
+        data.sub_type = 2;
+        data.description = "熊";
+        data.enabled = true;
+        data.model_name = "bear";
+        data.model_linkurl = "AssetBundles/official.2";
+        data.pic_url = "itempics/official2.JPG";
+        data.item_id = 1;
+        data.cost = 999;
+        data.click_times = 0;
+
         //initialize
-        shopControl = GameObject.Find("shop_main(Clone)").GetComponentInChildren<ShopController>();
-        sub_UI = GameObject.Find("shop_main(Clone)").transform.Find("sub_UI").transform;
-        mainController = GameObject.Find("Main Camera").GetComponent<MainController>();
+        mainController = controller1;
+        shopController = controller2;
+        sub_UI = shopController.GetSubUI();
         mask = transform.Find("mask").gameObject;
         sqlConnection = mainController.getSqlConnection();
 
         //set
-        shopControl.Disable();
-        user_data = data;
+        shopController.Disable();
+
         //StartCoroutine(LoadItems());
         //CalculateTotalCost
     }
 
-    //private IEnumerator LoadItems(string kind, int type)
+    public void UpdateUserData()
+    {
+        user_data = mainController.GetUserData();
+    }
+
+    public void Checkout()
+    {
+        shopController.Checkout();
+    }
+
+    //private IEnumerator LoadItems()
     //{
     //    items_data = sqlConnection.xxxxxxxx(user_data.id);
     //    yield return null;
@@ -84,7 +116,8 @@ public class CartController : MonoBehaviour
 
     public void Close()
     {
-        shopControl.Enable();
+        shopController.Enable();
+        shopController.CloseCart();
         Destroy(transform.parent.gameObject);
     }
 }

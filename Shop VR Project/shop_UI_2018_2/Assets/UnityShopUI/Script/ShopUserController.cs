@@ -5,25 +5,23 @@ using UnityEngine.UI;
 
 public class ShopUserController : MonoBehaviour {
     //private users data;
-    
-    // Use this for initialization
-    void Start()
+    private MainController mainController;
+
+    public void Set()
     {
-        
+        //initialize
+        mainController = GameObject.Find("Main Camera").GetComponent<MainController>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void UpdateUserData()
     {
+        users data = mainController.GetUserData();
 
-    }
-    public void set(users data)
-    {
         //if(data.pic_linkurl != null)
-            //StartCoroutine(LoadTextureToObject("http://140.123.101.103:88/project/public/" + data.pic_linkurl, this.gameObject.transform.Find("mask").gameObject.GetComponentInChildren<RawImage>()));
+        //StartCoroutine(LoadTextureToObject("http://140.123.101.103:88/project/public/" + data.pic_linkurl, this.gameObject.transform.Find("mask").gameObject.GetComponentInChildren<RawImage>()));
 
         this.gameObject.transform.Find("name").gameObject.GetComponent<Text>().text = data.name;
-        this.gameObject.transform.Find("money").gameObject.GetComponent<Text>().text = "$ " + data.money.ToString();
+        this.gameObject.transform.Find("money").gameObject.GetComponent<Text>().text = "$ " + data.money;
     }
 
     //Download and load texture
