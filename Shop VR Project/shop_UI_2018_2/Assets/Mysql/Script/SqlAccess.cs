@@ -43,6 +43,8 @@ public class SqlAccess
 
     }
 
+ 
+
     public DataSet CreateTable(string name, string[] col, string[] colType)
     {
         if (col.Length != colType.Length)
@@ -206,7 +208,7 @@ public class SqlAccess
 
     }
 
-    public DataSet UpdateInto(string tableName, string[] cols, string[] colsvalues, string selectkey, string selectvalue)
+    public DataSet UpdateInto(string tableName, string[] cols, string[] colsvalues, string[] selectkey, string[] selectvalue)
     {
 
         string query = "UPDATE " + tableName + " SET " + cols[0] + " = " + colsvalues[0];
@@ -216,9 +218,16 @@ public class SqlAccess
 
             query += ", " + cols[i] + " =" + colsvalues[i];
         }
-
-        query += " WHERE " + selectkey + " = " + selectvalue + " ";
-
+        
+        if (selectkey.Length != 0)
+        {
+            query += " WHERE " + selectkey[0] + " = " + selectvalue[0] + " ";
+            for (int i = 1; i < selectkey.Length; ++i)
+            {
+                query += "AND " + selectkey[i] + " = " + selectvalue[i] + " ";
+            }
+        }
+        Debug.Log(query);
         return ExecuteQuery(query);
     }
 

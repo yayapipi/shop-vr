@@ -25,12 +25,12 @@ public class ShopItemController : MonoBehaviour {
 
         //set
         item_data = data;
+        Debug.Log("name:" + item_data.name + "cost:" + item_data.cost);
         transform.Find("name").gameObject.GetComponent<Text>().text = item_data.name;
         transform.Find("cost").gameObject.GetComponent<Text>().text = ("$ " + item_data.cost);
 
         //Load picture
         StartCoroutine(LoadTextureToObject("http://140.123.101.103:88/project/public/" + item_data.pic_url, GetComponentInChildren<RawImage>()));
-
     }
 
     public void OpenInformation()

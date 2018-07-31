@@ -208,17 +208,49 @@ public class ShopController : MonoBehaviour {
         return sub_UI;
     }
 
-    public void Buy(int item_id, int amount)
+    public bool Buy(int item_id, int amount)
     {
+        
         Debug.Log("Buy amount = " + amount + " item_id = " + item_id + " user_id = " + user_data.id);
         /* call api */
+        shopitems[] items = sqlConnection.getshop_item(1, item_id);
+        Debug.Log("cost:"+items[0].cost);
+        if (items.Length != 0)
+        {
+            double totalprice = items[0].cost * amount;
+            Debug.Log("totalprice:" + items[0].cost * amount);
+            if (items[0].cost * amount < user_data.money)
+            {
+                userinvent invent = sqlConnection.getuserinvent(user_data.id, items[0].id);
+                if (invent.user_id>0)
+                    sqlConnection.Up_userinvent(user_data.id, items[0].id, amount + invent.amount);
+                else
+                    sqlConnection.Add_userinvent(user_data.id, items[0].id, amount);
+                sqlConnection.Up_users(user_data.id, user_data.money - totalprice);
+                mainController.UpdateUserData();
+                return true;
+            }
+        }
         mainController.UpdateUserData();
+        return false;
+        //mainController.UpdateUserData();
     }
 
     public void Cart(int item_id, int amount)
     {
+
         Debug.Log("Cart: amount = " + amount + " item_id = " + item_id + " user_id = " + user_data.id);
         /* call api */
+        shopitems[] items = sqlConnection.getshop_item(1, item_id);
+        if (items.Length != 0)
+        {
+            shopcart cart = sqlConnection.getshopcart(user_data.id, items[0].id);
+            if (cart.user_id > 0)
+                sqlConnection.Up_shopcart(user_data.id, items[0].id, amount + cart.amount);
+            else
+                sqlConnection.Add_shopcart(user_data.id, items[0].id, amount);
+        }
+        mainController.UpdateUserData();
     }
 
     public void Checkout()

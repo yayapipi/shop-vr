@@ -86,9 +86,12 @@ public class ShopItemInformationController : MonoBehaviour {
 
     public void Buy()
     {
-        shopController.Buy(item_id, amount);
+        bool success=shopController.Buy(item_id, amount);
         newObj = Instantiate(messageBuyPrefab, shopController.messageSpawnPoint.position, shopController.messageSpawnPoint.rotation);
-        newObj.GetComponent<MessageController>().Set("Thank you");
+        if(success)
+            newObj.GetComponent<MessageController>().Set("Thank you");
+        else
+            newObj.GetComponent<MessageController>().Set("Not Enough Money");
         Close();
     }
 

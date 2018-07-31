@@ -66,6 +66,25 @@ public struct users
     public int authority;
 };
 
+public struct userinvent
+{
+    public int user_id;
+    public int item_id;
+    public int amount;
+    public bool locked;
+    public string created_at;
+    public string updated_at;
+};
+
+public struct shopcart
+{
+    public int user_id;
+    public int item_id;
+    public int amount;
+    public string created_at;
+    public string updated_at;
+};
+
 public struct shops
 {
     public int id;
@@ -116,6 +135,69 @@ public class sqlapi
                 Debug.Log("NAME NOT FOUND");
             }
 
+            //sql.Close();
+            return vvv;
+        }
+        catch (Exception e)
+        {
+            this.Error = e.Message;
+        }
+        return vvv;
+    }
+
+    public userinvent getuserinvent(int userid, int itemid)
+    {
+        userinvent vvv = new userinvent();
+        string tables = "user_inventories";
+        try
+        {
+            //SqlAccess sql = new SqlAccess();
+            DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "user_id","item_id" }, new string[] { "=","=" }, new string[] { userid.ToString(),itemid.ToString() },
+                new string[] { }, new string[] { }, new string[] { }, new string[] { }).Tables[0];
+            if (RT != null)
+            {
+                vvv.user_id = Convert.ToInt32(RT.Rows[0][0]);
+                vvv.item_id = Convert.ToInt32(RT.Rows[0][1]);
+                vvv.amount = Convert.ToInt32(RT.Rows[0][2]);
+                vvv.locked = Convert.ToBoolean(RT.Rows[0][3]);
+                vvv.created_at = RT.Rows[0][4].ToString();
+                vvv.updated_at = RT.Rows[0][5].ToString();
+            }
+            else
+            {
+                Debug.Log("NAME NOT FOUND");
+            }
+            //sql.Close();
+            return vvv;
+        }
+        catch (Exception e)
+        {
+            this.Error = e.Message;
+        }
+        return vvv;
+    }
+
+    public shopcart getshopcart(int userid, int itemid)
+    {
+        shopcart vvv = new shopcart();
+        string tables = "shop_carts";
+        try
+        {
+            //SqlAccess sql = new SqlAccess();
+            DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "user_id", "item_id" }, new string[] { "=", "=" }, new string[] { userid.ToString(), itemid.ToString() },
+                new string[] { }, new string[] { }, new string[] { }, new string[] { }).Tables[0];
+            if (RT != null)
+            {
+                vvv.user_id = Convert.ToInt32(RT.Rows[0][0]);
+                vvv.item_id = Convert.ToInt32(RT.Rows[0][1]);
+                vvv.amount = Convert.ToInt32(RT.Rows[0][2]);
+                vvv.created_at = RT.Rows[0][4].ToString();
+                vvv.updated_at = RT.Rows[0][5].ToString();
+            }
+            else
+            {
+                Debug.Log("NAME NOT FOUND");
+            }
             //sql.Close();
             return vvv;
         }
@@ -211,7 +293,7 @@ public class sqlapi
         string tables = "pics";
         try
         {
-            Debug.Log("sqlapi: " + "tables,id:" + tables + "," + ids);
+            //Debug.Log("sqlapi: " + "tables,id:" + tables + "," + ids);
             //SqlAccess sql = new SqlAccess();
             DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "pics.item_id" }, new string[] { "=" }, new string[] { ids.ToString() },
                  new string[] { orderby }, new string[] { sc }, new string[] { limitbase.ToString() }, new string[] { limitoffset.ToString() }).Tables[0];
@@ -242,9 +324,61 @@ public class sqlapi
         return vvv;
     }
 
+    public shopitems[] getshop_item(int shopid, int itemid)
+    {
+        shopitems[] vvv = new shopitems[100];
+        string tables = "shop_items,items";
+        try
+        {
+            Debug.Log("sqlapi: " + "shopid,itemid:" + shopid + "," + itemid);
+            //SqlAccess sql = new SqlAccess();
+            DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "shop_items.shop_id", "shop_items.item_id", "items.id" }, new string[] { "=", "=","=" }, new string[] { shopid.ToString(), itemid.ToString(), itemid.ToString() },
+                 new string[] {  }, new string[] {  }, new string[] { }, new string[] {}).Tables[0];
+            int i = 0;
+            foreach (DataRow row in RT.Rows)
+            {
+                if (row != null)
+                {
+                    vvv[i].id = Convert.ToInt32(row["id"]);
+                    vvv[i].name = row["name"].ToString();
+                    vvv[i].main_type = Convert.ToInt32(row["main_type"]);
+                    vvv[i].sub_type = (float)Convert.ToDouble(row["sub_type"]);
+                    vvv[i].description = row["description"].ToString();
+                    vvv[i].enabled = Convert.ToBoolean(row["enabled"]);
+                    vvv[i].model_name = row["model_name"].ToString();
+                    vvv[i].model_linkurl = row["model_linkurl"].ToString();
+                    vvv[i].pic_url = row["pic_url"].ToString();
+                    vvv[i].created_at = row["created_at1"].ToString();
+                    vvv[i].updated_at = row["updated_at1"].ToString();
+                    vvv[i].shop_id = Convert.ToInt32(row["shop_id"]);
+                    vvv[i].item_id = Convert.ToInt32(row["item_id"]);
+                    vvv[i].cost = Convert.ToInt32(row["cost"]);
+                    //vvv[i].enable = Convert.ToBoolean(row["enable"]);
+                    vvv[i].click_times = Convert.ToInt32(row["click_times"]);
+                    //vvv[i].s_created_at = row["created_at"].ToString();
+                    //vvv[i].s_updated_at = row["updated_at"].ToString();
+                    i++;
+                }
+                else
+                {
+                    Debug.Log("id NOT FOUND");
+                    break;
+                }
+            }
+            //sql.Close();
+            Array.Resize<shopitems>(ref vvv, i); //array(vvv)的大小設成counter(i)的大小
+            return vvv;
+        }
+        catch (Exception e)
+        {
+            this.Error = e.Message;
+        }
+        return vvv;
+    }
+
     public shopitems[] Rshop_item(int ids, string orderby, string sc, int limitbase, int limitoffset)
     {
-        /*ids:輸入items表的id,回傳對應pic值(物品圖片)
+        /*ids:輸入shopid,回傳對應同商店的items值(物品資料)
          orderby:根據什麼欄位排序
          sc:順序(asc)or逆序(desc)
          limitbase:從第幾個id開始
@@ -254,25 +388,15 @@ public class sqlapi
         string tables = "shop_items,items";
         try
         {
-            Debug.Log("sqlapi: " + "tables,id:" + tables + "," + ids);
+            //Debug.Log("sqlapi: " + "tables,id:" + tables + "," + ids);
             //SqlAccess sql = new SqlAccess();
             DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "shop_items.shop_id", "items.id" }, new string[] { "=", "=" }, new string[] { ids.ToString(), "shop_items.item_id" },
                  new string[] { orderby }, new string[] { sc }, new string[] { limitbase.ToString() }, new string[] { limitoffset.ToString() }).Tables[0];
             int i = 0;
+            int length = RT.Rows.Count;
             foreach (DataRow row in RT.Rows)
             {
-                //foreach (DataColumn dc in RT.Columns) {
-                //    if (typeof(int) == (row[dc].GetType())) {
-                //        row[dc]=Convert.ToInt32(row[dc]);
-                //    }
-                //    else if(typeof(bool) == (row[dc].GetType())){
-                //        row[dc]=Convert.ToBoolean(row[dc]);
-                //    }
-                //    else {
-                //        row[dc] = row[dc].ToString();
-                //    }
-                //    Debug.Log(dc+":"+row[dc]+":"+row[dc].GetType());
-                //}
+                //Debug.Log("id:"+ row["id"] + "cost:"+ row["cost"] + "pic_url:"+ row["pic_url"].ToString());
                 if (row != null)
                 {
                     vvv[i].id = Convert.ToInt32(row["id"]);
@@ -317,12 +441,12 @@ public class sqlapi
 
     public shopitems[] Rshop_item(int ids, int type, string orderby, string sc, int limitbase, int limitoffset)
     {
-        /*ids:輸入items表的id,回傳對應pic值(物品圖片)
-         orderby:根據什麼欄位排序
-         sc:順序(asc)or逆序(desc)
-         limitbase:從第幾個id開始
-         limitoffset:要取幾個值
-         比如要取id從2到7的值:就是limitbase=1,limitoffset=7*/
+        /*ids:輸入shopid,回傳對應同商店的items值(物品資料)
+        orderby:根據什麼欄位排序
+        sc:順序(asc)or逆序(desc)
+        limitbase:從第幾個id開始
+        limitoffset:要取幾個值
+        比如要取id從2到7的值:就是limitbase=1,limitoffset=7*/
         shopitems[] vvv = new shopitems[100];
         string tables = "shop_items,items";
         try
@@ -389,7 +513,7 @@ public class sqlapi
     }
 
     /*ADD(insert)*/
-    public bool Add_shopcart(int userid, int itemid)
+    public bool Add_shopcart(int userid, int itemid, int amount)
     {
         string tables = "shop_carts";
         try
@@ -397,7 +521,7 @@ public class sqlapi
             Debug.Log("sqlapi: " + "tables,id:" + tables + ", " + userid + ", " + itemid);
             //SqlAccess sql = new SqlAccess();
             sql.InsertInto(tables, new string[] { "user_id", "item_id", "amount" },
-                new string[] { userid.ToString(), itemid.ToString(), "100", });
+                new string[] { userid.ToString(), itemid.ToString(), amount.ToString() });
             //sql.Close();
             return true;
         }
@@ -408,7 +532,7 @@ public class sqlapi
         }
     }
 
-    public bool Add_userinvent(int userid, int itemid)
+    public bool Add_userinvent(int userid, int itemid, int amount)
     {
         string tables = "user_inventories";
         try
@@ -416,7 +540,7 @@ public class sqlapi
             Debug.Log("sqlapi: " + "tables,id:" + tables + ", " + userid + ", " + itemid);
             //SqlAccess sql = new SqlAccess();
             sql.InsertInto(tables, new string[] { "user_id", "item_id", "amount", "locked" },
-                new string[] { userid.ToString(), itemid.ToString(), "1", "1" });
+                new string[] { userid.ToString(), itemid.ToString(), amount.ToString(), "1" });
             //sql.Close();
             return true;
         }
@@ -428,14 +552,52 @@ public class sqlapi
     }
 
     /*update*/
-    public bool Up_users(int ids, int money)
+    public bool Up_users(int ids, double money)
     {
         string tables = "users";
         try
         {
             Debug.Log("sqlapi: " + "tables,id:" + tables + ", " + ids);
             //SqlAccess sql = new SqlAccess();
-            sql.UpdateInto("users", new string[] { "money" }, new string[] { money.ToString() }, "id", ids.ToString());
+            sql.UpdateInto("users", new string[] { "money" }, new string[] { money.ToString() }, new string[] { "id" }, new string[] { ids.ToString() });
+            //sql.Close();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Error = e.Message;
+            return false;
+        }
+    }
+
+    public bool Up_userinvent(int userid, int itemid, int amount)
+    {
+        string tables = "user_inventories";
+        try
+        {
+            Debug.Log("inventamount:"+amount);
+            //SqlAccess sql = new SqlAccess();
+            sql.UpdateInto(tables, new string[] { "amount" }, new string[] { amount.ToString() }, 
+                new string[] { "user_id","item_id"}, new string[] { userid.ToString(), itemid.ToString() });
+            //sql.Close();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Error = e.Message;
+            return false;
+        }
+    }
+
+    public bool Up_shopcart(int userid, int itemid, int amount)
+    {
+        string tables = "shop_carts";
+        try
+        {
+            Debug.Log("cartamount:" + amount);
+            //SqlAccess sql = new SqlAccess();
+            sql.UpdateInto(tables, new string[] { "amount" }, new string[] { amount.ToString() },
+                new string[] { "user_id", "item_id" }, new string[] { userid.ToString(), itemid.ToString() });
             //sql.Close();
             return true;
         }
