@@ -1,6 +1,7 @@
-﻿using System.Collections;
+﻿using UnityEngine;
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.UI;
 
 public class CartController : MonoBehaviour
@@ -11,49 +12,31 @@ public class CartController : MonoBehaviour
     public ButtonChecker itemScrollUp;
     public ButtonChecker itemScrollDown;
 
-    private MainController mainController;
-    private ShopController shopController;
-    private GameObject newItem;
+    private GameObject newObj;
     private GameObject mask;
-    private Transform sub_UI;
+    private static CartController _instance = null;
+
+    [Header("Variables")]
+    [Range(100, 1000)]
+    public int scrollSpeed;
 
     //for test
     private shopitems data;
-
-    [Header("Variables")]
-    public int userID;
-    [Range(100, 1000)] public int scrollSpeed;
-
     //database
     private sqlapi sqlConnection;
-    //private shopitems[] items_data;
-    private users user_data;
 
-    void Update()
+    void Awake()
     {
-        //RightClick
-        if (Input.GetMouseButtonDown(1))
+        if (_instance == null)
         {
-            newItem = Instantiate(cartItemPanelPrefab, itemContent);
-            newItem.transform.localPosition = Vector3.zero;
-            newItem.GetComponent<ShopItemController>().set(data, mainController, shopController, this);  //display texture and other data on UI
-        }
-
-        if (itemScrollUp.buttonPressed)
-        {
-            itemContent.localPosition += Vector3.down * scrollSpeed * Time.deltaTime;
-        }
-
-        if (itemScrollDown.buttonPressed)
-        {
-            itemContent.localPosition += Vector3.up * scrollSpeed * Time.deltaTime;
+            _instance = this;
         }
     }
 
-    public void Set(MainController controller1, ShopController controller2)
+    public void Start()
     {
         //for test
-        data.id = 2;
+        data.id = 3;
         data.name = "bear";
         data.main_type = 2;
         data.sub_type = 2;
@@ -67,27 +50,47 @@ public class CartController : MonoBehaviour
         data.click_times = 0;
 
         //initialize
-        mainController = controller1;
-        shopController = controller2;
-        sub_UI = shopController.GetSubUI();
         mask = transform.Find("mask").gameObject;
-        sqlConnection = mainController.getSqlConnection();
-
-        //set
-        shopController.Disable();
+        sqlConnection = MainController.getSqlConnection();
+        ShopController.Instance().Disable();
 
         //StartCoroutine(LoadItems());
         //CalculateTotalCost
     }
 
-    public void UpdateUserData()
+    void Update()
     {
-        user_data = mainController.GetUserData();
+        //RightClick
+        if (Input.GetMouseButtonDown(1))
+        {
+            newObj = Instantiate(cartItemPanelPrefab, itemContent);
+            newObj.transform.localPosition = Vector3.zero;
+            newObj.GetComponent<ShopItemController>().set(data);  //display texture and other data on UI
+        }
+
+        if (itemScrollUp.buttonPressed)
+        {
+            itemContent.localPosition += Vector3.down * scrollSpeed * Time.deltaTime;
+        }
+
+        if (itemScrollDown.buttonPressed)
+        {
+            itemContent.localPosition += Vector3.up * scrollSpeed * Time.deltaTime;
+        }
+    }
+
+    public static CartController Instance()
+    {
+        if (_instance == null)
+        {
+            throw new Exception("UnityMainThreadDispatcher could not find the CartController object.");
+        }
+        return _instance;
     }
 
     public void Checkout()
     {
-        shopController.Checkout();
+        ShopController.Checkout();
     }
 
     //private IEnumerator LoadItems()
@@ -116,8 +119,8 @@ public class CartController : MonoBehaviour
 
     public void Close()
     {
-        shopController.Enable();
-        shopController.CloseCart();
+        ShopController.Instance().Enable();
+        ShopController.CloseCart();
         Destroy(transform.parent.gameObject);
     }
 }

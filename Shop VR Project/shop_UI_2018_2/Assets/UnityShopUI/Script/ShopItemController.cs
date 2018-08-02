@@ -6,26 +6,14 @@ using UnityEngine.UI;
 public class ShopItemController : MonoBehaviour {
     public GameObject shopItemInformationPrefab;
 
-    private MainController mainController;
-    private ShopController shopController;
-    private CartController cartController;
     private shopitems item_data;
     private GameObject newObj;
-    private Transform spawnPoint;
-    private Transform sub_UI;
 
-    public void set(shopitems data, MainController controller1, ShopController controller2, CartController controller3)
+    public void set(shopitems data)
     {
-        //initialize
-        mainController = controller1;
-        shopController = controller2;
-        cartController = controller3;
-        sub_UI = shopController.GetSubUI();
-        spawnPoint = shopController.itemInformationSpawnPoint;
-
         //set
         item_data = data;
-        Debug.Log("name:" + item_data.name + "cost:" + item_data.cost);
+        //Debug.Log("name:" + item_data.name + "cost:" + item_data.cost);
         transform.Find("name").gameObject.GetComponent<Text>().text = item_data.name;
         transform.Find("cost").gameObject.GetComponent<Text>().text = ("$ " + item_data.cost);
 
@@ -35,13 +23,14 @@ public class ShopItemController : MonoBehaviour {
 
     public void OpenInformation()
     {
-        newObj = Instantiate(shopItemInformationPrefab, spawnPoint.position, spawnPoint.rotation, sub_UI);
-        newObj.GetComponentInChildren<ShopItemInformationController>().set(item_data, mainController, shopController, cartController);
+        Transform spawnPoint = ShopController.Instance().itemInformationSpawnPoint;
+        newObj = Instantiate(shopItemInformationPrefab, spawnPoint.position, spawnPoint.rotation, ShopController.Instance().GetSubUI());
+        newObj.GetComponentInChildren<ShopItemInformationController>().set(item_data);
     }
 
     public void DeleteFromCart()
     {
-        shopController.DeleteFromCart(item_data.id);
+        ShopController.DeleteFromCart(item_data.id);
         Destroy(transform.gameObject);
     }
 

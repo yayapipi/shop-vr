@@ -1,19 +1,19 @@
-﻿using System.Collections;
+﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Threading;
 
 public class MainController : MonoBehaviour {
     public GameObject ShopMain;
-    [SerializeField] private int userID;
-    private users user_data;
-    private bool isOpenShop;
-    private sqlapi sqlConnection;
-    private GameObject shopObj;
+    private static int user_id;
+    private static bool isOpenShop;
+    private static sqlapi sqlConnection;
 
 	// Use this for initialization
 	void Start () {
         isOpenShop = false;
         sqlConnection = new sqlapi();
+        user_id = 1;
 
         //Update user information
         UpdateUserData();
@@ -24,14 +24,19 @@ public class MainController : MonoBehaviour {
 		
 	}
 
-    private void OnApplicationQuit()
+    void OnApplicationQuit()
     {
         sqlConnection.closeSql();
     }
 
-    public sqlapi getSqlConnection()
+    public static sqlapi getSqlConnection()
     {
         return sqlConnection;
+    }
+
+    public static int GetUserID()
+    {
+        return user_id;
     }
 
     public void OpenShop(Transform spawnpoint)
@@ -39,27 +44,19 @@ public class MainController : MonoBehaviour {
         if (!isOpenShop)
         {
             isOpenShop = true;
-            shopObj = Instantiate(ShopMain, spawnpoint.position, spawnpoint.rotation);
-            shopObj.GetComponentInChildren<ShopController>().Set(this);
-            shopObj.GetComponentInChildren<ShopController>().UpdateUserData();
+            Instantiate(ShopMain, spawnpoint.position, spawnpoint.rotation);
         }
     }
 
-    public void UpdateUserData()
+    public static void UpdateUserData()
     {
-        user_data = sqlConnection.getusers(userID);
-
-        //update shop_main
-        if (isOpenShop)
-            shopObj.GetComponentInChildren<ShopController>().UpdateUserData();
+        //using thread to get user_data
+        GetUserDataThread tws = new GetUserDataThread(EventManager.UpdateUserData);
+        Thread t = new Thread(new ThreadStart(tws.GetUserData));
+        t.Start();
     }
 
-    public users GetUserData()
-    {
-        return user_data;
-    }
-
-    public void CloseShop()
+    public static void CloseShop()
     {
         isOpenShop = false;
     }

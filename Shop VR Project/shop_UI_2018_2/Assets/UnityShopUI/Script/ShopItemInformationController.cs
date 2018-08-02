@@ -19,9 +19,6 @@ public class ShopItemInformationController : MonoBehaviour {
     public GameObject messageCartPrefab;
 
     private int item_id;
-    private MainController mainController;
-    private ShopController shopController;
-    private CartController cartController;
     private GameObject newPicture;
     private GameObject newObj;
     private pics[] pictures;
@@ -31,23 +28,20 @@ public class ShopItemInformationController : MonoBehaviour {
     private int maxAmount;
     private bool isOpenCart;
 
-    public void set(shopitems data, MainController controller1, ShopController controller2, CartController controller3)
+    public void set(shopitems data)
     {
         //initialize
-        mainController = controller1;
-        shopController = controller2;
-        cartController = controller3;
-        isOpenCart = shopController.GetIsOpenCart();
-        sqlConnection = mainController.getSqlConnection();
+        isOpenCart = ShopController.GetIsOpenCart();
+        sqlConnection = MainController.getSqlConnection();
         minAmount = 1;
         maxAmount = 100;
         amount = minAmount;
 
         //set
         if (isOpenCart)
-            cartController.Disable();
+            CartController.Instance().Disable();
         else
-            shopController.Disable();
+            ShopController.Instance().Disable();
         item_id = data.id;
         informationContent.Find("name").gameObject.GetComponent<Text>().text = data.name;
         informationContent.Find("cost").gameObject.GetComponent<Text>().text = "$ " + data.cost;
@@ -86,19 +80,26 @@ public class ShopItemInformationController : MonoBehaviour {
 
     public void Buy()
     {
-        bool success=shopController.Buy(item_id, amount);
-        newObj = Instantiate(messageBuyPrefab, shopController.messageSpawnPoint.position, shopController.messageSpawnPoint.rotation);
-        if(success)
-            newObj.GetComponent<MessageController>().Set("Thank you");
-        else
-            newObj.GetComponent<MessageController>().Set("Not Enough Money");
+        gameObject.SetActive(false);
+        ShopController.Buy(item_id, amount, BuyFinished);
+    }
+
+    private void BuyFinished()
+    {
+        newObj = Instantiate(messageBuyPrefab, ShopController.Instance().messageSpawnPoint.position, ShopController.Instance().messageSpawnPoint.rotation);
+        newObj.GetComponent<MessageController>().Set(EventManager.GetMessage());
         Close();
     }
 
     public void Cart()
     {
-        shopController.Cart(item_id, amount);
-        newObj = Instantiate(messageCartPrefab, shopController.messageSpawnPoint.position, shopController.messageSpawnPoint.rotation);
+        gameObject.SetActive(false);
+        ShopController.Cart(item_id, amount, CartFinished);
+    }
+
+    private void CartFinished()
+    {
+        newObj = Instantiate(messageCartPrefab, ShopController.Instance().messageSpawnPoint.position, ShopController.Instance().messageSpawnPoint.rotation);
         newObj.GetComponent<MessageController>().Set(amount + " items");
         Close();
     }
@@ -162,9 +163,9 @@ public class ShopItemInformationController : MonoBehaviour {
     public void Close()
     {
         if (isOpenCart)
-            cartController.Enable();
+            CartController.Instance().Enable();
         else
-            shopController.Enable();
+            ShopController.Instance().Enable();
 
         Destroy(transform.parent.gameObject);
     }

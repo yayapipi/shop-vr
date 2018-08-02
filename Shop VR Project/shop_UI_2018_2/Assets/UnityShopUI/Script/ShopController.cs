@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using UnityEngine;
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Threading;
 using UnityEngine.UI;
 
 public class ShopController : MonoBehaviour {
@@ -8,7 +10,6 @@ public class ShopController : MonoBehaviour {
     public Transform itemContent;
     public GameObject ShopItemPanelPrefab;
     public GameObject cartMainPrefab;
-    public ShopUserController menuPanel;
     public ButtonChecker itemScrollUp;
     public ButtonChecker itemScrollDown;
     public Transform itemInformationSpawnPoint;
@@ -16,11 +17,8 @@ public class ShopController : MonoBehaviour {
     public Transform messageSpawnPoint;
 
     private GameObject newObj;
-    private GameObject cartObj;
-    private CartController cartController;
     private ScrollRect itemScrollRect;
     private GameObject mask;
-    private MainController mainController;
     private Transform sub_UI;
 
     [Header("Variables")]
@@ -31,18 +29,33 @@ public class ShopController : MonoBehaviour {
     [Range(100, 1000)] public int scrollSpeed;
     [Range(6, 30)] public int itemsShowOnce;
 
-    private int counter;
-    private bool isOpenCart;
+    private static int counter;
+    private static bool isOpenCart;
+    private static ShopController _instance = null;
+
     //database
     private sqlapi sqlConnection;
     private shopitems[] items_data;
-    private users user_data;
 
-    public void Set(MainController controller)
+    void Awake()
     {
-        //initialize
-        mainController = controller;
-        cartController = null;
+        if (_instance == null)
+        {
+            _instance = this;
+        }
+    }
+
+    public static ShopController Instance()
+    {
+        if (_instance == null)
+        {
+            throw new Exception("UnityMainThreadDispatcher could not find the ShopController object.");
+        }
+        return _instance;
+    }
+
+    void Start()
+    {
         isOpenCart = false;
         counter = 0;
         isLoadToEnd = false;
@@ -52,10 +65,8 @@ public class ShopController : MonoBehaviour {
         itemScrollRect = itemContent.parent.GetComponentInParent<ScrollRect>();
         mask = transform.Find("mask").gameObject;
         sub_UI = transform.parent.Find("sub_UI");
-        sqlConnection = mainController.getSqlConnection();
+        sqlConnection = MainController.getSqlConnection();
 
-        //set
-        menuPanel.Set();
         //show items
         StartCoroutine(LoadItems(viewKind, viewType));
     }
@@ -79,20 +90,6 @@ public class ShopController : MonoBehaviour {
         {
             itemContent.localPosition += Vector3.up * scrollSpeed * Time.deltaTime;
         }
-    }
-
-    //update user information
-    public void UpdateUserData()
-    {
-        user_data = mainController.GetUserData();
-
-        //update menu panel
-        menuPanel.UpdateUserData();
-
-        //update cart_main
-        if (isOpenCart)
-            cartController.UpdateUserData();
-
     }
 
     private IEnumerator LoadItems(string kind, int type)
@@ -138,7 +135,7 @@ public class ShopController : MonoBehaviour {
         {
             newObj = Instantiate(ShopItemPanelPrefab, itemContent);
             newObj.transform.localPosition = Vector3.zero;
-            newObj.GetComponent<ShopItemController>().set(item_data, mainController, this, cartController);  //display texture and other data on UI
+            newObj.GetComponent<ShopItemController>().set(item_data);  //display texture and other data on UI
             yield return null;
         }
 
@@ -191,14 +188,11 @@ public class ShopController : MonoBehaviour {
         if (!isOpenCart)
         {
             isOpenCart = true;
-            cartObj = Instantiate(cartMainPrefab, cartSpawnPoint.position, cartSpawnPoint.rotation, sub_UI);
-            cartController = cartObj.GetComponentInChildren<CartController>();
-            cartController.Set(mainController, this);
-            cartController.UpdateUserData();
+            Instantiate(cartMainPrefab, cartSpawnPoint.position, cartSpawnPoint.rotation, sub_UI);
         }
     }
 
-    public bool GetIsOpenCart()
+    public static bool GetIsOpenCart()
     {
         return isOpenCart;
     }
@@ -208,59 +202,36 @@ public class ShopController : MonoBehaviour {
         return sub_UI;
     }
 
-    public bool Buy(int item_id, int amount)
+    public static void Buy(int item_id, int amount, Action callbackDelegate)
     {
         
-        Debug.Log("Buy amount = " + amount + " item_id = " + item_id + " user_id = " + user_data.id);
-        /* call api */
-        shopitems[] items = sqlConnection.getshop_item(1, item_id);
-        Debug.Log("cost:"+items[0].cost);
-        if (items.Length != 0)
-        {
-            double totalprice = items[0].cost * amount;
-            Debug.Log("totalprice:" + items[0].cost * amount);
-            if (items[0].cost * amount < user_data.money)
-            {
-                userinvent invent = sqlConnection.getuserinvent(user_data.id, items[0].id);
-                if (invent.user_id>0)
-                    sqlConnection.Up_userinvent(user_data.id, items[0].id, amount + invent.amount);
-                else
-                    sqlConnection.Add_userinvent(user_data.id, items[0].id, amount);
-                sqlConnection.Up_users(user_data.id, user_data.money - totalprice);
-                mainController.UpdateUserData();
-                return true;
-            }
-        }
-        mainController.UpdateUserData();
-        return false;
-        //mainController.UpdateUserData();
+        Debug.Log("Buy amount = " + amount + " item_id = " + item_id);
+
+        //using thread to buy item
+        callbackDelegate += MainController.UpdateUserData;
+        ShopThread tws = new ShopThread(item_id, amount, callbackDelegate);
+        Thread t = new Thread(new ThreadStart(tws.Buy));
+        t.Start();
     }
 
-    public void Cart(int item_id, int amount)
+    public static void Cart(int item_id, int amount, Action callbackDelegate)
     {
+        Debug.Log("Cart: amount = " + amount + " item_id = " + item_id);
 
-        Debug.Log("Cart: amount = " + amount + " item_id = " + item_id + " user_id = " + user_data.id);
-        /* call api */
-        shopitems[] items = sqlConnection.getshop_item(1, item_id);
-        if (items.Length != 0)
-        {
-            shopcart cart = sqlConnection.getshopcart(user_data.id, items[0].id);
-            if (cart.user_id > 0)
-                sqlConnection.Up_shopcart(user_data.id, items[0].id, amount + cart.amount);
-            else
-                sqlConnection.Add_shopcart(user_data.id, items[0].id, amount);
-        }
-        mainController.UpdateUserData();
+        //using thread to cart item
+        ShopThread tws = new ShopThread(item_id, amount, callbackDelegate);
+        Thread t = new Thread(new ThreadStart(tws.Cart));
+        t.Start();
     }
 
-    public void Checkout()
+    public static void Checkout()
     {
-        Debug.Log("Checkout: user_id = " + user_data.id);
+        Debug.Log("Checkout: ");
         /* call api */
-        mainController.UpdateUserData();
+       MainController.UpdateUserData();
     }
 
-    public void DeleteFromCart(int item_id)
+    public static void DeleteFromCart(int item_id)
     {
         Debug.Log("Delete item from cart: item_id = " + item_id);
         /* call api */
@@ -276,15 +247,19 @@ public class ShopController : MonoBehaviour {
         mask.SetActive(false);
     }
 
-    public void CloseCart()
+    public static void CloseCart()
     {
         isOpenCart = false;
-        cartController = null;
     }
 
     public void Close()
     {
-        mainController.CloseShop();
+        MainController.CloseShop();
         Destroy(transform.parent.gameObject);
+    }
+
+    void OnDestroy()
+    {
+        _instance = null;
     }
 }
