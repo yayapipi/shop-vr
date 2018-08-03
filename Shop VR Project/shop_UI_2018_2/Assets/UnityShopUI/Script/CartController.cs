@@ -7,12 +7,13 @@ using UnityEngine.UI;
 public class CartController : MonoBehaviour
 {
     [Header("Related Objects")]
+    public Text totalCostText;
     public Transform itemContent;
     public GameObject cartItemPanelPrefab;
     public ButtonChecker itemScrollUp;
     public ButtonChecker itemScrollDown;
 
-    private GameObject newObj;
+    private static int totalCost;
     private GameObject mask;
     private static CartController _instance = null;
 
@@ -21,9 +22,7 @@ public class CartController : MonoBehaviour
     public int scrollSpeed;
 
     //for test
-    private shopitems data;
-    //database
-    private sqlapi sqlConnection;
+    //private shopcartitems data;
 
     void Awake()
     {
@@ -35,38 +34,24 @@ public class CartController : MonoBehaviour
 
     public void Start()
     {
-        //for test
-        data.id = 3;
-        data.name = "bear";
-        data.main_type = 2;
-        data.sub_type = 2;
-        data.description = "熊";
-        data.enabled = true;
-        data.model_name = "bear";
-        data.model_linkurl = "AssetBundles/official.2";
-        data.pic_url = "itempics/official2.JPG";
-        data.item_id = 1;
-        data.cost = 999;
-        data.click_times = 0;
-
         //initialize
         mask = transform.Find("mask").gameObject;
-        sqlConnection = MainController.getSqlConnection();
         ShopController.Instance().Disable();
-
-        //StartCoroutine(LoadItems());
+        GetShopCartItems();
         //CalculateTotalCost
     }
 
     void Update()
     {
         //RightClick
+        /*
         if (Input.GetMouseButtonDown(1))
         {
-            newObj = Instantiate(cartItemPanelPrefab, itemContent);
+            GameObject newObj = Instantiate(cartItemPanelPrefab, itemContent);
             newObj.transform.localPosition = Vector3.zero;
-            newObj.GetComponent<ShopItemController>().set(data);  //display texture and other data on UI
+            newObj.GetComponent<ShopItemController>().Set(data);  //display texture and other data on UI
         }
+        */
 
         if (itemScrollUp.buttonPressed)
         {
@@ -93,19 +78,34 @@ public class CartController : MonoBehaviour
         ShopController.Checkout();
     }
 
-    //private IEnumerator LoadItems()
-    //{
-    //    items_data = sqlConnection.xxxxxxxx(user_data.id);
-    //    yield return null;
+    public void UpdateTotalCost(int change)
+    {
+        totalCost += change;
+        totalCostText.text = "Total Cost : " + totalCost;
+    }
 
-    //    foreach (shopitems item_data in items_data)
-    //    {
-    //        newItem = Instantiate(ShopItemPanelPrefab, itemContent);
-    //        newItem.transform.localPosition = Vector3.zero;
-    //        newItem.GetComponent<ShopItemController>().set(item_data);  //display texture and other data on UI
-    //        yield return null;
-    //    }
-    //}
+    private void GetShopCartItems()
+    {
+        ShopController.GetShopCartItems(GetShopCartItemsFinished());
+    }
+
+    private IEnumerator GetShopCartItemsFinished()
+    {
+        shopcartitems[] shopCartItems = EventManager.GetShopCartItems();
+        GameObject newObj;
+        totalCost = 0;
+
+        foreach (shopcartitems item in shopCartItems)
+        {
+            totalCost += item.cost * item.amount;
+            newObj = Instantiate(cartItemPanelPrefab, itemContent);
+            newObj.transform.localPosition = Vector3.zero;
+            newObj.GetComponent<ShopItemController>().Set(item);  //display data on UI
+            yield return null;
+        }
+
+        totalCostText.text = "Total Cost : " + totalCost;
+    }
 
     public void Disable()
     {

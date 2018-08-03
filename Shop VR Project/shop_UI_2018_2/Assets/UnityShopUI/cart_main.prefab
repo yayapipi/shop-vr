@@ -607,7 +607,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1305842517943042}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 1.9289349, y: -1.609349e-17, z: 9.183931}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224179440267204190}
@@ -1106,8 +1106,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114263200708457438}
   m_HandleRect: {fileID: 224780736267547266}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.93532354
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1745,12 +1745,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b1ff8d655af71549994fde8398ddf74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  totalCostText: {fileID: 114473317240837262}
   itemContent: {fileID: 224955450833617526}
   cartItemPanelPrefab: {fileID: 1550258398358624, guid: 8f7f1b028c971244ab1a566079fe989d,
     type: 2}
   itemScrollUp: {fileID: 114330127526454346}
   itemScrollDown: {fileID: 114833178353002254}
-  userID: 0
   scrollSpeed: 500
 --- !u!114 &114739388578888542
 MonoBehaviour:
@@ -2673,7 +2673,7 @@ RectTransform:
   m_Father: {fileID: 224625703204561528}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.06467646}
+  m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}

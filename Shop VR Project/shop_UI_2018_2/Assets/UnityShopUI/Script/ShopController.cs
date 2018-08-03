@@ -16,10 +16,9 @@ public class ShopController : MonoBehaviour {
     public Transform cartSpawnPoint;
     public Transform messageSpawnPoint;
 
-    private GameObject newObj;
     private ScrollRect itemScrollRect;
     private GameObject mask;
-    private Transform sub_UI;
+    private Transform subUI;
 
     [Header("Variables")]
     [SerializeField] private string viewKind;
@@ -32,10 +31,6 @@ public class ShopController : MonoBehaviour {
     private static int counter;
     private static bool isOpenCart;
     private static ShopController _instance = null;
-
-    //database
-    private sqlapi sqlConnection;
-    private shopitems[] items_data;
 
     void Awake()
     {
@@ -64,22 +59,17 @@ public class ShopController : MonoBehaviour {
         viewType = 0;
         itemScrollRect = itemContent.parent.GetComponentInParent<ScrollRect>();
         mask = transform.Find("mask").gameObject;
-        sub_UI = transform.parent.Find("sub_UI");
-        sqlConnection = MainController.getSqlConnection();
+        subUI = transform.parent.Find("sub_UI");
 
         //show items
-        StartCoroutine(LoadItems(viewKind, viewType));
+        GetShopItems(viewKind, viewType);
     }
 
     void Update()
     {
-        //Debug.Log(itemScrollRect.verticalNormalizedPosition);
-
         //load items
         if (itemScrollRect.verticalNormalizedPosition < 0 && !isLoadToEnd && !isLoadingItems)
-            StartCoroutine(LoadItems(viewKind, viewType));
-
-        //if (Input.GetKeyDown("space"))
+            GetShopItems(viewKind, viewType);
 
         if (itemScrollUp.buttonPressed)
         {
@@ -90,65 +80,6 @@ public class ShopController : MonoBehaviour {
         {
             itemContent.localPosition += Vector3.up * scrollSpeed * Time.deltaTime;
         }
-    }
-
-    private IEnumerator LoadItems(string kind, int type)
-    {
-        isLoadingItems = true;
-
-        if (type == 0)
-            switch (kind)
-            {
-                case "default":
-                    items_data = sqlConnection.Rshop_item(1, "id", "asc", counter * itemsShowOnce, itemsShowOnce);
-                    break;
-                case "new":
-                    items_data = sqlConnection.Rshop_item(1, "created_at", "desc", counter * itemsShowOnce, itemsShowOnce);
-                    break;
-                case "hot":
-                    items_data = sqlConnection.Rshop_item(1, "click_times", "desc", counter * itemsShowOnce, itemsShowOnce);
-                    break;
-                case "recommend":
-                    items_data = sqlConnection.Rshop_item(1, "id", "asc", counter * itemsShowOnce, itemsShowOnce);
-                    break;
-            }
-        else
-            switch (kind)
-            {
-                case "default":
-                    items_data = sqlConnection.Rshop_item(1, type, "id", "asc", counter * itemsShowOnce, itemsShowOnce);
-                    break;
-                case "new":
-                    items_data = sqlConnection.Rshop_item(1, type, "created_at", "desc", counter * itemsShowOnce, itemsShowOnce);
-                    break;
-                case "hot":
-                    items_data = sqlConnection.Rshop_item(1, type, "click_times", "desc", counter * itemsShowOnce, itemsShowOnce);
-                    break;
-                case "recommend":
-                    items_data = sqlConnection.Rshop_item(1, type, "id", "asc", counter * itemsShowOnce, itemsShowOnce);
-                    break;
-            }
-
-        yield return null;
-
-        foreach (shopitems item_data in items_data)
-        {
-            newObj = Instantiate(ShopItemPanelPrefab, itemContent);
-            newObj.transform.localPosition = Vector3.zero;
-            newObj.GetComponent<ShopItemController>().set(item_data);  //display texture and other data on UI
-            yield return null;
-        }
-
-        if (items_data.Length == 0)
-        {
-            isLoadToEnd = true;
-        }
-
-        counter++;
-
-        //yield return new WaitForSeconds(1);
-
-        isLoadingItems = false;
     }
 
     public void SetViewKind(string kind)
@@ -163,7 +94,7 @@ public class ShopController : MonoBehaviour {
             foreach (Transform child in itemContent)
                 Destroy(child.gameObject);
 
-            StartCoroutine(LoadItems(viewKind, viewType));
+            GetShopItems(viewKind, viewType);
         }
     }
 
@@ -179,7 +110,7 @@ public class ShopController : MonoBehaviour {
             foreach (Transform child in itemContent)
                 Destroy(child.gameObject);
 
-            StartCoroutine(LoadItems(viewKind, viewType));
+            GetShopItems(viewKind, viewType);
         }
     }
 
@@ -188,7 +119,7 @@ public class ShopController : MonoBehaviour {
         if (!isOpenCart)
         {
             isOpenCart = true;
-            Instantiate(cartMainPrefab, cartSpawnPoint.position, cartSpawnPoint.rotation, sub_UI);
+            Instantiate(cartMainPrefab, cartSpawnPoint.position, cartSpawnPoint.rotation, subUI);
         }
     }
 
@@ -199,27 +130,28 @@ public class ShopController : MonoBehaviour {
 
     public Transform GetSubUI()
     {
-        return sub_UI;
+        return subUI;
     }
 
-    public static void Buy(int item_id, int amount, Action callbackDelegate)
+
+    /* Thread sqlapi */
+    public static void Buy(int itemID, int amount, Action callbackDelegate)
     {
-        
-        Debug.Log("Buy amount = " + amount + " item_id = " + item_id);
+        Debug.Log("Buy amount = " + amount + " itemID = " + itemID);
 
         //using thread to buy item
         callbackDelegate += MainController.UpdateUserData;
-        ShopThread tws = new ShopThread(item_id, amount, callbackDelegate);
+        ShopThread tws = new ShopThread(itemID, amount, callbackDelegate);
         Thread t = new Thread(new ThreadStart(tws.Buy));
         t.Start();
     }
 
-    public static void Cart(int item_id, int amount, Action callbackDelegate)
+    public static void Cart(int itemID, int amount, Action callbackDelegate)
     {
-        Debug.Log("Cart: amount = " + amount + " item_id = " + item_id);
+        Debug.Log("Cart: amount = " + amount + " itemID = " + itemID);
 
         //using thread to cart item
-        ShopThread tws = new ShopThread(item_id, amount, callbackDelegate);
+        ShopThread tws = new ShopThread(itemID, amount, callbackDelegate);
         Thread t = new Thread(new ThreadStart(tws.Cart));
         t.Start();
     }
@@ -228,13 +160,80 @@ public class ShopController : MonoBehaviour {
     {
         Debug.Log("Checkout: ");
         /* call api */
-       MainController.UpdateUserData();
+        MainController.UpdateUserData();
     }
 
-    public static void DeleteFromCart(int item_id)
+    public static void DeleteFromCart(int itemID)
     {
-        Debug.Log("Delete item from cart: item_id = " + item_id);
+        Debug.Log("Delete item from cart: itemID = " + itemID);
         /* call api */
+    }
+
+    private void GetShopItems(string kind, int type)
+    {
+        isLoadingItems = true;
+
+        //using thread to get shop items
+        GetShopItemsThread tws;
+        switch (kind)
+        {
+            case "default":
+                tws = new GetShopItemsThread(1, type, "id", "asc", counter * itemsShowOnce, itemsShowOnce, GetShopItemsFinished());
+                break;
+            case "new":
+                tws = new GetShopItemsThread(1, type, "created_at", "desc", counter * itemsShowOnce, itemsShowOnce, GetShopItemsFinished());
+                break;
+            case "hot":
+                tws = new GetShopItemsThread(1, type, "click_times", "desc", counter * itemsShowOnce, itemsShowOnce, GetShopItemsFinished());
+                break;
+            case "recommend":
+                tws = new GetShopItemsThread(1, type, "id", "asc", counter * itemsShowOnce, itemsShowOnce, GetShopItemsFinished());
+                break;
+            default:
+                tws = new GetShopItemsThread(1, type, "id", "asc", counter * itemsShowOnce, itemsShowOnce, GetShopItemsFinished());
+                break;
+        }
+        Thread t = new Thread(new ThreadStart(tws.GetShopItems));
+        t.Start();
+    }
+
+    private IEnumerator GetShopItemsFinished()
+    {
+        shopitems[] shopItemsData = EventManager.GetShopItemsData();
+        GameObject newObj;
+
+        foreach (shopitems item in shopItemsData)
+        {
+            newObj = Instantiate(ShopItemPanelPrefab, itemContent);
+            newObj.transform.localPosition = Vector3.zero;
+            newObj.GetComponent<ShopItemController>().Set(item);  //display data on UI
+            yield return null;
+        }
+
+        if (shopItemsData.Length == 0)
+        {
+            isLoadToEnd = true;
+        }
+
+        counter++;
+
+        isLoadingItems = false;
+    }
+
+    public static void GetShopItemPics(int itemID, IEnumerator callbackEnumerator)
+    {
+        //using thread to get item pics
+        GetShopItemPicsThread tws = new GetShopItemPicsThread(itemID, callbackEnumerator);
+        Thread t = new Thread(new ThreadStart(tws.GetShopItemPics));
+        t.Start();
+    }
+
+    public static void GetShopCartItems(IEnumerator callbackEnumerator)
+    {
+        //using thread to get item pics
+        GetShopCartItemsThread tws = new GetShopCartItemsThread(callbackEnumerator);
+        Thread t = new Thread(new ThreadStart(tws.GetShopCartItems));
+        t.Start();
     }
 
     public void Disable()

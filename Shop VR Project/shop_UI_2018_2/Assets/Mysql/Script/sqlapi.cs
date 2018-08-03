@@ -10,6 +10,7 @@ public struct items
 {
     public int id;
     public string name;
+    public string pic_url;
     public int main_type;
     public float sub_type;
     public string description;
@@ -23,17 +24,20 @@ public struct items
 
 public struct shopitems
 {
-    public int id;
+    //items
+    //public int id;
     public string name;
+    public string pic_url;
     public int main_type;
     public float sub_type;
     public string description;
     public bool enabled;
     public string model_name;
     public string model_linkurl;
-    public string pic_url;
     public string created_at;
     public string updated_at;
+
+    //shop_items
     public int shop_id;
     public int item_id;
     public int cost;
@@ -41,7 +45,6 @@ public struct shopitems
     public int click_times;
     public string s_created_at;
     public string s_updated_at;
-
 };
 
 public struct pics
@@ -84,6 +87,38 @@ public struct shopcart
     public string created_at;
     public string updated_at;
 };
+
+public struct shopcartitems
+{
+    //shop_carts
+    public int user_id;
+    //public int item_id;
+    public int amount;
+    public string c_created_at;
+    public string c_updated_at;
+
+    //items
+    //public int id;
+    public string name;
+    public string pic_url;
+    public int main_type;
+    public float sub_type;
+    public string description;
+    public bool enabled;
+    public string model_name;
+    public string model_linkurl;
+    public string created_at;
+    public string updated_at;
+
+    //shop_items
+    public int shop_id;
+    public int item_id;
+    public int cost;
+    public bool enable;
+    public int click_times;
+    public string s_created_at;
+    public string s_updated_at;
+}
 
 public struct shops
 {
@@ -208,6 +243,66 @@ public class sqlapi
         return vvv;
     }
 
+    public shopcartitems[] Rshopcartitems(int userid)
+    {
+        shopcartitems[] vvv = new shopcartitems[50];
+        string tables = "shop_carts, shop_items, items";
+        try
+        {
+            //SqlAccess sql = new SqlAccess();
+            DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "shop_carts.user_id", "items.id", "shop_items.item_id" }, new string[] { "=", "=", "=" }, new string[] { userid.ToString(), "shop_carts.item_id", "shop_carts.item_id" },
+                new string[] { }, new string[] { }, new string[] { }, new string[] { }).Tables[0];
+
+            int i = 0;
+
+            foreach (DataRow row in RT.Rows)
+            {
+                if (row != null)
+                {
+                    vvv[i].user_id = Convert.ToInt32(row["user_id"]);
+                    //vvv[i].item_id = Convert.ToInt32(row["item_id"]);
+                    vvv[i].amount = Convert.ToInt32(row["amount"]);
+                    vvv[i].c_created_at = row["created_at"].ToString();
+                    vvv[i].c_updated_at = row["updated_at"].ToString();
+
+                    vvv[i].name = row["name"].ToString();
+                    vvv[i].pic_url = row["pic_url"].ToString();
+                    vvv[i].main_type = Convert.ToInt32(row["main_type"]);
+                    vvv[i].sub_type = (float)Convert.ToDouble(row["sub_type"]);
+                    vvv[i].description = row["description"].ToString();
+                    vvv[i].enabled = Convert.ToBoolean(row["enabled"]);
+                    vvv[i].model_name = row["model_name"].ToString();
+                    vvv[i].model_linkurl = row["model_linkurl"].ToString();
+                    vvv[i].created_at = row["created_at2"].ToString();
+                    vvv[i].updated_at = row["updated_at2"].ToString();
+
+                    vvv[i].shop_id = Convert.ToInt32(row["shop_id"]);
+                    vvv[i].item_id = Convert.ToInt32(row["item_id"]);
+                    vvv[i].cost = Convert.ToInt32(row["cost"]);
+                    vvv[i].enable = Convert.ToBoolean(row["enable"]);
+                    vvv[i].click_times = Convert.ToInt32(row["click_times"]);
+                    vvv[i].s_created_at = row["created_at1"].ToString();
+                    vvv[i].s_updated_at = row["updated_at1"].ToString();
+                    i++;
+                }
+                else
+                {
+                    Debug.Log("NOT FOUND");
+                    break;
+                }
+            }
+
+            //sql.Close();
+            Array.Resize<shopcartitems>(ref vvv, i);
+            return vvv;
+        }
+        catch (Exception e)
+        {
+            this.Error = e.Message;
+        }
+        return vvv;
+    }
+
     public items getitems(int ids)
     {
         items vvv = new items();
@@ -224,14 +319,15 @@ public class sqlapi
                 //Debug.Log("aa"+RT.Rows[0][0].ToString());
                 vvv.id = Convert.ToInt32(RT.Rows[0][0]);
                 vvv.name = RT.Rows[0][1].ToString();
-                vvv.main_type = Convert.ToInt32(RT.Rows[0][2]);
-                vvv.sub_type = (float)Convert.ToDouble(RT.Rows[0][3]);
-                vvv.description = RT.Rows[0][4].ToString();
-                vvv.enabled = Convert.ToBoolean(RT.Rows[0][5]);
-                vvv.model_name = RT.Rows[0][6].ToString();
-                vvv.model_linkurl = RT.Rows[0][7].ToString();
-                vvv.created_at = RT.Rows[0][8].ToString();
-                vvv.updated_at = RT.Rows[0][9].ToString();
+                vvv.pic_url = RT.Rows[0][2].ToString();
+                vvv.main_type = Convert.ToInt32(RT.Rows[0][3]);
+                vvv.sub_type = (float)Convert.ToDouble(RT.Rows[0][4]);
+                vvv.description = RT.Rows[0][5].ToString();
+                vvv.enabled = Convert.ToBoolean(RT.Rows[0][6]);
+                vvv.model_name = RT.Rows[0][7].ToString();
+                vvv.model_linkurl = RT.Rows[0][8].ToString();
+                vvv.created_at = RT.Rows[0][9].ToString();
+                vvv.updated_at = RT.Rows[0][10].ToString();
                 //    Debug.Log("id=" + RT.Rows[0][10].GetType());
 
             }
@@ -339,24 +435,25 @@ public class sqlapi
             {
                 if (row != null)
                 {
-                    vvv[i].id = Convert.ToInt32(row["id"]);
+                    //vvv[i].id = Convert.ToInt32(row["id"]);
                     vvv[i].name = row["name"].ToString();
+                    vvv[i].pic_url = row["pic_url"].ToString();
                     vvv[i].main_type = Convert.ToInt32(row["main_type"]);
                     vvv[i].sub_type = (float)Convert.ToDouble(row["sub_type"]);
                     vvv[i].description = row["description"].ToString();
                     vvv[i].enabled = Convert.ToBoolean(row["enabled"]);
                     vvv[i].model_name = row["model_name"].ToString();
                     vvv[i].model_linkurl = row["model_linkurl"].ToString();
-                    vvv[i].pic_url = row["pic_url"].ToString();
                     vvv[i].created_at = row["created_at1"].ToString();
                     vvv[i].updated_at = row["updated_at1"].ToString();
+
                     vvv[i].shop_id = Convert.ToInt32(row["shop_id"]);
                     vvv[i].item_id = Convert.ToInt32(row["item_id"]);
                     vvv[i].cost = Convert.ToInt32(row["cost"]);
-                    //vvv[i].enable = Convert.ToBoolean(row["enable"]);
+                    vvv[i].enable = Convert.ToBoolean(row["enable"]);
                     vvv[i].click_times = Convert.ToInt32(row["click_times"]);
-                    //vvv[i].s_created_at = row["created_at"].ToString();
-                    //vvv[i].s_updated_at = row["updated_at"].ToString();
+                    vvv[i].s_created_at = row["created_at"].ToString();
+                    vvv[i].s_updated_at = row["updated_at"].ToString();
                     i++;
                 }
                 else
@@ -399,24 +496,25 @@ public class sqlapi
                 //Debug.Log("id:"+ row["id"] + "cost:"+ row["cost"] + "pic_url:"+ row["pic_url"].ToString());
                 if (row != null)
                 {
-                    vvv[i].id = Convert.ToInt32(row["id"]);
+                    //vvv[i].id = Convert.ToInt32(row["id"]);
                     vvv[i].name = row["name"].ToString();
+                    vvv[i].pic_url = row["pic_url"].ToString();
                     vvv[i].main_type = Convert.ToInt32(row["main_type"]);
                     vvv[i].sub_type = (float)Convert.ToDouble(row["sub_type"]);
                     vvv[i].description = row["description"].ToString();
                     vvv[i].enabled = Convert.ToBoolean(row["enabled"]);
                     vvv[i].model_name = row["model_name"].ToString();
                     vvv[i].model_linkurl = row["model_linkurl"].ToString();
-                    vvv[i].pic_url = row["pic_url"].ToString();
                     vvv[i].created_at = row["created_at1"].ToString();
                     vvv[i].updated_at = row["updated_at1"].ToString();
+
                     vvv[i].shop_id = Convert.ToInt32(row["shop_id"]);
                     vvv[i].item_id = Convert.ToInt32(row["item_id"]);
                     vvv[i].cost = Convert.ToInt32(row["cost"]);
-                    //vvv[i].enable = Convert.ToBoolean(row["enable"]);
+                    vvv[i].enable = Convert.ToBoolean(row["enable"]);
                     vvv[i].click_times = Convert.ToInt32(row["click_times"]);
-                    //vvv[i].s_created_at = row["created_at"].ToString();
-                    //vvv[i].s_updated_at = row["updated_at"].ToString();
+                    vvv[i].s_created_at = row["created_at"].ToString();
+                    vvv[i].s_updated_at = row["updated_at"].ToString();
                     i++;
                 }
                 else
@@ -472,24 +570,25 @@ public class sqlapi
                 //}
                 if (row != null)
                 {
-                    vvv[i].id = Convert.ToInt32(row["id"]);
+                    //vvv[i].id = Convert.ToInt32(row["id"]);
                     vvv[i].name = row["name"].ToString();
+                    vvv[i].pic_url = row["pic_url"].ToString();
                     vvv[i].main_type = Convert.ToInt32(row["main_type"]);
                     vvv[i].sub_type = (float)Convert.ToDouble(row["sub_type"]);
                     vvv[i].description = row["description"].ToString();
                     vvv[i].enabled = Convert.ToBoolean(row["enabled"]);
                     vvv[i].model_name = row["model_name"].ToString();
                     vvv[i].model_linkurl = row["model_linkurl"].ToString();
-                    vvv[i].pic_url = row["pic_url"].ToString();
                     vvv[i].created_at = row["created_at1"].ToString();
                     vvv[i].updated_at = row["updated_at1"].ToString();
+
                     vvv[i].shop_id = Convert.ToInt32(row["shop_id"]);
                     vvv[i].item_id = Convert.ToInt32(row["item_id"]);
                     vvv[i].cost = Convert.ToInt32(row["cost"]);
-                    //vvv[i].enable = Convert.ToBoolean(row["enable"]);
+                    vvv[i].enable = Convert.ToBoolean(row["enable"]);
                     vvv[i].click_times = Convert.ToInt32(row["click_times"]);
-                    //vvv[i].s_created_at = row["created_at"].ToString();
-                    //vvv[i].s_updated_at = row["updated_at"].ToString();
+                    vvv[i].s_created_at = row["created_at"].ToString();
+                    vvv[i].s_updated_at = row["updated_at"].ToString();
                     i++;
                 }
                 else

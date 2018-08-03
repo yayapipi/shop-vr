@@ -1,36 +1,68 @@
-﻿using System.Collections;
+﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.UI;
 
 public class ShopItemController : MonoBehaviour {
     public GameObject shopItemInformationPrefab;
 
-    private shopitems item_data;
+    private Text amountText;
+    private int amount;
+    private shopitems shopItemData;
+    private shopcartitems shopCartItemsData;
     private GameObject newObj;
+    private bool isOpenCart;
 
-    public void set(shopitems data)
+    public void Set(shopitems data)
     {
         //set
-        item_data = data;
-        //Debug.Log("name:" + item_data.name + "cost:" + item_data.cost);
-        transform.Find("name").gameObject.GetComponent<Text>().text = item_data.name;
-        transform.Find("cost").gameObject.GetComponent<Text>().text = ("$ " + item_data.cost);
+        shopItemData = data;
+        transform.Find("name").gameObject.GetComponent<Text>().text = shopItemData.name;
+        transform.Find("cost").gameObject.GetComponent<Text>().text = ("$ " + shopItemData.cost);
 
         //Load picture
-        StartCoroutine(LoadTextureToObject("http://140.123.101.103:88/project/public/" + item_data.pic_url, GetComponentInChildren<RawImage>()));
+        StartCoroutine(LoadTextureToObject("http://140.123.101.103:88/project/public/" + shopItemData.pic_url, GetComponentInChildren<RawImage>()));
+    }
+
+    public void Set(shopcartitems data)
+    {
+        //set
+        shopCartItemsData = data;
+        transform.Find("name").gameObject.GetComponent<Text>().text = shopCartItemsData.name;
+        transform.Find("cost").gameObject.GetComponent<Text>().text = ("$ " + shopCartItemsData.cost);
+
+        amountText = transform.Find("amount").GetComponent<Text>();
+        amount = data.amount;
+        amountText.text = amount.ToString();
+        Debug.Log(shopCartItemsData.pic_url);
+        //Load picture
+        StartCoroutine(LoadTextureToObject("http://140.123.101.103:88/project/public/" + shopCartItemsData.pic_url, GetComponentInChildren<RawImage>()));
+    }
+
+    public void SubmitAmount(int newAmount)
+    {
+        if(amount != newAmount)
+        {
+            CartController.Instance().UpdateTotalCost(shopCartItemsData.cost * (newAmount - amount));
+            amount = newAmount;
+            amountText.text = amount.ToString();
+            shopCartItemsData.amount = newAmount;
+        }
     }
 
     public void OpenInformation()
     {
         Transform spawnPoint = ShopController.Instance().itemInformationSpawnPoint;
         newObj = Instantiate(shopItemInformationPrefab, spawnPoint.position, spawnPoint.rotation, ShopController.Instance().GetSubUI());
-        newObj.GetComponentInChildren<ShopItemInformationController>().set(item_data);
+        if (ShopController.GetIsOpenCart())
+            newObj.GetComponentInChildren<ShopItemInformationController>().Set(shopCartItemsData, this);
+        else
+            newObj.GetComponentInChildren<ShopItemInformationController>().Set(shopItemData);
     }
 
     public void DeleteFromCart()
     {
-        ShopController.DeleteFromCart(item_data.id);
+        ShopController.DeleteFromCart(shopItemData.item_id);
         Destroy(transform.gameObject);
     }
 

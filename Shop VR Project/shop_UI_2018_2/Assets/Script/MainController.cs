@@ -5,7 +5,7 @@ using System.Threading;
 
 public class MainController : MonoBehaviour {
     public GameObject ShopMain;
-    private static int user_id;
+    private static int userID;
     private static bool isOpenShop;
     private static sqlapi sqlConnection;
 
@@ -13,7 +13,7 @@ public class MainController : MonoBehaviour {
 	void Start () {
         isOpenShop = false;
         sqlConnection = new sqlapi();
-        user_id = 1;
+        userID = 1;
 
         //Update user information
         UpdateUserData();
@@ -36,7 +36,7 @@ public class MainController : MonoBehaviour {
 
     public static int GetUserID()
     {
-        return user_id;
+        return userID;
     }
 
     public void OpenShop(Transform spawnpoint)
@@ -50,7 +50,7 @@ public class MainController : MonoBehaviour {
 
     public static void UpdateUserData()
     {
-        //using thread to get user_data
+        //using thread to get userData
         GetUserDataThread tws = new GetUserDataThread(EventManager.UpdateUserData);
         Thread t = new Thread(new ThreadStart(tws.GetUserData));
         t.Start();

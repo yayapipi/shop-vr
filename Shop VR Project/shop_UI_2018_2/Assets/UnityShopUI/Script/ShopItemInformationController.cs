@@ -1,11 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System;
-using System.Data;
-using MySql.Data.MySqlClient;
-using MySql.Data;
-using System.IO;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class ShopItemInformationController : MonoBehaviour {
@@ -18,38 +14,55 @@ public class ShopItemInformationController : MonoBehaviour {
     public GameObject messageBuyPrefab;
     public GameObject messageCartPrefab;
 
-    private int item_id;
-    private GameObject newPicture;
-    private GameObject newObj;
-    private pics[] pictures;
-    private sqlapi sqlConnection;
+    private int itemID;
     private int amount;
     private int minAmount;
     private int maxAmount;
     private bool isOpenCart;
+    private ShopItemController shopItemController;
 
-    public void set(shopitems data)
+    public void Set(shopitems data)
     {
         //initialize
-        isOpenCart = ShopController.GetIsOpenCart();
-        sqlConnection = MainController.getSqlConnection();
+        isOpenCart = false;
         minAmount = 1;
         maxAmount = 100;
-        amount = minAmount;
 
         //set
-        if (isOpenCart)
-            CartController.Instance().Disable();
-        else
-            ShopController.Instance().Disable();
-        item_id = data.id;
+        amount = minAmount;
+        ShopController.Instance().Disable();
+        itemID = data.item_id;
         informationContent.Find("name").gameObject.GetComponent<Text>().text = data.name;
         informationContent.Find("cost").gameObject.GetComponent<Text>().text = "$ " + data.cost;
         informationContent.Find("description_text").gameObject.GetComponent<Text>().text = data.description;
         UpdateAmount();
 
         //Get and load pictures
-        StartCoroutine(LoadTextures(data.id));
+        GetShopItemPics(data.item_id);
+
+        //Load model
+        StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl));
+    }
+
+    public void Set(shopcartitems data, ShopItemController shopItemController)
+    {
+        //initialize
+        isOpenCart = true;
+        minAmount = 1;
+        maxAmount = 100;
+
+        //set
+        this.shopItemController = shopItemController;
+        amount = data.amount;
+        CartController.Instance().Disable();
+        itemID = data.item_id;
+        informationContent.Find("name").gameObject.GetComponent<Text>().text = data.name;
+        informationContent.Find("cost").gameObject.GetComponent<Text>().text = "$ " + data.cost;
+        informationContent.Find("description_text").gameObject.GetComponent<Text>().text = data.description;
+        UpdateAmount();
+
+        //Get and load pictures
+        GetShopItemPics(data.item_id);
 
         //Load model
         StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl));
@@ -81,34 +94,42 @@ public class ShopItemInformationController : MonoBehaviour {
     public void Buy()
     {
         gameObject.SetActive(false);
-        ShopController.Buy(item_id, amount, BuyFinished);
+        ShopController.Buy(itemID, amount, BuyFinished);
     }
 
     private void BuyFinished()
-    {
-        newObj = Instantiate(messageBuyPrefab, ShopController.Instance().messageSpawnPoint.position, ShopController.Instance().messageSpawnPoint.rotation);
+    { 
+        GameObject newObj = Instantiate(messageBuyPrefab, ShopController.Instance().messageSpawnPoint.position, ShopController.Instance().messageSpawnPoint.rotation);
         newObj.GetComponent<MessageController>().Set(EventManager.GetMessage());
         Close();
     }
 
     public void Cart()
     {
+        if(isOpenCart)
+            shopItemController.SubmitAmount(amount);
         gameObject.SetActive(false);
-        ShopController.Cart(item_id, amount, CartFinished);
+        ShopController.Cart(itemID, amount, CartFinished);
     }
 
     private void CartFinished()
     {
-        newObj = Instantiate(messageCartPrefab, ShopController.Instance().messageSpawnPoint.position, ShopController.Instance().messageSpawnPoint.rotation);
+        GameObject newObj = Instantiate(messageCartPrefab, ShopController.Instance().messageSpawnPoint.position, ShopController.Instance().messageSpawnPoint.rotation);
         newObj.GetComponent<MessageController>().Set(amount + " items");
         Close();
     }
 
-    private IEnumerator LoadTextures(int id)
+    private void GetShopItemPics(int itemID)
     {
-        pictures = sqlConnection.Ritem_pic(id, "id", "asc", 0, 100);
-        yield return null;
-        foreach (pics picture in pictures)
+        ShopController.GetShopItemPics(itemID, GetShopItemPicsFinished());
+    }
+
+    private IEnumerator GetShopItemPicsFinished()
+    {
+        pics[] shopItemPics = EventManager.GetShopItemPics();
+        GameObject newPicture;
+
+        foreach (pics picture in shopItemPics)
         {
             newPicture = Instantiate(shopItemInformationMaterialPrefab, materialContent);
             newPicture.transform.localPosition = Vector3.zero;
@@ -133,6 +154,7 @@ public class ShopItemInformationController : MonoBehaviour {
                     newPicture.GetComponent<RawImage>().texture = te;
                 }
             }
+            yield return null;
         }
     }
 
@@ -163,7 +185,9 @@ public class ShopItemInformationController : MonoBehaviour {
     public void Close()
     {
         if (isOpenCart)
+        {
             CartController.Instance().Enable();
+        }
         else
             ShopController.Instance().Enable();
 
