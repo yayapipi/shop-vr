@@ -5,10 +5,12 @@ using UnityEngine.UI;
 
 public class MessageController : MonoBehaviour {
     public Text title;
+    public Text text;
 
-    public void Set(string text)
+    public void Set(string title, string text)
     {
-        title.text = text;
+        this.title.text = title;
+        this.text.text = text;
         GetComponent<Animation>().Play("message");
     }
 

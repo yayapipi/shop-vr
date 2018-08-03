@@ -75,7 +75,7 @@ public class CartController : MonoBehaviour
 
     public void Checkout()
     {
-        ShopController.Checkout();
+        ShopController.Checkout(Close);
     }
 
     public void UpdateTotalCost(int change)

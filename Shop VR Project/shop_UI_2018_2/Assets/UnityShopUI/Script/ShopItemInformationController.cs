@@ -11,8 +11,6 @@ public class ShopItemInformationController : MonoBehaviour {
     public GameObject shopItemInformationMaterialPrefab;
     public Transform modelSpawnPoint;
     public Text amountText;
-    public GameObject messageBuyPrefab;
-    public GameObject messageCartPrefab;
 
     private int itemID;
     private int amount;
@@ -94,14 +92,7 @@ public class ShopItemInformationController : MonoBehaviour {
     public void Buy()
     {
         gameObject.SetActive(false);
-        ShopController.Buy(itemID, amount, BuyFinished);
-    }
-
-    private void BuyFinished()
-    { 
-        GameObject newObj = Instantiate(messageBuyPrefab, ShopController.Instance().messageSpawnPoint.position, ShopController.Instance().messageSpawnPoint.rotation);
-        newObj.GetComponent<MessageController>().Set(EventManager.GetMessage());
-        Close();
+        ShopController.Buy(itemID, amount, Close);
     }
 
     public void Cart()
@@ -109,14 +100,7 @@ public class ShopItemInformationController : MonoBehaviour {
         if(isOpenCart)
             shopItemController.SubmitAmount(amount);
         gameObject.SetActive(false);
-        ShopController.Cart(itemID, amount, CartFinished);
-    }
-
-    private void CartFinished()
-    {
-        GameObject newObj = Instantiate(messageCartPrefab, ShopController.Instance().messageSpawnPoint.position, ShopController.Instance().messageSpawnPoint.rotation);
-        newObj.GetComponent<MessageController>().Set(amount + " items");
-        Close();
+        ShopController.Cart(itemID, amount, Close);
     }
 
     private void GetShopItemPics(int itemID)

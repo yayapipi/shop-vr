@@ -9,16 +9,23 @@ public static class EventManager {
     private static shopitems[] shopItemsData;
     private static pics[] shopItemPics;
     private static shopcartitems[] shopCartItems;
-    private static string msg;
+    private static string msgTitle;
+    private static string msgText;
 
-    public static void SetMessage(string message)
+    public static void SetMessage(string title, string text)
     {
-        msg = message;
+        msgTitle = title;
+        msgText = text;
     }
 
-    public static string GetMessage()
+    public static string GetMessage1()
     {
-        return msg;
+        return msgTitle;
+    }
+
+    public static string GetMessage2()
+    {
+        return msgText;
     }
 
     public static void SetUserData(ref users data)

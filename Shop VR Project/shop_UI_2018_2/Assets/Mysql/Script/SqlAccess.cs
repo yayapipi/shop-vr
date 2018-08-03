@@ -43,8 +43,6 @@ public class SqlAccess
 
     }
 
- 
-
     public DataSet CreateTable(string name, string[] col, string[] colType)
     {
         if (col.Length != colType.Length)
@@ -239,7 +237,7 @@ public class SqlAccess
         for (int i = 1; i < colsvalues.Length; ++i)
         {
 
-            query += " or " + cols[i] + " = " + colsvalues[i];
+            query += " AND " + cols[i] + " = " + colsvalues[i];
         }
         Debug.Log(query);
         return ExecuteQuery(query);

@@ -2905,7 +2905,8 @@ MonoBehaviour:
     type: 2}
   cartMainPrefab: {fileID: 1305842517943042, guid: 86ddf3b98adadc14492c627be6eb70c4,
     type: 2}
-  menuPanel: {fileID: 114496097277892294}
+  messagePrefab: {fileID: 1283269495442910, guid: 312b399d58bba6f40974c5f11a824275,
+    type: 2}
   itemScrollUp: {fileID: 114656581055576616}
   itemScrollDown: {fileID: 114472992664677854}
   itemInformationSpawnPoint: {fileID: 224168505866802396}

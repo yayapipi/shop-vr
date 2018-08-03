@@ -167,6 +167,7 @@ public class sqlapi
             }
             else
             {
+                vvv.id = -1;
                 Debug.Log("NAME NOT FOUND");
             }
 
@@ -200,6 +201,9 @@ public class sqlapi
             }
             else
             {
+                vvv.user_id = -1;
+                vvv.item_id = -1;
+                vvv.amount = -1;
                 Debug.Log("NAME NOT FOUND");
             }
             //sql.Close();
@@ -231,6 +235,9 @@ public class sqlapi
             }
             else
             {
+                vvv.user_id = -1;
+                vvv.item_id = -1;
+                vvv.amount = -1;
                 Debug.Log("NAME NOT FOUND");
             }
             //sql.Close();
@@ -242,7 +249,7 @@ public class sqlapi
         }
         return vvv;
     }
-
+    
     public shopcartitems[] Rshopcartitems(int userid)
     {
         shopcartitems[] vvv = new shopcartitems[50];
@@ -333,6 +340,7 @@ public class sqlapi
             }
             else
             {
+                vvv.id = -1;
                 Debug.Log("NOT FOUND");
             }
 
@@ -364,6 +372,7 @@ public class sqlapi
             }
             else
             {
+                vvv.id = -1;
                 Debug.Log("NAME NOT FOUND");
             }
 
@@ -611,7 +620,7 @@ public class sqlapi
         return vvv;
     }
 
-    /*ADD(insert)*/
+    /* ADD(insert) */
     public bool Add_shopcart(int userid, int itemid, int amount)
     {
         string tables = "shop_carts";
@@ -627,8 +636,8 @@ public class sqlapi
         catch (Exception e)
         {
             Error = e.Message;
-            return false;
         }
+        return false;
     }
 
     public bool Add_userinvent(int userid, int itemid, int amount)
@@ -646,11 +655,11 @@ public class sqlapi
         catch (Exception e)
         {
             Error = e.Message;
-            return false;
         }
+        return false;
     }
 
-    /*update*/
+    /* update */
     public bool Up_users(int ids, double money)
     {
         string tables = "users";
@@ -665,8 +674,8 @@ public class sqlapi
         catch (Exception e)
         {
             Error = e.Message;
-            return false;
         }
+        return false;
     }
 
     public bool Up_userinvent(int userid, int itemid, int amount)
@@ -684,8 +693,8 @@ public class sqlapi
         catch (Exception e)
         {
             Error = e.Message;
-            return false;
         }
+        return false;
     }
 
     public bool Up_shopcart(int userid, int itemid, int amount)
@@ -703,8 +712,26 @@ public class sqlapi
         catch (Exception e)
         {
             Error = e.Message;
-            return false;
         }
+        return false;
     }
 
+    /* delete */
+    public bool Del_shopcart(int userid, int itemid)
+    {
+        string tables = "shop_carts";
+        try
+        {
+            Debug.Log("delete from cart:" + itemid);
+            //SqlAccess sql = new SqlAccess();
+            sql.Delete(tables, new string[] { "user_id", "item_id" }, new string[] { userid.ToString(), itemid.ToString() });
+            //sql.Close();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Error = e.Message;
+        }
+        return false;
+    }
 }

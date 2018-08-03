@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -62,7 +63,8 @@ public class ShopItemController : MonoBehaviour {
 
     public void DeleteFromCart()
     {
-        ShopController.DeleteFromCart(shopItemData.item_id);
+        ShopController.DeleteFromCart(shopCartItemsData.item_id);
+        CartController.Instance().UpdateTotalCost( - shopCartItemsData.cost * amount);
         Destroy(transform.gameObject);
     }
 

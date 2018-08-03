@@ -62,27 +62,27 @@ public class ShopThread
 
         if (items.Length != 0)
         {
-            double totalprice = items[0].cost * amount;
+            int totalCost = items[0].cost * amount;
 
-            if (items[0].cost * amount < userData.money)
+            if (userData.money >= totalCost)
             {
                 userinvent invent = sqlConnection.getuserinvent(userData.id, items[0].item_id);
                 if (invent.user_id > 0)
                     sqlConnection.Up_userinvent(userData.id, items[0].item_id, amount + invent.amount);
                 else
                     sqlConnection.Add_userinvent(userData.id, items[0].item_id, amount);
-                sqlConnection.Up_users(userData.id, userData.money - totalprice);
+                sqlConnection.Up_users(userData.id, userData.money - totalCost);
 
-                EventManager.SetMessage("Thank you");
+                EventManager.SetMessage("Thank you", "For your purchase");
             }
             else
             {
-                EventManager.SetMessage("Not enough $$");
+                EventManager.SetMessage("Not enough $$", "For your purchase");
             }
         }
         else
         {
-            EventManager.SetMessage("item not found");
+            EventManager.SetMessage("item not found", "Please try again");
         }
 
         if(callbackDelegate != null)
@@ -101,14 +101,83 @@ public class ShopThread
                 sqlConnection.Up_shopcart(userID, items[0].item_id, amount);
             else
                 sqlConnection.Add_shopcart(userID, items[0].item_id, amount);
+
+            EventManager.SetMessage(amount + " items", "Add to cart");
         }
         else
         {
-            EventManager.SetMessage("item not found");
+            EventManager.SetMessage("item not found", "Please try again");
         }
 
         if (callbackDelegate != null)
             UnityMainThreadDispatcher.Instance().Enqueue(callbackDelegate);
+    }
+}
+
+public class CheckoutThread
+{
+    private sqlapi sqlConnection;
+    private int userID;
+    private Action callbackDelegate;
+
+    public CheckoutThread(Action callbackDelegate)
+    {
+        sqlConnection = MainController.getSqlConnection();
+        userID = MainController.GetUserID();
+        this.callbackDelegate = callbackDelegate;
+    }
+
+    public void Checkout()
+    {
+        users userData = sqlConnection.getusers(userID);
+        shopcartitems[] shopCartItems = sqlConnection.Rshopcartitems(userID);
+        int totalCost = 0;
+
+        foreach (shopcartitems item in shopCartItems)
+        {
+            totalCost += item.cost * item.amount;
+        }
+
+        if (userData.money >= totalCost)
+        {
+            foreach (shopcartitems item in shopCartItems)
+            {
+                userinvent invent = sqlConnection.getuserinvent(userData.id, item.item_id);
+                if (invent.user_id > 0)
+                    sqlConnection.Up_userinvent(userData.id, item.item_id, item.amount + invent.amount);
+                else
+                    sqlConnection.Add_userinvent(userData.id, item.item_id, item.amount);
+                sqlConnection.Up_users(userData.id, userData.money - totalCost);
+            }
+
+            EventManager.SetMessage("Thank you", "For your purchase");
+        }
+        else
+        {
+            EventManager.SetMessage("Not enough $$", "For your purchase");
+        }
+
+        if (callbackDelegate != null)
+            UnityMainThreadDispatcher.Instance().Enqueue(callbackDelegate);
+    }
+}
+
+public class DeleteFromCartThread
+{
+    private sqlapi sqlConnection;
+    private int userID;
+    private int itemID;
+
+    public DeleteFromCartThread(int itemID)
+    {
+        sqlConnection = MainController.getSqlConnection();
+        userID = MainController.GetUserID();
+        this.itemID = itemID;
+    }
+
+    public void DeleteFromCart()
+    {
+        sqlConnection.Del_shopcart(userID, itemID);
     }
 }
 
@@ -188,7 +257,7 @@ public class GetShopCartItemsThread
     public GetShopCartItemsThread(IEnumerator callbackEnumerator)
     {
         sqlConnection = MainController.getSqlConnection();
-        this.userID = MainController.GetUserID();
+        userID = MainController.GetUserID();
         this.callbackEnumerator = callbackEnumerator;
     }
 

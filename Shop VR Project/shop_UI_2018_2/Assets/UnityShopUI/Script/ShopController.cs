@@ -10,6 +10,7 @@ public class ShopController : MonoBehaviour {
     public Transform itemContent;
     public GameObject ShopItemPanelPrefab;
     public GameObject cartMainPrefab;
+    public GameObject messagePrefab;
     public ButtonChecker itemScrollUp;
     public ButtonChecker itemScrollDown;
     public Transform itemInformationSpawnPoint;
@@ -140,6 +141,7 @@ public class ShopController : MonoBehaviour {
         Debug.Log("Buy amount = " + amount + " itemID = " + itemID);
 
         //using thread to buy item
+        callbackDelegate += Instance().ShowMessage;
         callbackDelegate += MainController.UpdateUserData;
         ShopThread tws = new ShopThread(itemID, amount, callbackDelegate);
         Thread t = new Thread(new ThreadStart(tws.Buy));
@@ -151,22 +153,38 @@ public class ShopController : MonoBehaviour {
         Debug.Log("Cart: amount = " + amount + " itemID = " + itemID);
 
         //using thread to cart item
+        callbackDelegate += Instance().ShowMessage;
         ShopThread tws = new ShopThread(itemID, amount, callbackDelegate);
         Thread t = new Thread(new ThreadStart(tws.Cart));
         t.Start();
     }
 
-    public static void Checkout()
+    public static void Checkout(Action callbackDelegate)
     {
         Debug.Log("Checkout: ");
-        /* call api */
-        MainController.UpdateUserData();
+
+        //using thread to checkout item
+        callbackDelegate += Instance().ShowMessage;
+        callbackDelegate += MainController.UpdateUserData;
+        CheckoutThread tws = new CheckoutThread(callbackDelegate);
+        Thread t = new Thread(new ThreadStart(tws.Checkout));
+        t.Start();
     }
 
     public static void DeleteFromCart(int itemID)
     {
         Debug.Log("Delete item from cart: itemID = " + itemID);
-        /* call api */
+
+        //using thread to delete from cart
+        DeleteFromCartThread tws = new DeleteFromCartThread(itemID);
+        Thread t = new Thread(new ThreadStart(tws.DeleteFromCart));
+        t.Start();
+    }
+
+    private void ShowMessage()
+    {
+        GameObject newObj = Instantiate(messagePrefab, messageSpawnPoint.position, messageSpawnPoint.rotation);
+        newObj.GetComponent<MessageController>().Set(EventManager.GetMessage1(), EventManager.GetMessage2());
     }
 
     private void GetShopItems(string kind, int type)

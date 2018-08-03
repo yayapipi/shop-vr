@@ -2615,10 +2615,6 @@ MonoBehaviour:
     type: 2}
   modelSpawnPoint: {fileID: 224791603582932434}
   amountText: {fileID: 114584843293579122}
-  messageBuyPrefab: {fileID: 1283269495442910, guid: a575d2422a3218c4dbc5ee0051f9f90a,
-    type: 2}
-  messageCartPrefab: {fileID: 1627104279998928, guid: 6347a683e35dba843815fb9bf2c13835,
-    type: 2}
 --- !u!114 &114893223707519058
 MonoBehaviour:
   m_ObjectHideFlags: 1
