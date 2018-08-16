@@ -5,13 +5,16 @@ using System.Threading;
 
 public class MainController : MonoBehaviour {
     public GameObject ShopMain;
+    public GameObject InventoryMain;
     private static int userID;
     private static bool isOpenShop;
+    private static bool isOpenInventory;
     private static sqlapi sqlConnection;
 
 	// Use this for initialization
 	void Start () {
         isOpenShop = false;
+        isOpenInventory = false;
         sqlConnection = new sqlapi();
         userID = 1;
 
@@ -41,10 +44,19 @@ public class MainController : MonoBehaviour {
 
     public void OpenShop(Transform spawnpoint)
     {
-        if (!isOpenShop)
+        if (!isOpenInventory && !isOpenShop)
         {
             isOpenShop = true;
             Instantiate(ShopMain, spawnpoint.position, spawnpoint.rotation);
+        }
+    }
+
+    public void OpenInventory(Transform spawnpoint)
+    {
+        if (!isOpenInventory && !isOpenShop)
+        {
+            isOpenInventory = true;
+            Instantiate(InventoryMain, spawnpoint.position, spawnpoint.rotation);
         }
     }
 
@@ -59,5 +71,10 @@ public class MainController : MonoBehaviour {
     public static void CloseShop()
     {
         isOpenShop = false;
+    }
+
+    public static void CloseInventory()
+    {
+        isOpenInventory = false; 
     }
 }

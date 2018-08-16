@@ -9,6 +9,7 @@ public static class EventManager {
     private static shopitems[] shopItemsData;
     private static pics[] shopItemPics;
     private static shopcartitems[] shopCartItems;
+    private static userinventory[] userInventoryData;
     private static string msgTitle;
     private static string msgText;
 
@@ -43,6 +44,8 @@ public static class EventManager {
         shopItemsData = data;
     }
 
+    
+
     public static shopitems[] GetShopItemsData()
     {
         return shopItemsData;
@@ -72,5 +75,15 @@ public static class EventManager {
     {
         if (updateUserData != null)
             updateUserData();
+    }
+
+    public static void SetUserInventData(userinventory[] data)
+    {
+        userInventoryData = data;
+    }
+
+    public static userinventory[] GetUserInventData()
+    {
+        return userInventoryData;
     }
 }

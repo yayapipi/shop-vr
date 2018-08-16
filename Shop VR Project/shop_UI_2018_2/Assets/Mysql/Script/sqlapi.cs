@@ -126,6 +126,30 @@ public struct shops
     public string created_at;
 };
 
+public struct userinventory
+{
+    //user_inventories
+    public int user_id;
+    public int item_id;
+    public int amount;
+    public bool locked;
+    public string created_at;
+    public string updated_at;
+
+    //items
+    //public int id;
+    public string name;
+    public string pic_url;
+    public int main_type;
+    public float sub_type;
+    public string description;
+    public bool enabled;
+    public string model_name;
+    public string model_linkurl;
+    //public string created_at;
+    //public string updated_at;
+};
+
 public class sqlapi
 {
     SqlAccess sql;
@@ -213,6 +237,54 @@ public class sqlapi
         {
             this.Error = e.Message;
         }
+        return vvv;
+    }
+
+    public userinventory[] Ruser_invent(int userid,int type, int limitbase, int limitoffset)
+    {
+        userinventory[] vvv = new userinventory[50];
+        string tables = "user_inventories, items";
+        try
+        {
+            //SqlAccess sql = new SqlAccess();
+            DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "user_inventories.user_id", "items.id" }, new string[] {"=", "="}, new string[] { userid.ToString()
+                , "user_inventories.item_id" }, new string[] { }, new string[] { }, new string[] { limitbase.ToString() }, new string[] { limitoffset.ToString() }).Tables[0];
+            int i = 0;
+            foreach (DataRow row in RT.Rows)
+            {
+                if (row != null)
+                {
+                    vvv[i].user_id = Convert.ToInt32(row["user_id"]);
+                    vvv[i].item_id = Convert.ToInt32(row["item_id"]);
+                    vvv[i].amount = Convert.ToInt32(row["amount"]);
+                    vvv[i].locked = Convert.ToBoolean(row["locked"]);
+                    vvv[i].created_at = row["created_at"].ToString();
+                    vvv[i].updated_at = row["updated_at"].ToString();
+
+                    vvv[i].name = row["name"].ToString();
+                    vvv[i].pic_url = row["pic_url"].ToString();
+                    vvv[i].main_type = Convert.ToInt32(row["main_type"]);
+                    vvv[i].sub_type = (float)Convert.ToDouble(row["sub_type"]);
+                    vvv[i].description = row["description"].ToString();
+                    vvv[i].enabled = Convert.ToBoolean(row["enabled"]);
+                    vvv[i].model_name = row["model_name"].ToString();
+                    vvv[i].model_linkurl = row["model_linkurl"].ToString();
+                }
+                else
+                {
+                    Debug.Log("id NOT FOUND");
+                    break;
+                }
+                i++;
+            }
+            Array.Resize<userinventory>(ref vvv, i); //array(vvv)的大小設成counter(i)的大小
+            return vvv;
+        }
+        catch (Exception e)
+        {
+            this.Error = e.Message;
+        }
+
         return vvv;
     }
 

@@ -274,3 +274,41 @@ public class GetShopCartItemsThread
     }
 }
 
+public class GetUserInventThread
+{
+        private sqlapi sqlConnection;
+        private int userID;
+        private int type;
+        private int limitbase;
+        private int limitoffset;
+        private IEnumerator callbackEnumerator;
+
+        public GetUserInventThread(int userID, int type, int limitbase, int limitoffset, IEnumerator callbackEnumerator)
+        {
+            sqlConnection = MainController.getSqlConnection();
+
+            this.userID = userID;
+            this.type = type;
+            this.limitbase = limitbase;
+            this.limitoffset = limitoffset;
+            this.callbackEnumerator = callbackEnumerator;
+        }
+
+        public void GetUserInvent()
+        {
+            userinventory[] userInventoryData;
+
+            if (type == 0)
+                userInventoryData = sqlConnection.Ruser_invent(userID,0,limitbase,limitoffset);
+            else
+                userInventoryData = sqlConnection.Ruser_invent(userID,type, limitbase, limitoffset);
+
+            //Console.WriteLine("Using thread to get shop items");
+
+            EventManager.SetUserInventData(userInventoryData);
+
+            if (callbackEnumerator != null)
+                UnityMainThreadDispatcher.Instance().Enqueue(callbackEnumerator);
+        }
+}
+

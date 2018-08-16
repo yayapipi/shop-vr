@@ -4,7 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class ShopItemInformationController : MonoBehaviour {
+public class InventoryItemInformationController : MonoBehaviour {
+
     [Header("Related Objects")]
     public Transform informationContent;
     public Transform materialContent;
@@ -16,36 +17,13 @@ public class ShopItemInformationController : MonoBehaviour {
     private int amount;
     private int minAmount;
     private int maxAmount;
-    private int isOpen; //0 not open 1 open shop 2 open cart 3 open invent
+    private bool isOpenCart;
     private ShopItemController shopItemController;
 
     public void Set(userinventory data)
     {
         //initialize
-        isOpen = 3;
-        minAmount = 1;
-        maxAmount = 100;
-
-        //set
-        amount = minAmount;
-        InventoryController.Instance().Disable();
-        itemID = data.item_id;
-        informationContent.Find("name").gameObject.GetComponent<Text>().text = data.name;
-        informationContent.Find("cost").gameObject.GetComponent<Text>().text = " " + data.amount;
-        informationContent.Find("description_text").gameObject.GetComponent<Text>().text = data.description;
-        UpdateAmount();
-
-        //Get and load pictures
-        GetInventItemPics(data.item_id);
-
-        //Load model
-        StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl));
-    }
-
-    public void Set(shopitems data)
-    {
-        //initialize
-        isOpen = 1;
+        isOpenCart = false;
         minAmount = 1;
         maxAmount = 100;
 
@@ -54,7 +32,7 @@ public class ShopItemInformationController : MonoBehaviour {
         ShopController.Instance().Disable();
         itemID = data.item_id;
         informationContent.Find("name").gameObject.GetComponent<Text>().text = data.name;
-        informationContent.Find("cost").gameObject.GetComponent<Text>().text = "$ " + data.cost;
+        informationContent.Find("cost").gameObject.GetComponent<Text>().text = " " + data.amount;
         informationContent.Find("description_text").gameObject.GetComponent<Text>().text = data.description;
         UpdateAmount();
 
@@ -68,7 +46,7 @@ public class ShopItemInformationController : MonoBehaviour {
     public void Set(shopcartitems data, ShopItemController shopItemController)
     {
         //initialize
-        isOpen = 2;
+        isOpenCart = true;
         minAmount = 1;
         maxAmount = 100;
 
@@ -91,7 +69,7 @@ public class ShopItemInformationController : MonoBehaviour {
 
     public void IncreaseAmount()
     {
-        if(amount < maxAmount)
+        if (amount < maxAmount)
         {
             amount += 1;
             UpdateAmount();
@@ -100,7 +78,7 @@ public class ShopItemInformationController : MonoBehaviour {
 
     public void DecreaseAmount()
     {
-        if(amount > minAmount)
+        if (amount > minAmount)
         {
             amount -= 1;
             UpdateAmount();
@@ -112,28 +90,11 @@ public class ShopItemInformationController : MonoBehaviour {
         amountText.text = "amount: " + amount;
     }
 
-    public void Buy()
-    {
-        gameObject.SetActive(false);
-        ShopController.Buy(itemID, amount, Close);
-    }
-
-    public void Cart()
-    {
-        if(isOpen == 2)
-            shopItemController.SubmitAmount(amount);
-        gameObject.SetActive(false);
-        ShopController.Cart(itemID, amount, Close);
-    }
+    
 
     private void GetShopItemPics(int itemID)
     {
         ShopController.GetShopItemPics(itemID, GetShopItemPicsFinished());
-    }
-
-    private void GetInventItemPics(int itemID)
-    {
-        InventoryController.GetShopItemPics(itemID, GetShopItemPicsFinished());
     }
 
     private IEnumerator GetShopItemPicsFinished()
@@ -196,12 +157,12 @@ public class ShopItemInformationController : MonoBehaviour {
 
     public void Close()
     {
-        if (isOpen == 2)
+        if (isOpenCart)
+        {
             CartController.Instance().Enable();
-        else if (isOpen == 1)
+        }
+        else
             ShopController.Instance().Enable();
-        else if (isOpen == 3)
-            InventoryController.Instance().Enable();
 
         Destroy(transform.parent.gameObject);
     }
