@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 114859794755138332}
   - component: {fileID: 111759907864098282}
   - component: {fileID: 114542860651666086}
+  - component: {fileID: 114421915909220584}
   m_Layer: 5
   m_Name: inventory_item_panel
   m_TagString: Untagged
@@ -423,6 +424,19 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!114 &114421915909220584
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1537321079940904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1518a5e598c7da244bc4850d3ae63354, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickOnPointerCollision: 0
+  autoActivateWithinDistance: 0
 --- !u!114 &114542860651666086
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -166,16 +166,16 @@
                 case LogLevels.Fatal:
                     if (forcePause)
                     {
-                        UnityEngine.Debug.Break();
+                        //UnityEngine.Debug.Break();
                     }
 
                     if (instance.throwExceptions)
                     {
-                        throw new Exception(message);
+                        //throw new Exception(message);
                     }
                     else
                     {
-                        UnityEngine.Debug.LogError(message);
+                        //UnityEngine.Debug.LogError(message);
                     }
                     break;
             }

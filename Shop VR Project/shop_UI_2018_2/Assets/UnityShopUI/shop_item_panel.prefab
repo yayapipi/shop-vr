@@ -59,6 +59,7 @@ GameObject:
   - component: {fileID: 114381870342822584}
   - component: {fileID: 114156331140264880}
   - component: {fileID: 111274838541732012}
+  - component: {fileID: 114535324713722562}
   m_Layer: 5
   m_Name: shop_item_panel
   m_TagString: Untagged
@@ -272,6 +273,19 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114535324713722562
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1568233989272956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1518a5e598c7da244bc4850d3ae63354, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickOnPointerCollision: 0
+  autoActivateWithinDistance: 0
 --- !u!114 &114721165959750912
 MonoBehaviour:
   m_ObjectHideFlags: 1

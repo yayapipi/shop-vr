@@ -40,6 +40,7 @@ GameObject:
   - component: {fileID: 223007480787759688}
   - component: {fileID: 114068478521669646}
   - component: {fileID: 114603264695072876}
+  - component: {fileID: 114656933748493150}
   m_Layer: 0
   m_Name: model_canvas
   m_TagString: Untagged
@@ -982,6 +983,7 @@ GameObject:
   - component: {fileID: 114194339543506118}
   - component: {fileID: 114379923252881390}
   - component: {fileID: 114298207092297322}
+  - component: {fileID: 114899305628152670}
   m_Layer: 5
   m_Name: item_information_canvas
   m_TagString: Untagged
@@ -1681,13 +1683,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aba94e32d7b6cff43b0ea6d507aef408, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nameObj: {fileID: 1528131437984408}
-  costObj: {fileID: 1317911694509936}
-  descriptionObj: {fileID: 1588424844182228}
-  pictureParent: {fileID: 1585129424172910}
-  ItemInformationPicturePrefab: {fileID: 1800951710718528, guid: 2634500bdf489b6479f59efee1462379,
-    type: 2}
+  informationContent: {fileID: 0}
+  materialContent: {fileID: 0}
+  shopItemInformationMaterialPrefab: {fileID: 0}
   modelSpawnPoint: {fileID: 1231857888885058}
+  amountText: {fileID: 0}
 --- !u!114 &114316743606330326
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2410,6 +2410,19 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114656933748493150
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1004642710398388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1518a5e598c7da244bc4850d3ae63354, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickOnPointerCollision: 0
+  autoActivateWithinDistance: 0
 --- !u!114 &114660833445247566
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2781,6 +2794,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: description
+--- !u!114 &114899305628152670
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1974289053871032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1518a5e598c7da244bc4850d3ae63354, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickOnPointerCollision: 0
+  autoActivateWithinDistance: 0
 --- !u!114 &114917478423226658
 MonoBehaviour:
   m_ObjectHideFlags: 1

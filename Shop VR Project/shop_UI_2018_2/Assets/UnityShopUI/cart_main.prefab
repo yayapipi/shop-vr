@@ -205,6 +205,7 @@ GameObject:
   - component: {fileID: 114611725728349654}
   - component: {fileID: 114754013259421572}
   - component: {fileID: 114724539992862854}
+  - component: {fileID: 114223584691563710}
   m_Layer: 5
   m_Name: cart_UI
   m_TagString: Untagged
@@ -1008,6 +1009,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Loading
+--- !u!114 &114223584691563710
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1356307547071430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1518a5e598c7da244bc4850d3ae63354, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickOnPointerCollision: 0
+  autoActivateWithinDistance: 0
 --- !u!114 &114226861841930846
 MonoBehaviour:
   m_ObjectHideFlags: 1
