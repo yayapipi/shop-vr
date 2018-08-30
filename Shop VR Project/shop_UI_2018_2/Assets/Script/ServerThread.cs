@@ -114,6 +114,79 @@ public class ShopThread
     }
 }
 
+public class InventoryThread
+{
+    private sqlapi sqlConnection;
+    private int userID;
+    private int itemID;
+    private int amount;
+    private Action callbackDelegate;
+
+    public InventoryThread(int itemID, int amount, Action callbackDelegate)
+    {
+        sqlConnection = MainController.getSqlConnection();
+        userID = MainController.GetUserID();
+        this.itemID = itemID;
+        this.amount = amount;
+        this.callbackDelegate = callbackDelegate;
+    }
+
+    public void Sell()
+    {
+        users userData = sqlConnection.getusers(userID);
+        shopitems[] sitems = sqlConnection.getshop_item(1, itemID);
+
+        if (sitems.Length != 0)
+        {
+            userinvent uinvent = sqlConnection.getuserinvent(userData.id, sitems[0].item_id);
+            if (uinvent.user_id > 0)
+            {
+                if (uinvent.amount > amount)
+                    sqlConnection.Up_userinvent(userData.id, sitems[0].item_id, uinvent.amount - amount);
+                else if(uinvent.amount == amount)
+                    sqlConnection.Del_userinvent(userData.id, sitems[0].item_id);
+                else
+                    EventManager.SetMessage("Not enough item", "For your sell");
+            }
+            else
+            {
+                EventManager.SetMessage("item not found", "Please try again");
+            }
+        }
+        else
+        {
+            EventManager.SetMessage("item not found", "Please try again");
+        }
+
+        if (callbackDelegate != null)
+            UnityMainThreadDispatcher.Instance().Enqueue(callbackDelegate);
+    }
+
+    /*public void Cart()
+    {
+        shopitems[] items = sqlConnection.getshop_item(1, itemID);
+        //Console.WriteLine("Using thread to buy item");
+
+        if (items.Length != 0)
+        {
+            shopcart cart = sqlConnection.getshopcart(userID, items[0].item_id);
+            if (cart.user_id > 0)
+                sqlConnection.Up_shopcart(userID, items[0].item_id, amount);
+            else
+                sqlConnection.Add_shopcart(userID, items[0].item_id, amount);
+
+            EventManager.SetMessage(amount + " items", "Add to cart");
+        }
+        else
+        {
+            EventManager.SetMessage("item not found", "Please try again");
+        }
+
+        if (callbackDelegate != null)
+            UnityMainThreadDispatcher.Instance().Enqueue(callbackDelegate);
+    }*/
+}
+
 public class CheckoutThread
 {
     private sqlapi sqlConnection;

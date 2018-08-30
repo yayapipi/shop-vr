@@ -789,9 +789,27 @@ public class sqlapi
     }
 
     /* delete */
+    public bool Del_userinvent(int userid, int itemid)
+    {
+        string tables = "user_inventories";
+        try
+        {
+            Debug.Log("inventid:" + itemid);
+            //SqlAccess sql = new SqlAccess();
+            sql.Delete(tables, new string[] { "user_id", "item_id" }, new string[] { userid.ToString(), itemid.ToString() });
+            //sql.Close();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Error = e.Message;
+        }
+        return false;
+    }
+
     public bool Del_shopcart(int userid, int itemid)
     {
-        string tables = "shop_carts";
+        string tables = "user_inventories";
         try
         {
             Debug.Log("delete from cart:" + itemid);

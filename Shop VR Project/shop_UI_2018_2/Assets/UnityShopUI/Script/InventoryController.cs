@@ -121,6 +121,18 @@ public class InventoryController : MonoBehaviour
         return subUI;
     }
 
+    /* Thread sqlapi */
+    public static void Sell(int itemID, int amount, Action callbackDelegate)
+    {
+        Debug.Log("Sell amount = " + amount + " itemID = " + itemID);
+
+        //using thread to buy item
+        callbackDelegate += Instance().ShowMessage;
+        callbackDelegate += MainController.UpdateUserData;
+        InventoryThread tws = new InventoryThread(itemID, amount, callbackDelegate);
+        Thread t = new Thread(new ThreadStart(tws.Sell));
+        t.Start();
+    }
 
     /*public static void Checkout(Action callbackDelegate)
     {

@@ -60,6 +60,7 @@ GameObject:
   - component: {fileID: 114111021553335384}
   - component: {fileID: 114435687107855940}
   - component: {fileID: 114851403329713470}
+  - component: {fileID: 114977225003447778}
   m_Layer: 5
   m_Name: shop_UI
   m_TagString: Untagged
@@ -3398,6 +3399,19 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Scrollbar+ScrollEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114977225003447778
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1069379430536964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1518a5e598c7da244bc4850d3ae63354, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickOnPointerCollision: 0
+  autoActivateWithinDistance: 0
 --- !u!114 &114989406019528744
 MonoBehaviour:
   m_ObjectHideFlags: 1

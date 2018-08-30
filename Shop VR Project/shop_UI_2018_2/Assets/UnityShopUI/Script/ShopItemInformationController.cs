@@ -112,6 +112,7 @@ public class ShopItemInformationController : MonoBehaviour {
         amountText.text = "amount: " + amount;
     }
 
+    /*shop ui*/
     public void Buy()
     {
         gameObject.SetActive(false);
@@ -124,6 +125,13 @@ public class ShopItemInformationController : MonoBehaviour {
             shopItemController.SubmitAmount(amount);
         gameObject.SetActive(false);
         ShopController.Cart(itemID, amount, Close);
+    }
+
+    /*inventory ui*/
+    public void Sell()
+    {
+        gameObject.SetActive(false);
+        InventoryController.Sell(itemID, amount, Close);
     }
 
     private void GetShopItemPics(int itemID)
