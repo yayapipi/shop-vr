@@ -40,6 +40,9 @@ public class ShopItemInformationController : MonoBehaviour {
 
         //Load model
         StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl));
+
+        //Close Back Collision UI
+        VRTK_Enable(false);
     }
 
     public void Set(shopitems data)
@@ -63,6 +66,9 @@ public class ShopItemInformationController : MonoBehaviour {
 
         //Load model
         StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl));
+
+        //Close Back Collision UI
+        VRTK_Enable(false);
     }
 
     public void Set(shopcartitems data, ShopItemController shopItemController)
@@ -87,6 +93,11 @@ public class ShopItemInformationController : MonoBehaviour {
 
         //Load model
         StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl));
+
+        //Close Back Collision UI
+        VRTK_Enable(false);
+        if (GameObject.Find("cart_UI"))
+            GameObject.Find("cart_UI").GetComponent<VRTK.VRTK_UICanvas>().enabled = false;
     }
 
     public void IncreaseAmount()
@@ -207,16 +218,31 @@ public class ShopItemInformationController : MonoBehaviour {
         if (isOpen == 2)
         {
             CartController.Instance().Enable();
+            if (GameObject.Find("cart_UI"))
+                GameObject.Find("cart_UI").GetComponent<VRTK.VRTK_UICanvas>().enabled = true;
         }
         else if (isOpen == 1)
         {
             ShopController.Instance().Enable();
+            VRTK_Enable(true);
         }
         else if (isOpen == 3)
         {
             InventoryController.Instance().Enable();
+            VRTK_Enable(true);
         }
-
+        
         Destroy(transform.parent.gameObject);
+    }
+
+    public void VRTK_Enable(bool value){
+        if (GameObject.Find("shop_UI"))
+        GameObject.Find("shop_UI").GetComponent<VRTK.VRTK_UICanvas>().enabled = value;
+        if (GameObject.Find("inventory_UI"))
+        GameObject.Find("inventory_UI").GetComponent<VRTK.VRTK_UICanvas>().enabled = value;
+        foreach (GameObject obj in GameObject.FindGameObjectsWithTag("shop_item_panel"))
+        {
+            obj.GetComponent<VRTK.VRTK_UICanvas>().enabled = value;
+        }
     }
 }

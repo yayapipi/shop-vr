@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 114421915909220584}
   m_Layer: 5
   m_Name: inventory_item_panel
-  m_TagString: Untagged
+  m_TagString: shop_item_panel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

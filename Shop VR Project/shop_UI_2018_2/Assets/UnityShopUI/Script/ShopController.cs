@@ -29,7 +29,7 @@ public class ShopController : MonoBehaviour {
         [Range(6, 30)] public int itemsShowOnce;
 
         private static int counter;
-        private static bool isOpenCart;
+        public static bool isOpenCart;
         private static ShopController _instance = null;
 
         void Awake()
@@ -80,13 +80,7 @@ public class ShopController : MonoBehaviour {
             {
                 itemContent.localPosition += Vector3.up * scrollSpeed * Time.deltaTime;
             }
-            if (GetIsOpenCart())
-            {
-                GetComponent<VRTK.VRTK_UICanvas>().enabled = false;
-            }
-            else {
-                GetComponent<VRTK.VRTK_UICanvas>().enabled = true;
-            }
+            
             
         }
 
@@ -130,6 +124,7 @@ public class ShopController : MonoBehaviour {
                 Instantiate(cartMainPrefab, cartSpawnPoint.position, cartSpawnPoint.rotation, subUI);
                 
             }
+            VRTK_Enable(false);
         }
 
         public static bool GetIsOpenCart()
@@ -275,6 +270,8 @@ public class ShopController : MonoBehaviour {
         public static void CloseCart()
         {
             isOpenCart = false;
+            ShopController sp = new ShopController();
+            sp.VRTK_Enable(true);
         }
 
         public void Close()
@@ -286,5 +283,17 @@ public class ShopController : MonoBehaviour {
         void OnDestroy()
         {
             _instance = null;
+        }
+
+        public void VRTK_Enable(bool value)
+        {
+            if (GameObject.Find("shop_UI"))
+                GameObject.Find("shop_UI").GetComponent<VRTK.VRTK_UICanvas>().enabled = value;
+            if (GameObject.Find("inventory_UI"))
+                GameObject.Find("inventory_UI").GetComponent<VRTK.VRTK_UICanvas>().enabled = value;
+            foreach (GameObject obj in GameObject.FindGameObjectsWithTag("shop_item_panel"))
+            {
+                obj.GetComponent<VRTK.VRTK_UICanvas>().enabled = value;
+            }
         }
     }

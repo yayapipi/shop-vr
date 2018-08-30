@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Button
   - Model
+  - shop_item_panel
   layers:
   - Default
   - TransparentFX
