@@ -17,6 +17,7 @@
         public bool isselect = false;
         public bool isHolding = false;
         protected GameObject obj_point;
+        public GameObject controller;
 
         void Update()
         {
@@ -27,6 +28,18 @@
                {
                    if(obj_point)
                        obj_point.transform.parent = pointer.transform;
+                   if (controller.GetComponent<SteamVR_TrackedController>().padPressed)
+                   {
+                       if (controller.GetComponent<SteamVR_TrackedController>().dirY > 0.7)
+                       {
+                           obj_point.transform.localScale += new Vector3(1, 1, 1) * Time.deltaTime;
+                       }
+                       else if (controller.GetComponent<SteamVR_TrackedController>().dirY < 0.3)
+                       {
+                           obj_point.transform.localScale -= new Vector3(1, 1, 1) * Time.deltaTime;
+                       }
+                   }
+
                }
                else
                {
