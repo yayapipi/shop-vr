@@ -5279,6 +5279,7 @@ GameObject:
   m_Component:
   - component: {fileID: 986162098}
   - component: {fileID: 986162099}
+  - component: {fileID: 986162100}
   m_Layer: 0
   m_Name: Controller (right)
   m_TagString: Untagged
@@ -5315,6 +5316,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: -1
   origin: {fileID: 0}
+--- !u!114 &986162100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 986162097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7346a42905a29b347b1f492e8ad7b49f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controllerIndex: 0
+  triggerPressed: 0
+  steamPressed: 0
+  menuPressed: 0
+  padPressed: 0
+  padTouched: 0
+  gripped: 0
+  dirX: 0
+  dirY: 0
 --- !u!1 &1001913699
 GameObject:
   m_ObjectHideFlags: 0
@@ -7810,7 +7831,7 @@ Prefab:
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 724
+      value: 678
       objectReference: {fileID: 0}
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
@@ -9409,6 +9430,7 @@ GameObject:
   - component: {fileID: 1685633904}
   - component: {fileID: 1685633903}
   - component: {fileID: 1685633902}
+  - component: {fileID: 1685633906}
   m_Layer: 0
   m_Name: '[CameraRig]'
   m_TagString: Untagged
@@ -9520,6 +9542,22 @@ MonoBehaviour:
   right: {fileID: 986162097}
   objects: []
   assignAllBeforeIdentified: 0
+--- !u!114 &1685633906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1685633900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbc08d99e1977314183ce74195da1b54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lcontrol: {fileID: 2089918497}
+  rcontrol: {fileID: 986162097}
+  head: {fileID: 1876112775}
+  speed_move: 6
+  speed_rotate: 0
 --- !u!1 &1784625816
 GameObject:
   m_ObjectHideFlags: 0
@@ -10063,7 +10101,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1802569925}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0ec704cceb26f6f49b6c900fc83d8d18, type: 3}
   m_Name: 
@@ -11610,6 +11648,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2089918498}
   - component: {fileID: 2089918499}
+  - component: {fileID: 2089918500}
   m_Layer: 0
   m_Name: Controller (left)
   m_TagString: Untagged
@@ -11646,6 +11685,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: -1
   origin: {fileID: 0}
+--- !u!114 &2089918500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2089918497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7346a42905a29b347b1f492e8ad7b49f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controllerIndex: 0
+  triggerPressed: 0
+  steamPressed: 0
+  menuPressed: 0
+  padPressed: 0
+  padTouched: 0
+  gripped: 0
+  dirX: 0
+  dirY: 0
 --- !u!1 &2106731700
 GameObject:
   m_ObjectHideFlags: 0
