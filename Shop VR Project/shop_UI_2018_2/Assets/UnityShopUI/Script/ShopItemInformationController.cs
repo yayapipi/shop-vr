@@ -205,11 +205,17 @@ public class ShopItemInformationController : MonoBehaviour {
     public void Close()
     {
         if (isOpen == 2)
+        {
             CartController.Instance().Enable();
+        }
         else if (isOpen == 1)
+        {
             ShopController.Instance().Enable();
+        }
         else if (isOpen == 3)
+        {
             InventoryController.Instance().Enable();
+        }
 
         Destroy(transform.parent.gameObject);
     }

@@ -12,7 +12,7 @@ public class ShopItemController : MonoBehaviour {
     private shopitems shopItemData;
     private shopcartitems shopCartItemsData;
     private GameObject newObj;
-    private bool isOpenCart;
+    //private bool isOpenCart;
 
     public void Set(shopitems data)
     {
