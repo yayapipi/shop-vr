@@ -656,6 +656,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b1e627535debf640acf02ca36bfda14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  control: {fileID: 986162097}
   pointer: {fileID: 198311854}
   hoverColor: {r: 0, g: 1, b: 1, a: 1}
   selectColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
@@ -670,6 +671,8 @@ MonoBehaviour:
   isScale: 1
   isRotate: 1
   rotate_speed: 30
+  lastTriggerPressed: 0
+  scanActivity: 1
 --- !u!1 &122979744
 GameObject:
   m_ObjectHideFlags: 0
@@ -1182,12 +1185,12 @@ MonoBehaviour:
   enableTeleport: 1
   targetListPolicy: {fileID: 0}
   pointerRenderer: {fileID: 0}
-  activationButton: 9
+  activationButton: 0
   isActiveBtnPress: 0
   holdButtonToActivate: 0
-  activateOnEnable: 0
+  activateOnEnable: 1
   activationDelay: 0
-  selectionButton: 3
+  selectionButton: 4
   selectOnPress: 0
   selectionDelay: 0
   selectAfterHoverDuration: 0
@@ -7138,6 +7141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b1e627535debf640acf02ca36bfda14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  control: {fileID: 2089918497}
   pointer: {fileID: 1802569929}
   hoverColor: {r: 0, g: 1, b: 1, a: 1}
   selectColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
@@ -7152,6 +7156,8 @@ MonoBehaviour:
   isScale: 1
   isRotate: 1
   rotate_speed: 30
+  lastTriggerPressed: 0
+  scanActivity: 1
 --- !u!1 &1270670874
 GameObject:
   m_ObjectHideFlags: 0
