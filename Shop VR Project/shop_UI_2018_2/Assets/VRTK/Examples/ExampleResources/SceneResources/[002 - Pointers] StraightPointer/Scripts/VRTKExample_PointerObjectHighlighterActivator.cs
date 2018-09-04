@@ -43,6 +43,7 @@
                     obj = new GameObject();
                 }
                 obj_point.transform.parent = obj.transform;
+                ToggleHighlight(obj_point.transform, Color.clear);
                 obj_point = null;
                 isselect = false;
                 scanActivity = false;
@@ -128,7 +129,7 @@
         {
             Debug.Log("Enter");
 
-            if (e.target.gameObject.tag == "Model")
+            if (!isselect && e.target.gameObject.tag == "Model")
                 ToggleHighlight(e.target, hoverColor);
 
             if (logEnterEvent)
@@ -150,8 +151,8 @@
         {
             Debug.Log("Exit");
 
-            ToggleHighlight(e.target, Color.clear);
-            //isselect = false;
+            if(!isselect)
+                ToggleHighlight(e.target, Color.clear);
 
             if (logExitEvent)
             {
