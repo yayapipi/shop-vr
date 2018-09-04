@@ -19,6 +19,11 @@
         protected GameObject obj_point;
         public GameObject controller;
 
+        //Rotate And Enlarge
+        public bool isScale = true;
+        public bool isRotate = true;
+        public float rotate_speed = 30f;
+
         void Update()
         {
            isHolding = pointer.GetComponent<VRTK_Pointer>().isActiveBtnPress;
@@ -28,15 +33,33 @@
                {
                    if(obj_point)
                        obj_point.transform.parent = pointer.transform;
-                   if (controller.GetComponent<SteamVR_TrackedController>().padPressed)
+
+                   if (isScale)
                    {
-                       if (controller.GetComponent<SteamVR_TrackedController>().dirY > 0.7)
+                       if (controller.GetComponent<SteamVR_TrackedController>().padPressed)
                        {
-                           obj_point.transform.localScale += new Vector3(1, 1, 1) * Time.deltaTime;
+                           if (controller.GetComponent<SteamVR_TrackedController>().dirY > 0.7)
+                           {
+                               obj_point.transform.localScale += new Vector3(1, 1, 1) * Time.deltaTime;
+                           }
+                           else if (controller.GetComponent<SteamVR_TrackedController>().dirY < -0.7)
+                           {
+                               obj_point.transform.localScale -= new Vector3(1, 1, 1) * Time.deltaTime;
+                           }
                        }
-                       else if (controller.GetComponent<SteamVR_TrackedController>().dirY < 0.3)
+                   }
+                   if (isRotate)
+                   {
+                       if (controller.GetComponent<SteamVR_TrackedController>().padPressed)
                        {
-                           obj_point.transform.localScale -= new Vector3(1, 1, 1) * Time.deltaTime;
+                           if (controller.GetComponent<SteamVR_TrackedController>().dirX > 0.7)
+                           {
+                               obj_point.transform.localEulerAngles -= new Vector3(0, rotate_speed, 0) * Time.deltaTime;
+                           }
+                           else if (controller.GetComponent<SteamVR_TrackedController>().dirX < -0.7)
+                           {
+                               obj_point.transform.localEulerAngles += new Vector3(0, rotate_speed, 0) * Time.deltaTime;
+                           }
                        }
                    }
 
