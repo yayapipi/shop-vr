@@ -11,6 +11,7 @@ public class ShopItemInformationController : MonoBehaviour {
     public GameObject shopItemInformationMaterialPrefab;
     public Transform modelSpawnPoint;
     public Text amountText;
+    public GameObject model_obj;
 
     private int itemID;
     private int amount;
@@ -201,7 +202,7 @@ public class ShopItemInformationController : MonoBehaviour {
         if (www.error == null)
         {
             GameObject obj = (GameObject)bundle.LoadAsset(name);
-            Instantiate(obj, modelSpawnPoint.position, modelSpawnPoint.rotation, modelSpawnPoint);
+            model_obj =  Instantiate(obj, modelSpawnPoint.position, modelSpawnPoint.rotation, modelSpawnPoint);
             //newItem = Instantiate(obj, modelSpawnPoint.transform.position, modelSpawnPoint.transform.rotation, modelSpawnPoint.transform);
             //newItem.transform.localPosition = Vector3.zero;
             //newItem.transform.rotation = Quaternion.Euler(modelViewPanel.transform.right);
@@ -252,5 +253,17 @@ public class ShopItemInformationController : MonoBehaviour {
         {
             obj.GetComponent<VRTK.VRTK_UICanvas>().enabled = value;
         }
+    }
+
+    public void Grap()
+    {
+        //Load model
+        Close();
+        GameObject mobj = Instantiate(model_obj, modelSpawnPoint.position, modelSpawnPoint.rotation);
+        mobj.AddComponent<MeshCollider>();
+        mobj.AddComponent<VRTK.Highlighters.VRTK_OutlineObjectCopyHighlighter>();
+        MainController.CloseShop();
+
+
     }
 }
