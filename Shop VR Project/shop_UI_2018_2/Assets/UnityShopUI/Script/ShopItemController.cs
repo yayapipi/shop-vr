@@ -63,6 +63,7 @@ public class ShopItemController : MonoBehaviour {
 
     public void DeleteFromCart()
     {
+        Debug.Log("delete1");
         ShopController.DeleteFromCart(shopCartItemsData.item_id);
         CartController.Instance().UpdateTotalCost( - shopCartItemsData.cost * amount);
         Destroy(transform.gameObject);

@@ -5,6 +5,7 @@
 
     public class VRTKExample_PointerObjectHighlighterActivator : MonoBehaviour
     {
+        public GameObject control;
         public VRTK_DestinationMarker pointer;
         public Color hoverColor = Color.cyan;
         public Color selectColor = Color.yellow;
@@ -16,24 +17,42 @@
         //Shop VR Grab Object Variable
         public bool isselect = false;
         public bool isHolding = false;
-        protected GameObject obj_point;
+        public GameObject obj_point = null;
         public GameObject controller;
 
         //Rotate And Enlarge
         public bool isScale = true;
         public bool isRotate = true;
         public float rotate_speed = 30f;
+        public bool lastTriggerPressed = false;
+        public bool scanActivity = true;
 
         void Update()
         {
+            if (control.GetComponent<SteamVR_TrackedController>().triggerPressed && !lastTriggerPressed)
+                scanActivity = true;
+
+            lastTriggerPressed = control.GetComponent<SteamVR_TrackedController>().triggerPressed;
+
+            //Deselect
+            if (control.GetComponent<SteamVR_TrackedController>().triggerPressed && obj_point != null && scanActivity)
+            {
+                GameObject obj = GameObject.Find("Object");
+                if (!obj)
+                {
+                    obj = new GameObject();
+                }
+                obj_point.transform.parent = obj.transform;
+                obj_point = null;
+                isselect = false;
+                scanActivity = false;
+            }
+
            isHolding = pointer.GetComponent<VRTK_Pointer>().isActiveBtnPress;
            if (isselect)
            {
-               if (isHolding)
-               {
-                   if(obj_point)
-                       obj_point.transform.parent = pointer.transform;
-
+              // if (isHolding)
+            //   {
                    if (isScale)
                    {
                        if (controller.GetComponent<SteamVR_TrackedController>().padPressed)
@@ -62,12 +81,6 @@
                            }
                        }
                    }
-
-               }
-               else
-               {
-                   isselect = false;
-               }
            }
            else
            {
@@ -113,7 +126,11 @@
 
         protected virtual void DestinationMarkerEnter(object sender, DestinationMarkerEventArgs e)
         {
-            ToggleHighlight(e.target, hoverColor);
+            Debug.Log("Enter");
+
+            if (e.target.gameObject.tag == "Model")
+                ToggleHighlight(e.target, hoverColor);
+
             if (logEnterEvent)
             {
                 DebugLogger(VRTK_ControllerReference.GetRealIndex(e.controllerReference), "POINTER ENTER", e.target, e.raycastHit, e.distance, e.destinationPosition);
@@ -122,6 +139,7 @@
 
         private void DestinationMarkerHover(object sender, DestinationMarkerEventArgs e)
         {
+            Debug.Log("Hover");
             if (logHoverEvent)
             {
                 DebugLogger(VRTK_ControllerReference.GetRealIndex(e.controllerReference), "POINTER HOVER", e.target, e.raycastHit, e.distance, e.destinationPosition);
@@ -130,7 +148,11 @@
 
         protected virtual void DestinationMarkerExit(object sender, DestinationMarkerEventArgs e)
         {
+            Debug.Log("Exit");
+
             ToggleHighlight(e.target, Color.clear);
+            //isselect = false;
+
             if (logExitEvent)
             {
                 DebugLogger(VRTK_ControllerReference.GetRealIndex(e.controllerReference), "POINTER EXIT", e.target, e.raycastHit, e.distance, e.destinationPosition);
@@ -139,18 +161,20 @@
 
         protected virtual void DestinationMarkerSet(object sender, DestinationMarkerEventArgs e)
         {
-            ToggleHighlight(e.target, selectColor);
-            if (e.target.gameObject.tag == "Model")
+            Debug.Log("Set");
+            if (obj_point == null && e.target.gameObject.tag == "Model" && scanActivity)
             {
+                ToggleHighlight(e.target, selectColor);
                 obj_point = e.target.gameObject;
-                //Setting Object Transform Position
-                isselect = !isselect;
+                isselect = true;
 
+                obj_point.transform.parent = pointer.transform;
+                scanActivity = false;
+            }
 
-                if (logSetEvent)
-                {
-                    DebugLogger(VRTK_ControllerReference.GetRealIndex(e.controllerReference), "POINTER SET", e.target, e.raycastHit, e.distance, e.destinationPosition);
-                }
+            if (logSetEvent)
+            {
+                DebugLogger(VRTK_ControllerReference.GetRealIndex(e.controllerReference), "POINTER SET", e.target, e.raycastHit, e.distance, e.destinationPosition);
             }
         }
 

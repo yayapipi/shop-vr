@@ -176,7 +176,8 @@ public class ShopController : MonoBehaviour {
 
         public static void DeleteFromCart(int itemID)
         {
-            Debug.Log("Delete item from cart: itemID = " + itemID);
+            Debug.Log("delete2");
+            //Debug.Log("Delete item from cart: itemID = " + itemID);
 
             //using thread to delete from cart
             DeleteFromCartThread tws = new DeleteFromCartThread(itemID);

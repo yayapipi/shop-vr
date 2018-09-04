@@ -665,7 +665,11 @@ MonoBehaviour:
   logSetEvent: 1
   isselect: 0
   isHolding: 0
+  obj_point: {fileID: 0}
   controller: {fileID: 986162097}
+  isScale: 1
+  isRotate: 1
+  rotate_speed: 30
 --- !u!1 &122979744
 GameObject:
   m_ObjectHideFlags: 0
@@ -1116,9 +1120,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activationButton: 9
-  activationMode: 0
-  selectionButton: 10
-  clickMethod: 0
+  activationMode: 2
+  selectionButton: 3
+  clickMethod: 1
   attemptClickOnDeactivate: 0
   clickAfterHoverDuration: 0
   maximumLength: Infinity
@@ -1180,10 +1184,10 @@ MonoBehaviour:
   pointerRenderer: {fileID: 0}
   activationButton: 9
   isActiveBtnPress: 0
-  holdButtonToActivate: 1
+  holdButtonToActivate: 0
   activateOnEnable: 0
   activationDelay: 0
-  selectionButton: 10
+  selectionButton: 3
   selectOnPress: 0
   selectionDelay: 0
   selectAfterHoverDuration: 0
@@ -7143,7 +7147,11 @@ MonoBehaviour:
   logSetEvent: 1
   isselect: 0
   isHolding: 0
+  obj_point: {fileID: 0}
   controller: {fileID: 0}
+  isScale: 1
+  isRotate: 1
+  rotate_speed: 30
 --- !u!1 &1270670874
 GameObject:
   m_ObjectHideFlags: 0
@@ -9652,6 +9660,7 @@ MonoBehaviour:
   lcontrol: {fileID: 2089918497}
   rcontrol: {fileID: 986162097}
   head: {fileID: 1876112775}
+  robj: {fileID: 114263478}
   speed_move: 6
   speed_rotate: 0
 --- !u!1 &1784625816

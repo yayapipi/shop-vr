@@ -809,7 +809,7 @@ public class sqlapi
 
     public bool Del_shopcart(int userid, int itemid)
     {
-        string tables = "user_inventories";
+        string tables = "shop_carts";
         try
         {
             Debug.Log("delete from cart:" + itemid);

@@ -7,6 +7,8 @@ public class Movement : MonoBehaviour {
     public GameObject rcontrol;
     public GameObject head;
 
+    public GameObject robj;
+
     public float speed_move =6;
     public float speed_rotate =1;
 
@@ -19,6 +21,13 @@ public class Movement : MonoBehaviour {
 	// Update is called once per frame
     void Update()
     {
+        /*
+        if (rcontrol.GetComponent<SteamVR_TrackedController>().triggerPressed)
+        {
+            if (robj.GetComponent<VRTK.Examples.VRTKExample_PointerObjectHighlighterActivator>().obj_point)
+              robj.GetComponent<VRTK.Examples.VRTKExample_PointerObjectHighlighterActivator>().isselect = false;
+        }
+        */
         //Movement
 
         //Detect the Sign of direction
