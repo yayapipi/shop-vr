@@ -98,6 +98,10 @@ public class ShopItemInformationController : MonoBehaviour {
         VRTK_Enable(false);
         if (GameObject.Find("cart_UI"))
             GameObject.Find("cart_UI").GetComponent<VRTK.VRTK_UICanvas>().enabled = false;
+        foreach (GameObject obj in GameObject.FindGameObjectsWithTag("cart_item_panel"))
+        {
+            obj.GetComponent<VRTK.VRTK_UICanvas>().enabled = false;
+        }
     }
 
     public void IncreaseAmount()
@@ -220,6 +224,10 @@ public class ShopItemInformationController : MonoBehaviour {
             CartController.Instance().Enable();
             if (GameObject.Find("cart_UI"))
                 GameObject.Find("cart_UI").GetComponent<VRTK.VRTK_UICanvas>().enabled = true;
+            foreach (GameObject obj in GameObject.FindGameObjectsWithTag("cart_item_panel"))
+            {
+                obj.GetComponent<VRTK.VRTK_UICanvas>().enabled = true;
+            }
         }
         else if (isOpen == 1)
         {
