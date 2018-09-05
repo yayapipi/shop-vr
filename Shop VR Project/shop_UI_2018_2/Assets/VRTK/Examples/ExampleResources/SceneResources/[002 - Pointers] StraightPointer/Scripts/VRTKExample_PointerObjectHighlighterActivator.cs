@@ -123,6 +123,7 @@
 
         protected virtual void DestinationMarkerSet(object sender, DestinationMarkerEventArgs e)
         {
+            Debug.Log("Set");
             if (e.target.gameObject.tag == "Model" && !MainController.GetIsSelect() && scanActivity)
             {
                 ToggleHighlight(e.target, selectColor);
