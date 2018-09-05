@@ -9,6 +9,9 @@ public class RadioMenuController : MonoBehaviour {
     public GameObject ModelPanel;
     public GameObject ModelScalePanel;
     public GameObject ModelRotatePanel;
+    public GameObject rcontroller;
+
+    protected int panel_type = 1; //1-View_Rotate 2-Model_View
 
     // Use this for initialization
     void Start () {
@@ -21,7 +24,7 @@ public class RadioMenuController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+        grip_back();
 	}
 
     public void openpanel(int jud) {
@@ -34,6 +37,7 @@ public class RadioMenuController : MonoBehaviour {
                 ModelScalePanel.SetActive(false);
                 ModelRotatePanel.SetActive(false);
                 ViewRotatePanel.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
+                panel_type = 1;
                 break;
             case 2:
                 //open model panel
@@ -52,6 +56,7 @@ public class RadioMenuController : MonoBehaviour {
                 ModelScalePanel.SetActive(true);
                 ModelRotatePanel.SetActive(false);
                 ModelScalePanel.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
+                panel_type = 2;
                 break;
             case 4:
                 //open model rotate panel
@@ -61,6 +66,7 @@ public class RadioMenuController : MonoBehaviour {
                 ModelScalePanel.SetActive(false);
                 ModelRotatePanel.SetActive(true);
                 ModelRotatePanel.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
+                panel_type = 2;
                 break;
             default:
                 //open base panel
@@ -75,9 +81,105 @@ public class RadioMenuController : MonoBehaviour {
     }
 
     public void put_back() {
-
     }
 
+    public void scalebtn()
+    {
+        MainController.isScale = true;
+        MainController.isRotate = false;
+        MainController.isViewRotate = false;
+    }
 
+    public void rotatebtn()
+    {
+        MainController.isScale = false;
+        MainController.isRotate = true;
+        MainController.isViewRotate = false;
+    }
+
+    public void grip_back()
+    {
+        if (rcontroller.GetComponent<SteamVR_TrackedController>().gripped)
+        {
+            if (panel_type == 2)
+            {
+                openpanel(2); // Open Model Panel
+            }
+            else if (panel_type == 1)
+            {
+                openpanel(0); // Open Default Panel
+            }
+        }
+    }
+
+    public void scale_obj(int btn)
+    {
+        //btn 1 - up 2 - down
+        switch (btn)
+        {
+            case 1:
+                if (MainController.GetIsSelect())
+                {
+                     if (MainController.isScale)
+                     {
+                        MainController.obj_point.transform.localScale += new Vector3(1, 1, 1) * Time.deltaTime;
+                    }
+                }
+                break;
+            case 2:
+                if (MainController.GetIsSelect())
+                {
+                    if (MainController.isScale)
+                    {
+                        MainController.obj_point.transform.localScale -= new Vector3(1, 1, 1) * Time.deltaTime;
+                    }
+                }
+                break;
+        };
+    }
+
+    public void rotate_obj(int btn)
+    {
+        //btn 1 - up 2 - down 3-left 4 -right
+        switch (btn)
+        {
+            case 1:
+                if (MainController.GetIsSelect())
+                {
+                    if (MainController.isRotate)
+                    {
+                        MainController.obj_point.transform.localEulerAngles += new Vector3(25f, 0f, 0) * Time.deltaTime;
+                    }
+                }
+                break;
+            case 2:
+                if (MainController.GetIsSelect())
+                {
+                    if (MainController.isRotate)
+                    {
+                        MainController.obj_point.transform.localEulerAngles -= new Vector3(25f,0f, 0) * Time.deltaTime;
+                    }
+                }
+                break;
+            case 3:
+                if (MainController.GetIsSelect())
+                {
+                    if (MainController.isRotate)
+                    {
+                        MainController.obj_point.transform.localEulerAngles += new Vector3(0, 25f, 0) * Time.deltaTime;
+                    }
+                }
+                break;
+            case 4:
+                if (MainController.GetIsSelect())
+                {
+                    if (MainController.isRotate)
+                    {
+                        MainController.obj_point.transform.localEulerAngles -= new Vector3(0, 25f, 0) * Time.deltaTime;
+                    }
+                }
+                break;
+        };
+    }
     
 }

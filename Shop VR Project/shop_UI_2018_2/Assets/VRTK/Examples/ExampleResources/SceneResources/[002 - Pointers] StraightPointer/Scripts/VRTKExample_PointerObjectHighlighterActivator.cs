@@ -36,7 +36,7 @@
             }
 
            isHolding = pointer.GetComponent<VRTK_Pointer>().isActiveBtnPress;
-           if (MainController.GetIsSelect())
+           /*if (MainController.GetIsSelect())
            {
                if (MainController.isScale)
                {
@@ -60,7 +60,7 @@
                         MainController.obj_point.transform.localEulerAngles += new Vector3(0, rotate_speed, 0) * Time.deltaTime;
                     }
                 }
-           }
+           }*/
         }
 
         protected virtual void OnEnable()
