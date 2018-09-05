@@ -33,6 +33,7 @@ public class RadioMenuController : MonoBehaviour {
                 ModelPanel.SetActive(false);
                 ModelScalePanel.SetActive(false);
                 ModelRotatePanel.SetActive(false);
+                ViewRotatePanel.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 break;
             case 2:
                 //open model panel
@@ -41,6 +42,7 @@ public class RadioMenuController : MonoBehaviour {
                 ModelPanel.SetActive(true);
                 ModelScalePanel.SetActive(false);
                 ModelRotatePanel.SetActive(false);
+                ModelPanel.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 break;
             case 3:
                 //open model scale panel
@@ -49,6 +51,7 @@ public class RadioMenuController : MonoBehaviour {
                 ModelPanel.SetActive(false);
                 ModelScalePanel.SetActive(true);
                 ModelRotatePanel.SetActive(false);
+                ModelScalePanel.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 break;
             case 4:
                 //open model rotate panel
@@ -57,6 +60,7 @@ public class RadioMenuController : MonoBehaviour {
                 ModelPanel.SetActive(false);
                 ModelScalePanel.SetActive(false);
                 ModelRotatePanel.SetActive(true);
+                ModelRotatePanel.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 break;
             default:
                 //open base panel
@@ -65,6 +69,7 @@ public class RadioMenuController : MonoBehaviour {
                 ModelPanel.SetActive(false);
                 ModelScalePanel.SetActive(false);
                 ModelRotatePanel.SetActive(false);
+                BasePanel.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 break;
         }
     }
