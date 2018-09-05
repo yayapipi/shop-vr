@@ -200,11 +200,19 @@ public class InventoryController : MonoBehaviour
     public void Disable()
     {
         mask.SetActive(true);
+        GetComponent<VRTK.VRTK_UICanvas>().enabled = false;
+        foreach (Transform child in itemContent)
+            if (child.GetComponent<VRTK.VRTK_UICanvas>() != null)
+                child.GetComponent<VRTK.VRTK_UICanvas>().enabled = false;
     }
 
     public void Enable()
     {
         mask.SetActive(false);
+        GetComponent<VRTK.VRTK_UICanvas>().enabled = true;
+        foreach (Transform child in itemContent)
+            if (child.GetComponent<VRTK.VRTK_UICanvas>() != null)
+                child.GetComponent<VRTK.VRTK_UICanvas>().enabled = true;
     }
 
     /*public static void CloseCart()

@@ -124,7 +124,6 @@ public class ShopController : MonoBehaviour {
                 Instantiate(cartMainPrefab, cartSpawnPoint.position, cartSpawnPoint.rotation, subUI);
                 
             }
-            VRTK_Enable(false);
         }
 
         public static bool GetIsOpenCart()
@@ -261,18 +260,25 @@ public class ShopController : MonoBehaviour {
         public void Disable()
         {
             mask.SetActive(true);
+            GetComponent<VRTK.VRTK_UICanvas>().enabled = false;
+            foreach (Transform child in itemContent)
+                if (child.GetComponent<VRTK.VRTK_UICanvas>() != null)
+                    child.GetComponent<VRTK.VRTK_UICanvas>().enabled = false;
         }
 
         public void Enable()
         {
             mask.SetActive(false);
+            GetComponent<VRTK.VRTK_UICanvas>().enabled = true;
+            foreach (Transform child in itemContent)
+                if (child.GetComponent<VRTK.VRTK_UICanvas>() != null)
+                    child.GetComponent<VRTK.VRTK_UICanvas>().enabled = true;
         }
 
         public static void CloseCart()
         {
             isOpenCart = false;
-            ShopController sp = new ShopController();
-            sp.VRTK_Enable(true);
+            ShopController.Instance().Enable();
         }
 
         public void Close()
@@ -285,7 +291,7 @@ public class ShopController : MonoBehaviour {
         {
             _instance = null;
         }
-
+    /*
         public void VRTK_Enable(bool value)
         {
             if (GameObject.Find("shop_UI"))
@@ -296,5 +302,5 @@ public class ShopController : MonoBehaviour {
             {
                 obj.GetComponent<VRTK.VRTK_UICanvas>().enabled = value;
             }
-        }
+        }*/
     }

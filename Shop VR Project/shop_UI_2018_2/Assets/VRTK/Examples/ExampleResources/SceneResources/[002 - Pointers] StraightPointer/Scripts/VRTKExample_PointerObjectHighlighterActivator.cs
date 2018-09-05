@@ -81,18 +81,6 @@
                    }
                }
            }
-           else
-           {
-               if (obj_point)
-               {
-                   GameObject obj = GameObject.Find("Object");
-                   if (!obj)
-                   {
-                       obj = new GameObject();
-                   }
-                   obj_point.transform.parent = obj.transform;
-               }
-           }
         }
 
         protected virtual void OnEnable()
