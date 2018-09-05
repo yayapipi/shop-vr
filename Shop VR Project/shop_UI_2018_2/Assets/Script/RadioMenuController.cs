@@ -81,8 +81,10 @@ public class RadioMenuController : MonoBehaviour {
     }
 
     public void put_back() {
-      //  ShopController.PutBack(MainController.obj_point.GetComponent<id>().item_id);
+        ShopController.PutBack(MainController.obj_point.GetComponent<id>().item_id);
+        openpanel(0);
         Destroy(MainController.obj_point);
+        MainController.Instance().SetIsSelect(false);
     }
 
     public void scalebtn()
@@ -124,6 +126,7 @@ public class RadioMenuController : MonoBehaviour {
             else if (panel_type == 1)
             {
                 openpanel(0); // Open Default Panel
+                MainController.isViewRotate = false;
             }
         }
     }

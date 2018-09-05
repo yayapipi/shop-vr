@@ -26,12 +26,12 @@
             scanActivity = scanActivity|controller.triggerPressDown;
 
             //Deselect
-            if (controller.triggerPressed && MainController.GetIsSelect() && scanActivity)
+            if (controller.triggerPressed && MainController.GetIsSelect() && scanActivity && MainController.obj_point != null)
             {
                 MainController.obj_point.transform.parent = MainController.obj.transform;
                 ToggleHighlight(MainController.obj_point.transform, Color.clear);
                 MainController.obj_point = null;
-                MainController.SetIsSelect(false);
+                MainController.Instance().SetIsSelect(false);
                 scanActivity = false;
             }
 
@@ -128,7 +128,7 @@
             {
                 ToggleHighlight(e.target, selectColor);
                 MainController.obj_point = e.target.gameObject;
-                MainController.SetIsSelect(true);
+                MainController.Instance().SetIsSelect(true);
 
                 MainController.obj_point.transform.parent = pointer.transform;
                 scanActivity = false;

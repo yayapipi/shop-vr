@@ -9,7 +9,7 @@ public class MainController : MonoBehaviour {
     public GameObject ShopMain;
     public GameObject InventoryMain;
     public Transform CameraEye;
-    public static GameObject RadioMenu;
+    public GameObject RadioMenu;
     public static GameObject obj;
     private static int userID;
     private static bool isOpenShop;
@@ -116,7 +116,7 @@ public class MainController : MonoBehaviour {
         isOpenInventory = false; 
     }
 
-    public static void SetIsSelect(bool value)
+    public void SetIsSelect(bool value)
     {
         isSelect = value;
         //Call Controller UI here

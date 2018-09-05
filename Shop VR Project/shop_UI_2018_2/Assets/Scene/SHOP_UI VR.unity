@@ -7336,6 +7336,7 @@ MonoBehaviour:
   InventoryMain: {fileID: 1938391775807596, guid: a90005040c5f0e146ba3a4148675debf,
     type: 2}
   CameraEye: {fileID: 1785417882}
+  RadioMenu: {fileID: 1447368994}
 --- !u!114 &1211827807
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8321,7 +8322,7 @@ Prefab:
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 582
+      value: 678
       objectReference: {fileID: 0}
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
