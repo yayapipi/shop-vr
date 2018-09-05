@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -7,6 +8,7 @@ public class MainController : MonoBehaviour {
     [Header("Related Objects")]
     public GameObject ShopMain;
     public GameObject InventoryMain;
+    public Transform CameraEye;
     public static GameObject RadioMenu;
     public static GameObject obj;
     private static int userID;
@@ -21,6 +23,15 @@ public class MainController : MonoBehaviour {
     public static bool isScale = true;
     public static bool isRotate = true;
     public static bool isViewRotate = false;
+    private static MainController _instance = null;
+
+    void Awake()
+    {
+        if (_instance == null)
+        {
+            _instance = this;
+        }
+    }
 
     // Use this for initialization
     void Start () {
@@ -50,6 +61,15 @@ public class MainController : MonoBehaviour {
         sqlConnection.closeSql();
     }
 
+    public static MainController Instance()
+    {
+        if (_instance == null)
+        {
+            throw new Exception("UnityMainThreadDispatcher could not find the MainController object.");
+        }
+        return _instance;
+    }
+
     public static sqlapi getSqlConnection()
     {
         return sqlConnection;
@@ -60,21 +80,21 @@ public class MainController : MonoBehaviour {
         return userID;
     }
 
-    public void OpenShop(Transform spawnpoint)
+    public void OpenShop()
     {
         if (!isOpenInventory && !isOpenShop)
         {
             isOpenShop = true;
-            Instantiate(ShopMain, spawnpoint.position, spawnpoint.rotation);
+            Instantiate(ShopMain, new Vector3(CameraEye.position.x, 0, CameraEye.position.z), Quaternion.Euler(new Vector3(0, CameraEye.eulerAngles.y, 0)));
         }
     }
 
-    public void OpenInventory(Transform spawnpoint)
+    public void OpenInventory()
     {
         if (!isOpenInventory && !isOpenShop)
         {
             isOpenInventory = true;
-            Instantiate(InventoryMain, spawnpoint.position, spawnpoint.rotation);
+            Instantiate(InventoryMain, new Vector3(CameraEye.position.x, 0, CameraEye.position.z), Quaternion.Euler(new Vector3(0, CameraEye.eulerAngles.y, 0)));
         }
     }
 

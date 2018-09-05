@@ -2425,10 +2425,10 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1211827806}
         m_MethodName: OpenInventory
-        m_Mode: 2
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 366464817}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -7335,6 +7335,7 @@ MonoBehaviour:
   ShopMain: {fileID: 1548012229285236, guid: 9434cdd1b7ffabd4e83250f35eb17f08, type: 2}
   InventoryMain: {fileID: 1938391775807596, guid: a90005040c5f0e146ba3a4148675debf,
     type: 2}
+  CameraEye: {fileID: 1785417882}
 --- !u!114 &1211827807
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8320,7 +8321,7 @@ Prefab:
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 885
+      value: 582
       objectReference: {fileID: 0}
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
@@ -10077,7 +10078,7 @@ MonoBehaviour:
   head: {fileID: 1876112775}
   robj: {fileID: 114263478}
   speed_move: 6
-  speed_rotate: 0
+  speed_rotate: 1
 --- !u!1 &1784625816
 GameObject:
   m_ObjectHideFlags: 0
@@ -10903,7 +10904,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!111 &1845685584
 Animation:
   m_ObjectHideFlags: 0
@@ -11583,10 +11584,10 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1211827806}
         m_MethodName: OpenShop
-        m_Mode: 2
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 366464817}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -12574,7 +12575,18 @@ MonoBehaviour:
   - ButtonIcon: {fileID: 21300000, guid: efbb6feb8821ac04d8a3cce17251c27f, type: 3}
     OnClick:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 1447368998}
+          m_MethodName: Openshop
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
       m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
     OnHold:
@@ -12611,7 +12623,18 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
     OnHold:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 1447368998}
+          m_MethodName: ViewRotate
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
       m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
     OnHoverEnter:
@@ -12648,7 +12671,18 @@ MonoBehaviour:
   - ButtonIcon: {fileID: 21300000, guid: 80e2e7e959abf6e4a83f0b62b751a2a7, type: 3}
     OnClick:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 1447368998}
+          m_MethodName: OpenInventory
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
       m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
     OnHold:

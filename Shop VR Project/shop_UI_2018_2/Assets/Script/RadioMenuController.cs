@@ -92,6 +92,10 @@ public class RadioMenuController : MonoBehaviour {
         MainController.isViewRotate = false;
     }
 
+    public void Openshop()
+    {
+        MainController.Instance().OpenShop();
+    }
     public void rotatebtn()
     {
         MainController.isScale = false;
@@ -99,6 +103,16 @@ public class RadioMenuController : MonoBehaviour {
         MainController.isViewRotate = false;
     }
 
+    public void OpenInventory()
+    {
+        MainController.Instance().OpenInventory();
+    }
+
+    public void ViewRotate()
+    {
+        MainController.isViewRotate = true;
+        //Call Controller UI
+    }
     public void grip_back()
     {
         if (rcontroller.GetComponent<SteamVR_TrackedController>().gripped)
