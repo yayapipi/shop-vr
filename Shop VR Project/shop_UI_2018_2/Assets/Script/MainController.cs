@@ -4,19 +4,36 @@ using System.Collections.Generic;
 using System.Threading;
 
 public class MainController : MonoBehaviour {
+    [Header("Related Objects")]
     public GameObject ShopMain;
     public GameObject InventoryMain;
+    public static GameObject obj;
     private static int userID;
     private static bool isOpenShop;
     private static bool isOpenInventory;
     private static sqlapi sqlConnection;
 
-	// Use this for initialization
-	void Start () {
+    //Controller
+    [Header("Controller Variables")]
+    public static GameObject obj_point = null;
+    [SerializeField] private static bool isSelect = false;
+    public static bool isScale = true;
+    public static bool isRotate = true;
+    public static bool isViewRotate = false;
+
+    // Use this for initialization
+    void Start () {
         isOpenShop = false;
         isOpenInventory = false;
         sqlConnection = new sqlapi();
         userID = 1;
+
+        //Find gameobject
+        obj = GameObject.Find("Object");
+        if (!obj)
+        {
+            obj = new GameObject();
+        }
 
         //Update user information
         UpdateUserData();
@@ -76,5 +93,16 @@ public class MainController : MonoBehaviour {
     public static void CloseInventory()
     {
         isOpenInventory = false; 
+    }
+
+    public static void SetIsSelect(bool value)
+    {
+        isSelect = value;
+        //Call Controller UI here
+    }
+
+    public static bool GetIsSelect()
+    {
+        return isSelect;
     }
 }

@@ -5,7 +5,6 @@
 
     public class VRTKExample_PointerObjectHighlighterActivator : MonoBehaviour
     {
-        public GameObject control;
         public VRTK_DestinationMarker pointer;
         public Color hoverColor = Color.cyan;
         public Color selectColor = Color.yellow;
@@ -15,71 +14,52 @@
         public bool logSetEvent = true;
 
         //Shop VR Grab Object Variable
-        public bool isselect = false;
         public bool isHolding = false;
-        public GameObject obj_point = null;
-        public GameObject controller;
+        public SteamVR_TrackedController controller;
 
         //Rotate And Enlarge
-        public bool isScale = true;
-        public bool isRotate = true;
         public float rotate_speed = 30f;
-        public bool lastTriggerPressed = false;
         public bool scanActivity = true;
 
         void Update()
         {
-            if (control.GetComponent<SteamVR_TrackedController>().triggerPressed && !lastTriggerPressed)
-                scanActivity = true;
-
-            lastTriggerPressed = control.GetComponent<SteamVR_TrackedController>().triggerPressed;
+            scanActivity = scanActivity|controller.triggerPressDown;
 
             //Deselect
-            if (control.GetComponent<SteamVR_TrackedController>().triggerPressed && obj_point != null && scanActivity)
+            if (controller.triggerPressed && MainController.GetIsSelect() && scanActivity)
             {
-                GameObject obj = GameObject.Find("Object");
-                if (!obj)
-                {
-                    obj = new GameObject();
-                }
-                obj_point.transform.parent = obj.transform;
-                ToggleHighlight(obj_point.transform, Color.clear);
-                obj_point = null;
-                isselect = false;
+                MainController.obj_point.transform.parent = MainController.obj.transform;
+                ToggleHighlight(MainController.obj_point.transform, Color.clear);
+                MainController.obj_point = null;
+                MainController.SetIsSelect(false);
                 scanActivity = false;
             }
 
            isHolding = pointer.GetComponent<VRTK_Pointer>().isActiveBtnPress;
-           if (isselect)
+           if (MainController.GetIsSelect())
            {
-               if (isScale)
+               if (MainController.isScale)
                {
-                   if (controller.GetComponent<SteamVR_TrackedController>().padPressed)
-                   {
-                       if (controller.GetComponent<SteamVR_TrackedController>().dirY > 0.7)
-                       {
-                           obj_point.transform.localScale += new Vector3(1, 1, 1) * Time.deltaTime;
-                       }
-                       else if (controller.GetComponent<SteamVR_TrackedController>().dirY < -0.7)
-                       {
-                           obj_point.transform.localScale -= new Vector3(1, 1, 1) * Time.deltaTime;
-                       }
-                   }
-               }
-               if (isRotate)
+                    if (controller.dirY > 0.7)
+                    {
+                        MainController.obj_point.transform.localScale += new Vector3(1, 1, 1) * Time.deltaTime;
+                    }
+                    else if (controller.dirY < -0.7)
+                    {
+                        MainController.obj_point.transform.localScale -= new Vector3(1, 1, 1) * Time.deltaTime;
+                    }
+                }
+               if (MainController.isRotate)
                {
-                   if (controller.GetComponent<SteamVR_TrackedController>().padPressed)
-                   {
-                       if (controller.GetComponent<SteamVR_TrackedController>().dirX > 0.7)
-                       {
-                           obj_point.transform.localEulerAngles -= new Vector3(0, rotate_speed, 0) * Time.deltaTime;
-                       }
-                       else if (controller.GetComponent<SteamVR_TrackedController>().dirX < -0.7)
-                       {
-                           obj_point.transform.localEulerAngles += new Vector3(0, rotate_speed, 0) * Time.deltaTime;
-                       }
-                   }
-               }
+                    if (controller.dirX > 0.7)
+                    {
+                        MainController.obj_point.transform.localEulerAngles -= new Vector3(0, rotate_speed, 0) * Time.deltaTime;
+                    }
+                    else if (controller.dirX < -0.7)
+                    {
+                        MainController.obj_point.transform.localEulerAngles += new Vector3(0, rotate_speed, 0) * Time.deltaTime;
+                    }
+                }
            }
         }
 
@@ -113,7 +93,7 @@
 
         protected virtual void DestinationMarkerEnter(object sender, DestinationMarkerEventArgs e)
         {
-            if (!isselect && e.target.gameObject.tag == "Model")
+            if (!MainController.GetIsSelect() && e.target.gameObject.tag == "Model")
                 ToggleHighlight(e.target, hoverColor);
 
             if (logEnterEvent)
@@ -132,7 +112,7 @@
 
         protected virtual void DestinationMarkerExit(object sender, DestinationMarkerEventArgs e)
         {
-            if(!isselect)
+            if (!MainController.GetIsSelect())
                 ToggleHighlight(e.target, Color.clear);
 
             if (logExitEvent)
@@ -143,13 +123,13 @@
 
         protected virtual void DestinationMarkerSet(object sender, DestinationMarkerEventArgs e)
         {
-            if (obj_point == null && e.target.gameObject.tag == "Model" && scanActivity)
+            if (e.target.gameObject.tag == "Model" && !MainController.GetIsSelect() && scanActivity)
             {
                 ToggleHighlight(e.target, selectColor);
-                obj_point = e.target.gameObject;
-                isselect = true;
+                MainController.obj_point = e.target.gameObject;
+                MainController.SetIsSelect(true);
 
-                obj_point.transform.parent = pointer.transform;
+                MainController.obj_point.transform.parent = pointer.transform;
                 scanActivity = false;
             }
 

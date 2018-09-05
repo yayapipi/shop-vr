@@ -16,6 +16,9 @@ public class SteamVR_TrackedController : MonoBehaviour
     public uint controllerIndex;
     public VRControllerState_t controllerState;
     public bool triggerPressed = false;
+    private bool lastTriggerPressed = false;
+    public bool triggerPressDown = false; //the first frame trigger press down
+    public bool triggerPressUp = false;   //the first frame trigger press up
     public bool steamPressed = false;
     public bool menuPressed = false;
     public bool padPressed = false;
@@ -25,8 +28,6 @@ public class SteamVR_TrackedController : MonoBehaviour
     //Movement Direction
     public float dirX;
     public float dirY;
-
-
 
     public event ClickedEventHandler MenuButtonClicked;
     public event ClickedEventHandler MenuButtonUnclicked;
@@ -136,13 +137,29 @@ public class SteamVR_TrackedController : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
+        //Get triggerPressDown and triggerPressUp
+        if (triggerPressed && !lastTriggerPressed)
+        {
+            triggerPressDown = true;
+        }
+        else if(!triggerPressed && lastTriggerPressed)
+        {
+            triggerPressUp = true;
+        }
+        else
+        {
+            triggerPressDown = false;
+            triggerPressUp = false;
+        }
+        lastTriggerPressed = triggerPressed;
+            
 
+        //Get dirX and dirY
         if (padTouched)
         {
             //Get Axis Direction [0]
             dirX = controllerState.rAxis0.x;
             dirY = controllerState.rAxis0.y;
-            //  Debug.Log("X=" + dirX + " " + "Y=" + dirY);
         }
         else
         {
@@ -264,10 +281,6 @@ public class SteamVR_TrackedController : MonoBehaviour
                 e.padY = controllerState.rAxis0.y;
                 OnPadUntouched(e);
             }
-
-
-
-
         }
     }
 }
