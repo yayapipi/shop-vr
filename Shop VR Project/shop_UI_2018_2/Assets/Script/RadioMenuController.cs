@@ -81,7 +81,7 @@ public class RadioMenuController : MonoBehaviour {
     }
 
     public void put_back() {
-        ShopController.PutBack(MainController.obj_point.GetComponent<id>().item_id);
+      //  ShopController.PutBack(MainController.obj_point.GetComponent<id>().item_id);
         Destroy(MainController.obj_point);
     }
 

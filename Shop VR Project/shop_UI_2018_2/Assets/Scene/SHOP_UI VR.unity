@@ -664,7 +664,7 @@ MonoBehaviour:
   logExitEvent: 1
   logSetEvent: 1
   isHolding: 0
-  controller: {fileID: 0}
+  controller: {fileID: 986162100}
   rotate_speed: 30
   scanActivity: 1
 --- !u!1 &122979744
@@ -7535,7 +7535,7 @@ MonoBehaviour:
   logExitEvent: 1
   logSetEvent: 1
   isHolding: 0
-  controller: {fileID: 0}
+  controller: {fileID: 2089918500}
   rotate_speed: 30
   scanActivity: 1
 --- !u!1 &1270670874
