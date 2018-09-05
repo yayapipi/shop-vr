@@ -52,36 +52,34 @@
            isHolding = pointer.GetComponent<VRTK_Pointer>().isActiveBtnPress;
            if (isselect)
            {
-              // if (isHolding)
-            //   {
-                   if (isScale)
+               if (isScale)
+               {
+                   if (controller.GetComponent<SteamVR_TrackedController>().padPressed)
                    {
-                       if (controller.GetComponent<SteamVR_TrackedController>().padPressed)
+                       if (controller.GetComponent<SteamVR_TrackedController>().dirY > 0.7)
                        {
-                           if (controller.GetComponent<SteamVR_TrackedController>().dirY > 0.7)
-                           {
-                               obj_point.transform.localScale += new Vector3(1, 1, 1) * Time.deltaTime;
-                           }
-                           else if (controller.GetComponent<SteamVR_TrackedController>().dirY < -0.7)
-                           {
-                               obj_point.transform.localScale -= new Vector3(1, 1, 1) * Time.deltaTime;
-                           }
+                           obj_point.transform.localScale += new Vector3(1, 1, 1) * Time.deltaTime;
+                       }
+                       else if (controller.GetComponent<SteamVR_TrackedController>().dirY < -0.7)
+                       {
+                           obj_point.transform.localScale -= new Vector3(1, 1, 1) * Time.deltaTime;
                        }
                    }
-                   if (isRotate)
+               }
+               if (isRotate)
+               {
+                   if (controller.GetComponent<SteamVR_TrackedController>().padPressed)
                    {
-                       if (controller.GetComponent<SteamVR_TrackedController>().padPressed)
+                       if (controller.GetComponent<SteamVR_TrackedController>().dirX > 0.7)
                        {
-                           if (controller.GetComponent<SteamVR_TrackedController>().dirX > 0.7)
-                           {
-                               obj_point.transform.localEulerAngles -= new Vector3(0, rotate_speed, 0) * Time.deltaTime;
-                           }
-                           else if (controller.GetComponent<SteamVR_TrackedController>().dirX < -0.7)
-                           {
-                               obj_point.transform.localEulerAngles += new Vector3(0, rotate_speed, 0) * Time.deltaTime;
-                           }
+                           obj_point.transform.localEulerAngles -= new Vector3(0, rotate_speed, 0) * Time.deltaTime;
+                       }
+                       else if (controller.GetComponent<SteamVR_TrackedController>().dirX < -0.7)
+                       {
+                           obj_point.transform.localEulerAngles += new Vector3(0, rotate_speed, 0) * Time.deltaTime;
                        }
                    }
+               }
            }
            else
            {
@@ -127,8 +125,6 @@
 
         protected virtual void DestinationMarkerEnter(object sender, DestinationMarkerEventArgs e)
         {
-            Debug.Log("Enter");
-
             if (!isselect && e.target.gameObject.tag == "Model")
                 ToggleHighlight(e.target, hoverColor);
 
@@ -140,7 +136,6 @@
 
         private void DestinationMarkerHover(object sender, DestinationMarkerEventArgs e)
         {
-            Debug.Log("Hover");
             if (logHoverEvent)
             {
                 DebugLogger(VRTK_ControllerReference.GetRealIndex(e.controllerReference), "POINTER HOVER", e.target, e.raycastHit, e.distance, e.destinationPosition);
@@ -149,8 +144,6 @@
 
         protected virtual void DestinationMarkerExit(object sender, DestinationMarkerEventArgs e)
         {
-            Debug.Log("Exit");
-
             if(!isselect)
                 ToggleHighlight(e.target, Color.clear);
 
@@ -162,7 +155,6 @@
 
         protected virtual void DestinationMarkerSet(object sender, DestinationMarkerEventArgs e)
         {
-            Debug.Log("Set");
             if (obj_point == null && e.target.gameObject.tag == "Model" && scanActivity)
             {
                 ToggleHighlight(e.target, selectColor);

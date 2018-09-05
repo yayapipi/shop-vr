@@ -99,7 +99,10 @@ namespace VRTK
                 //Use Reflection to transfer the BlockingMask
                 customRaycaster.GetType().GetField("m_BlockingMask", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(customRaycaster,defaultRaycaster.GetType().GetField("m_BlockingMask", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(defaultRaycaster));
 
-                defaultRaycaster.enabled = false;
+                defaultRaycaster.enabled = true;
+             // defaultRaycaster.enabled = false;
+
+
             }
 
             //add a box collider and background image to ensure the rays always hit

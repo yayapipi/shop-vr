@@ -196,6 +196,7 @@ public class ShopItemInformationController : MonoBehaviour {
 
     private IEnumerator LoadModel(string name, string url)
     {
+        CleanCache();
         WWW www = new WWW(url);
         yield return www;
         AssetBundle bundle = www.assetBundle;
@@ -203,6 +204,10 @@ public class ShopItemInformationController : MonoBehaviour {
         {
             GameObject obj = (GameObject)bundle.LoadAsset(name);
             model_obj =  Instantiate(obj, modelSpawnPoint.position, modelSpawnPoint.rotation, modelSpawnPoint);
+            model_obj.AddComponent<VRTK.Highlighters.VRTK_OutlineObjectCopyHighlighter>();
+            model_obj.AddComponent<Model_Rotate>();
+            
+
             //newItem = Instantiate(obj, modelSpawnPoint.transform.position, modelSpawnPoint.transform.rotation, modelSpawnPoint.transform);
             //newItem.transform.localPosition = Vector3.zero;
             //newItem.transform.rotation = Quaternion.Euler(modelViewPanel.transform.right);
@@ -260,10 +265,27 @@ public class ShopItemInformationController : MonoBehaviour {
         //Load model
         Close();
         GameObject mobj = Instantiate(model_obj, modelSpawnPoint.position, modelSpawnPoint.rotation);
-        mobj.AddComponent<MeshCollider>();
-        mobj.AddComponent<VRTK.Highlighters.VRTK_OutlineObjectCopyHighlighter>();
+        if (mobj)
+        {
+            mobj.AddComponent<MeshCollider>();
+            mobj.AddComponent<VRTK.Highlighters.VRTK_OutlineObjectCopyHighlighter>();
+            mobj.GetComponent<Model_Rotate>().enabled = false;
+            mobj.tag = "Model";
+        }
         MainController.CloseShop();
 
 
     }
+
+    public static void CleanCache()
+    {
+        if (Caching.ClearCache())
+        {
+            Debug.Log("Successfully cleaned the cache.");
+        }
+        else
+        {
+            Debug.Log("Cache is being used.");
+        }
+    } 
 }
