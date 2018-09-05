@@ -239,12 +239,14 @@ public class ShopItemInformationController : MonoBehaviour {
         GameObject mobj = Instantiate(model_obj, modelSpawnPoint.position, modelSpawnPoint.rotation);
         if (mobj)
         {
+            mobj.AddComponent<id>().item_id = itemID;
             mobj.AddComponent<MeshCollider>();
             mobj.AddComponent<VRTK.Highlighters.VRTK_OutlineObjectCopyHighlighter>();
             mobj.GetComponent<Model_Rotate>().enabled = false;
             mobj.tag = "Model";
         }
-        MainController.CloseShop();
+        ShopController.Grab(itemID);
+
     }
 
     public static void CleanCache()

@@ -257,7 +257,19 @@ public class ShopController : MonoBehaviour {
             t.Start();
         }
 
-        public void Disable()
+        public static void Grab(int itemID/*, Action callbackDelegate*/)
+        {
+            Debug.Log(" itemID = " + itemID);
+
+        //using thread to buy item
+        //callbackDelegate += Instance().ShowMessage;
+        //callbackDelegate += MainController.UpdateUserData;
+            GrabThread tws = new GrabThread(itemID);
+            Thread t = new Thread(new ThreadStart(tws.Grab));
+            t.Start();
+        }
+
+    public void Disable()
         {
             mask.SetActive(true);
             GetComponent<VRTK.VRTK_UICanvas>().enabled = false;
