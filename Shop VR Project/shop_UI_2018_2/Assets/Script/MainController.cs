@@ -7,6 +7,7 @@ public class MainController : MonoBehaviour {
     [Header("Related Objects")]
     public GameObject ShopMain;
     public GameObject InventoryMain;
+    public static GameObject RadioMenu;
     public static GameObject obj;
     private static int userID;
     private static bool isOpenShop;
@@ -99,6 +100,16 @@ public class MainController : MonoBehaviour {
     {
         isSelect = value;
         //Call Controller UI here
+        if (isSelect)
+        {
+            if (RadioMenu)
+                RadioMenu.GetComponent<RadioMenuController>().openpanel(2);
+        }
+        else
+        {
+            if (RadioMenu)
+                RadioMenu.GetComponent<RadioMenuController>().openpanel(0);
+        }
     }
 
     public static bool GetIsSelect()

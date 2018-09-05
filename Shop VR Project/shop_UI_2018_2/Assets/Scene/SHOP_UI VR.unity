@@ -664,7 +664,7 @@ MonoBehaviour:
   logExitEvent: 1
   logSetEvent: 1
   isHolding: 0
-  controller: {fileID: 986162100}
+  controller: {fileID: 0}
   rotate_speed: 30
   scanActivity: 1
 --- !u!1 &122979744
@@ -5569,7 +5569,18 @@ MonoBehaviour:
   - ButtonIcon: {fileID: 21300000, guid: 914686f24d455874185c8b8be0b5632e, type: 3}
     OnClick:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 1447368998}
+          m_MethodName: put_back
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
       m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
     OnHold:
@@ -7523,7 +7534,7 @@ MonoBehaviour:
   logExitEvent: 1
   logSetEvent: 1
   isHolding: 0
-  controller: {fileID: 2089918500}
+  controller: {fileID: 0}
   rotate_speed: 30
   scanActivity: 1
 --- !u!1 &1270670874
@@ -8309,7 +8320,7 @@ Prefab:
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 678
+      value: 885
       objectReference: {fileID: 0}
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}

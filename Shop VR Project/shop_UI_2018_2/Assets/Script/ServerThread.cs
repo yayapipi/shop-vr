@@ -410,8 +410,54 @@ public class GrabThread
             {
                 if (uinvent.amount > 0)
                     sqlConnection.Up_userinvent(userData.id, sitems[0].item_id, uinvent.amount-1);
+                else if(uinvent.amount == 1)
+                    sqlConnection.Del_userinvent(userData.id, sitems[0].item_id);
                 else
-                    EventManager.SetMessage("Not enough item", "For your sell");
+                    EventManager.SetMessage("Not enough item", "For your grab");
+            }
+            else
+            {
+                EventManager.SetMessage("item not found", "Please try again");
+            }
+        }
+        else
+        {
+            EventManager.SetMessage("item not found", "Please try again");
+        }
+        /*
+        if (callbackDelegate != null)
+            UnityMainThreadDispatcher.Instance().Enqueue(callbackDelegate);*/
+    }
+}
+
+
+public class PutBackThread
+{
+    private sqlapi sqlConnection;
+    private int userID;
+    private int itemID;
+
+    public PutBackThread(int itemID)
+    {
+        sqlConnection = MainController.getSqlConnection();
+        userID = MainController.GetUserID();
+        this.itemID = itemID;
+    }
+
+    public void PutBack()
+    {
+        users userData = sqlConnection.getusers(userID);
+        shopitems[] sitems = sqlConnection.getshop_item(1, itemID);
+
+        if (sitems.Length != 0)
+        {
+            userinvent uinvent = sqlConnection.getuserinvent(userData.id, sitems[0].item_id);
+            if (uinvent.user_id > 0)
+            {
+                if (uinvent.amount > 0)
+                    sqlConnection.Up_userinvent(userData.id, sitems[0].item_id, uinvent.amount + 1);
+                else
+                    sqlConnection.Add_userinvent(userData.id, sitems[0].item_id, 1);
             }
             else
             {

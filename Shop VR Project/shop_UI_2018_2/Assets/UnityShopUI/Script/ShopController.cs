@@ -269,6 +269,15 @@ public class ShopController : MonoBehaviour {
             t.Start();
         }
 
+        public static void PutBack(int itemID/*, Action callbackDelegate*/)
+        {
+            Debug.Log(" itemID = " + itemID);
+
+            PutBackThread tws = new PutBackThread(itemID);
+            Thread t = new Thread(new ThreadStart(tws.PutBack));
+            t.Start();
+        }
+
     public void Disable()
         {
             mask.SetActive(true);
