@@ -21,15 +21,7 @@ public class Movement : MonoBehaviour {
 	// Update is called once per frame
     void Update()
     {
-        /*
-        if (rcontrol.GetComponent<SteamVR_TrackedController>().triggerPressed)
-        {
-            if (robj.GetComponent<VRTK.Examples.VRTKExample_PointerObjectHighlighterActivator>().obj_point)
-              robj.GetComponent<VRTK.Examples.VRTKExample_PointerObjectHighlighterActivator>().isselect = false;
-        }
-        */
         //Movement
-
         //Detect the Sign of direction
         if (lcontrol.GetComponent<SteamVR_TrackedController>().dirX != 0)
         {
