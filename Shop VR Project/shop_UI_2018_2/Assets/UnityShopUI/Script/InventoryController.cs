@@ -222,7 +222,7 @@ public class InventoryController : MonoBehaviour
 
     public void Close()
     {
-        MainController.CloseInventory();
+        MainController.Instance().CloseInventory();
         Destroy(transform.parent.gameObject);
     }
 

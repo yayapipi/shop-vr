@@ -304,7 +304,7 @@ public class ShopController : MonoBehaviour {
 
         public void Close()
         {
-            MainController.CloseShop();
+            MainController.Instance().CloseShop();
             Destroy(transform.parent.gameObject);
         }
 

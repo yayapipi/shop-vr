@@ -12,6 +12,7 @@
         public bool logHoverEvent = false;
         public bool logExitEvent = true;
         public bool logSetEvent = true;
+        private MainController mainController;
 
         //Shop VR Grab Object Variable
         public bool isHolding = false;
@@ -21,17 +22,22 @@
         public float rotate_speed = 30f;
         public bool scanActivity = true;
 
+        void Start()
+        {
+            mainController = MainController.Instance();
+        }
+
         void Update()
         {
             scanActivity = scanActivity|controller.triggerPressDown;
 
             //Deselect
-            if (controller.triggerPressed && MainController.GetIsSelect() && scanActivity && MainController.obj_point != null)
+            if (controller.triggerPressed && mainController.GetIsSelect() && scanActivity && mainController.obj_point != null)
             {
-                MainController.obj_point.transform.parent = MainController.obj.transform;
-                ToggleHighlight(MainController.obj_point.transform, Color.clear);
-                MainController.obj_point = null;
-                MainController.Instance().SetIsSelect(false);
+                mainController.obj_point.transform.parent = mainController.obj.transform;
+                ToggleHighlight(mainController.obj_point.transform, Color.clear);
+                mainController.obj_point = null;
+                mainController.SetIsSelect(false);
                 scanActivity = false;
             }
 
@@ -93,7 +99,7 @@
 
         protected virtual void DestinationMarkerEnter(object sender, DestinationMarkerEventArgs e)
         {
-            if (!MainController.GetIsSelect() && e.target.gameObject.tag == "Model")
+            if (!mainController.GetIsSelect() && e.target.gameObject.tag == "Model")
                 ToggleHighlight(e.target, hoverColor);
 
             if (logEnterEvent)
@@ -112,7 +118,7 @@
 
         protected virtual void DestinationMarkerExit(object sender, DestinationMarkerEventArgs e)
         {
-            if (!MainController.GetIsSelect())
+            if (!mainController.GetIsSelect())
                 ToggleHighlight(e.target, Color.clear);
 
             if (logExitEvent)
@@ -124,13 +130,13 @@
         protected virtual void DestinationMarkerSet(object sender, DestinationMarkerEventArgs e)
         {
             Debug.Log("Set");
-            if (e.target.gameObject.tag == "Model" && !MainController.GetIsSelect() && scanActivity)
+            if (e.target.gameObject.tag == "Model" && !mainController.GetIsSelect() && scanActivity)
             {
                 ToggleHighlight(e.target, selectColor);
-                MainController.obj_point = e.target.gameObject;
-                MainController.Instance().SetIsSelect(true);
+                mainController.obj_point = e.target.gameObject;
+                mainController.SetIsSelect(true);
 
-                MainController.obj_point.transform.parent = pointer.transform;
+                mainController.obj_point.transform.parent = pointer.transform;
                 scanActivity = false;
             }
 

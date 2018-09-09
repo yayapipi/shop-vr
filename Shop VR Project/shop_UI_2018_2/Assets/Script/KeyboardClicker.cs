@@ -18,7 +18,7 @@ public class KeyboardClicker : MonoBehaviour {
     void Start()
     {
         m_EventSystem = EventSystem.current;
-        state = 0;
+        state = 1;
 
         pointer = new PointerEventData(EventSystem.current);
         pointer.position = new Vector2(Screen.width / 2, Screen.height / 2);
@@ -29,7 +29,11 @@ public class KeyboardClicker : MonoBehaviour {
 
     void Update()
     {
-        if (state == 0)
+        if (state == 0) //none
+        { }
+        else if(state == 1) //controller
+            RayDetect();
+        else if (state == 2)
             RayDetect();
     }
 
