@@ -7341,6 +7341,8 @@ MonoBehaviour:
   cameraEye: {fileID: 1785417882}
   leftController: {fileID: 1802569930}
   rightController: {fileID: 198311855}
+  ControllerPointerCamera: {fileID: 1328916510}
+  EyetrackerPointerCamera: {fileID: 1266649114}
   obj: {fileID: 0}
   obj_point: {fileID: 0}
   isScale: 1
@@ -7565,6 +7567,75 @@ MonoBehaviour:
   controller: {fileID: 2089918500}
   rotate_speed: 30
   scanActivity: 1
+--- !u!1 &1266649112
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1266649113}
+  - component: {fileID: 1266649114}
+  m_Layer: 0
+  m_Name: EyeTrackerPointerCamera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1266649113
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1266649112}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1876112776}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!20 &1266649114
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1266649112}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_FocalLength: 50
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 1
+  m_TargetEye: 0
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
 --- !u!1 &1270670874
 GameObject:
   m_ObjectHideFlags: 0
@@ -7857,7 +7928,7 @@ GameObject:
   - component: {fileID: 1328916509}
   - component: {fileID: 1328916510}
   m_Layer: 0
-  m_Name: ControllerUIClicker
+  m_Name: ControllerPointerCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8417,7 +8488,7 @@ Prefab:
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 678
+      value: 313
       objectReference: {fileID: 0}
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
@@ -10287,7 +10358,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1876112776}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1785417883
 MonoBehaviour:
@@ -11455,6 +11526,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 1266649113}
   - {fileID: 1785417882}
   - {fileID: 1949497810}
   m_Father: {fileID: 1685633901}
@@ -11504,7 +11576,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1876112776}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1949497811
 MonoBehaviour:
@@ -11890,6 +11962,7 @@ GameObject:
   - component: {fileID: 1985533644}
   - component: {fileID: 1985533643}
   - component: {fileID: 1985533646}
+  - component: {fileID: 1985533647}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -11965,7 +12038,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 2
-  m_Camera: {fileID: 1328916510}
+  m_Camera: {fileID: 1266649114}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -11989,6 +12062,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clickOnPointerCollision: 0
   autoActivateWithinDistance: 0
+--- !u!114 &1985533647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1985533641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db78c3102d7900546821a42e0141e3e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2024920175
 GameObject:
   m_ObjectHideFlags: 0

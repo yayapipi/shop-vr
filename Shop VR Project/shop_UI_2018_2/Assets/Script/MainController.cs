@@ -12,6 +12,9 @@ public class MainController : MonoBehaviour {
     public Transform cameraEye;
     public VRTK.VRTK_ControllerEvents leftController;
     public VRTK.VRTK_ControllerEvents rightController;
+    public Camera ControllerPointerCamera;
+    public Camera EyetrackerPointerCamera;
+    private Camera currentPointerCamera;
 
     public GameObject obj;
     private static int userID;
@@ -28,6 +31,8 @@ public class MainController : MonoBehaviour {
     private static MainController _instance = null;
 
     //Controller State
+    //public delegate void ControllerEventManager();
+    //public static event ControllerEventManager 
     [Header("Controller States")]
     public bool RTriggerTouch = false;
     public bool RTriggerPress = false;
@@ -35,6 +40,11 @@ public class MainController : MonoBehaviour {
     public bool RGripTouch = false;
     public bool RGripPress = false;
     public bool RGripClick = false;
+
+    //Canvas UI pointer event
+    public delegate void CanvasUIPointerEventManager(Camera eventCamera);
+    public static event CanvasUIPointerEventManager UIPointerEvent;
+    private int UIPointerState = 1;
 
     void Awake()
     {
@@ -46,37 +56,41 @@ public class MainController : MonoBehaviour {
 
     void OnEnable()
     {
-        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerTouch, true, DoTriggerTouched);
-        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerTouch, false, DoTriggerUnTouched);
-        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerPress, true, DoTriggerPressed);
-        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerPress, false, DoTriggerUnPressed);
-        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerClick, true, DoTriggerClicked);
-        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerClick, false, DoTriggerUnClicked);
+        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerTouch, true, DoRTriggerTouched);
+        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerTouch, false, DoRTriggerUnTouched);
+        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerPress, true, DoRTriggerPressed);
+        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerPress, false, DoRTriggerUnPressed);
+        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerClick, true, DoRTriggerClicked);
+        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerClick, false, DoRTriggerUnClicked);
 
-        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripTouch, true, DoGripTouched);
-        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripTouch, false, DoGripUnTouched);
-        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripPress, true, DoGripPressed);
-        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripPress, false, DoGripUnPressed);
-        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripClick, true, DoGripClicked);
-        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripClick, false, DoGripUnClicked);
+        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripTouch, true, DoRGripTouched);
+        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripTouch, false, DoRGripUnTouched);
+        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripPress, true, DoRGripPressed);
+        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripPress, false, DoRGripUnPressed);
+        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripClick, true, DoRGripClicked);
+        rightController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripClick, false, DoRGripUnClicked);
+
+        leftController.SubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripClick, true, DoLGripClicked);
 
     }
 
     void OnDisable()
     {
-        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerTouch, true, DoTriggerTouched);
-        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerTouch, false, DoTriggerUnTouched);
-        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerPress, true, DoTriggerPressed);
-        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerPress, false, DoTriggerUnPressed);
-        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerClick, true, DoTriggerClicked);
-        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerClick, false, DoTriggerUnClicked);
+        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerTouch, true, DoRTriggerTouched);
+        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerTouch, false, DoRTriggerUnTouched);
+        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerPress, true, DoRTriggerPressed);
+        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerPress, false, DoRTriggerUnPressed);
+        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerClick, true, DoRTriggerClicked);
+        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.TriggerClick, false, DoRTriggerUnClicked);
 
-        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripTouch, true, DoGripTouched);
-        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripTouch, false, DoGripUnTouched);
-        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripPress, true, DoGripPressed);
-        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripPress, false, DoGripUnPressed);
-        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripClick, true, DoGripClicked);
-        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripClick, false, DoGripUnClicked);
+        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripTouch, true, DoRGripTouched);
+        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripTouch, false, DoRGripUnTouched);
+        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripPress, true, DoRGripPressed);
+        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripPress, false, DoRGripUnPressed);
+        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripClick, true, DoRGripClicked);
+        rightController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripClick, false, DoRGripUnClicked);
+
+        leftController.UnsubscribeToButtonAliasEvent(VRTK.VRTK_ControllerEvents.ButtonAlias.GripClick, true, DoLGripClicked);
     }
 
     // Use this for initialization
@@ -95,6 +109,13 @@ public class MainController : MonoBehaviour {
 
         //Update user information
         UpdateUserData();
+
+        //Set Canvas event camera
+        UIPointerState = 1;
+        currentPointerCamera = ControllerPointerCamera;
+
+        if (UIPointerEvent != null)
+            UIPointerEvent(currentPointerCamera);
     }
 	
 	// Update is called once per frame
@@ -186,63 +207,92 @@ public class MainController : MonoBehaviour {
     /*================
      |Controller event|
       ================*/
-    private void DoTriggerTouched(object sender, VRTK.ControllerInteractionEventArgs e)
+    private void DoRTriggerTouched(object sender, VRTK.ControllerInteractionEventArgs e)
     {
         RTriggerTouch = true;
     }
 
-    private void DoTriggerUnTouched(object sender, VRTK.ControllerInteractionEventArgs e)
+    private void DoRTriggerUnTouched(object sender, VRTK.ControllerInteractionEventArgs e)
     {
         RTriggerTouch = false;
     }
 
-    private void DoTriggerPressed(object sender, VRTK.ControllerInteractionEventArgs e)
+    private void DoRTriggerPressed(object sender, VRTK.ControllerInteractionEventArgs e)
     {
         RTriggerPress = true;
     }
 
-    private void DoTriggerUnPressed(object sender, VRTK.ControllerInteractionEventArgs e)
+    private void DoRTriggerUnPressed(object sender, VRTK.ControllerInteractionEventArgs e)
     {
         RTriggerPress = false;
     }
 
-    private void DoTriggerClicked(object sender, VRTK.ControllerInteractionEventArgs e)
+    private void DoRTriggerClicked(object sender, VRTK.ControllerInteractionEventArgs e)
     {
         RTriggerClick = true;
     }
 
-    private void DoTriggerUnClicked(object sender, VRTK.ControllerInteractionEventArgs e)
+    private void DoRTriggerUnClicked(object sender, VRTK.ControllerInteractionEventArgs e)
     {
         RTriggerClick = false;
     }
 
-    private void DoGripTouched(object sender, VRTK.ControllerInteractionEventArgs e)
+    private void DoRGripTouched(object sender, VRTK.ControllerInteractionEventArgs e)
     {
         RGripTouch = true;
     }
 
-    private void DoGripUnTouched(object sender, VRTK.ControllerInteractionEventArgs e)
+    private void DoRGripUnTouched(object sender, VRTK.ControllerInteractionEventArgs e)
     {
         RGripTouch = false;
     }
 
-    private void DoGripPressed(object sender, VRTK.ControllerInteractionEventArgs e)
+    private void DoRGripPressed(object sender, VRTK.ControllerInteractionEventArgs e)
     {
         RGripPress = true;
     }
 
-    private void DoGripUnPressed(object sender, VRTK.ControllerInteractionEventArgs e)
+    private void DoRGripUnPressed(object sender, VRTK.ControllerInteractionEventArgs e)
     {
         RGripPress = false;
     }
 
-    private void DoGripClicked(object sender, VRTK.ControllerInteractionEventArgs e)
+    private void DoRGripClicked(object sender, VRTK.ControllerInteractionEventArgs e)
     {
         RGripClick = true;
     }
 
-    private void DoGripUnClicked(object sender, VRTK.ControllerInteractionEventArgs e)
+    private void DoRGripUnClicked(object sender, VRTK.ControllerInteractionEventArgs e)
     {
         RGripClick = false;
+    }
+
+    private void DoLGripClicked(object sender, VRTK.ControllerInteractionEventArgs e)
+    {
+        ChangeUIPointerState();
+    }
+
+    /*===========
+    |Canvas event|
+    ===========*/
+    private void ChangeUIPointerState()
+    {
+        UIPointerState = (UIPointerState + 1) % 3;
+
+        switch (UIPointerState)
+        {
+            case 0:
+                currentPointerCamera = null;
+                break;
+            case 1:
+                currentPointerCamera = ControllerPointerCamera;
+                break;
+            case 2:
+                currentPointerCamera = EyetrackerPointerCamera;
+                break;
+        }
+
+        if(UIPointerEvent != null)
+            UIPointerEvent(currentPointerCamera);
     }
 }

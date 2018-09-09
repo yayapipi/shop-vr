@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//this script is used to get the data from another thread.
+
 public static class EventManager {
     public delegate void ClickAction();
     public static event ClickAction updateUserData;
