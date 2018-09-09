@@ -14,7 +14,7 @@ public class MainController : MonoBehaviour {
     public VRTK.VRTK_ControllerEvents rightController;
     public Camera ControllerPointerCamera;
     public Camera EyetrackerPointerCamera;
-    private Camera currentPointerCamera;
+    public static Camera currentPointerCamera;
 
     public GameObject obj;
     private static int userID;
@@ -30,9 +30,7 @@ public class MainController : MonoBehaviour {
     public bool isViewRotate = false;
     private static MainController _instance = null;
 
-    //Controller State
-    //public delegate void ControllerEventManager();
-    //public static event ControllerEventManager 
+    //Controller state
     [Header("Controller States")]
     public bool RTriggerTouch = false;
     public bool RTriggerPress = false;
@@ -41,8 +39,13 @@ public class MainController : MonoBehaviour {
     public bool RGripPress = false;
     public bool RGripClick = false;
 
+    //Controller events
+    public delegate void ControllerEventManager();
+    public static event ControllerEventManager RTriggerClickDown;
+    public static event ControllerEventManager RTriggerClickUp;
+
     //Canvas UI pointer event
-    public delegate void CanvasUIPointerEventManager(Camera eventCamera);
+    public delegate void CanvasUIPointerEventManager(Camera eventCamera, int state);
     public static event CanvasUIPointerEventManager UIPointerEvent;
     private int UIPointerState = 1;
 
@@ -52,6 +55,10 @@ public class MainController : MonoBehaviour {
         {
             _instance = this;
         }
+
+        //Set Canvas event camera
+        UIPointerState = 1;
+        currentPointerCamera = ControllerPointerCamera;
     }
 
     void OnEnable()
@@ -109,13 +116,6 @@ public class MainController : MonoBehaviour {
 
         //Update user information
         UpdateUserData();
-
-        //Set Canvas event camera
-        UIPointerState = 1;
-        currentPointerCamera = ControllerPointerCamera;
-
-        if (UIPointerEvent != null)
-            UIPointerEvent(currentPointerCamera);
     }
 	
 	// Update is called once per frame
@@ -230,11 +230,15 @@ public class MainController : MonoBehaviour {
     private void DoRTriggerClicked(object sender, VRTK.ControllerInteractionEventArgs e)
     {
         RTriggerClick = true;
+        if (RTriggerClickDown != null)
+            RTriggerClickDown();
     }
 
     private void DoRTriggerUnClicked(object sender, VRTK.ControllerInteractionEventArgs e)
     {
         RTriggerClick = false;
+        if (RTriggerClickUp != null)
+            RTriggerClickUp();
     }
 
     private void DoRGripTouched(object sender, VRTK.ControllerInteractionEventArgs e)
@@ -293,6 +297,6 @@ public class MainController : MonoBehaviour {
         }
 
         if(UIPointerEvent != null)
-            UIPointerEvent(currentPointerCamera);
+            UIPointerEvent(currentPointerCamera, UIPointerState);
     }
 }

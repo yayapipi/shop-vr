@@ -41,6 +41,7 @@ GameObject:
   - component: {fileID: 114068478521669646}
   - component: {fileID: 114603264695072876}
   - component: {fileID: 114656933748493150}
+  - component: {fileID: 114017220939288154}
   m_Layer: 0
   m_Name: model_canvas
   m_TagString: Untagged
@@ -984,6 +985,7 @@ GameObject:
   - component: {fileID: 114379923252881390}
   - component: {fileID: 114298207092297322}
   - component: {fileID: 114899305628152670}
+  - component: {fileID: 114662593709930170}
   m_Layer: 5
   m_Name: item_information_canvas
   m_TagString: Untagged
@@ -1035,6 +1037,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 0
+--- !u!114 &114017220939288154
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1004642710398388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db78c3102d7900546821a42e0141e3e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114019622372171608
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1688,6 +1701,7 @@ MonoBehaviour:
   shopItemInformationMaterialPrefab: {fileID: 0}
   modelSpawnPoint: {fileID: 1231857888885058}
   amountText: {fileID: 0}
+  model_obj: {fileID: 0}
 --- !u!114 &114316743606330326
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2416,7 +2430,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1004642710398388}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1518a5e598c7da244bc4850d3ae63354, type: 3}
   m_Name: 
@@ -2477,6 +2491,17 @@ MonoBehaviour:
   m_FillAmount: 0.457
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114662593709930170
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1974289053871032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db78c3102d7900546821a42e0141e3e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114675445565668110
 MonoBehaviour:
   m_ObjectHideFlags: 1

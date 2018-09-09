@@ -61,6 +61,7 @@ GameObject:
   - component: {fileID: 114435687107855940}
   - component: {fileID: 114851403329713470}
   - component: {fileID: 114977225003447778}
+  - component: {fileID: 114031469361901684}
   m_Layer: 5
   m_Name: shop_UI
   m_TagString: Untagged
@@ -1049,6 +1050,17 @@ Animation:
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 0
+--- !u!114 &114031469361901684
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1069379430536964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db78c3102d7900546821a42e0141e3e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114036620150076704
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class CanvasPointerSwitcher : MonoBehaviour {
 
+    void Start()
+    {
+        GetComponent<Canvas>().worldCamera = MainController.currentPointerCamera;
+    }
+
     void OnEnable()
     {
         MainController.UIPointerEvent += ChangeEventCamera;
@@ -14,7 +19,7 @@ public class CanvasPointerSwitcher : MonoBehaviour {
         MainController.UIPointerEvent -= ChangeEventCamera;
     }
 
-    private void ChangeEventCamera(Camera eventCamera)
+    private void ChangeEventCamera(Camera eventCamera, int state)
     {
         GetComponent<Canvas>().worldCamera = eventCamera;
     }

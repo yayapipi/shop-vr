@@ -5,23 +5,37 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class KeyboardClicker : MonoBehaviour {
-    private int state;
+    private int state = 1;
     private EventSystem m_EventSystem;
     private GameObject rayCastObj;
-    private GameObject rayCastObj_last;
+    private GameObject rayCastObj_last = null;
     private RaycastHit obj;
     private GameObject lastPointerDownObj;
     private List<RaycastResult> raycastResults;
     private PointerEventData pointer;
     private bool hit;
+    private MainController mainController;
+
+    void OnEnable()
+    {
+        MainController.UIPointerEvent += ChangeState;
+        MainController.RTriggerClickDown += ControllerPointerDown;
+        MainController.RTriggerClickUp += ControllerPointerUp;
+    }
+
+    void OnDisable()
+    {
+        MainController.UIPointerEvent -= ChangeState;
+        MainController.RTriggerClickDown -= ControllerPointerDown;
+        MainController.RTriggerClickUp -= ControllerPointerUp;
+    }
 
     void Start()
     {
+        mainController = MainController.Instance();
         m_EventSystem = EventSystem.current;
-        state = 1;
 
         pointer = new PointerEventData(EventSystem.current);
-        pointer.position = new Vector2(Screen.width / 2, Screen.height / 2);
         pointer.button = PointerEventData.InputButton.Left;
 
         raycastResults = new List<RaycastResult>();
@@ -29,25 +43,50 @@ public class KeyboardClicker : MonoBehaviour {
 
     void Update()
     {
-        if (state == 0) //none
-        { }
-        else if(state == 1) //controller
-            RayDetect();
-        else if (state == 2)
-            RayDetect();
+        switch (state)
+        {
+            case 1:
+                ControllerRayDetect();
+                break;
+            case 2:
+                EyeTrackerRayDetect();
+                break;
+        }
     }
 
-    public void SetState(int toState)
+    private void ChangeState(Camera eventCamera, int toState)
     {
-        if (state == 1 && toState == 0)
-        {
-            //line.SetActive(true);
-        }
-        else if (state == 0 && toState == 1)
-        {
-            //line.SetActive(false);
-        }
         state = toState;
+    }
+
+    private void ControllerPointerDown()
+    {
+        //button down
+        if (state == 1 && rayCastObj != null)
+        {
+            Debug.Log("button down");
+            ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerDownHandler);
+            lastPointerDownObj = rayCastObj;
+
+            //AutoClick
+            InvokeRepeating("AutoClicker", 1.5f, 0.1f);
+        }
+    }
+
+    private void ControllerPointerUp()
+    {
+        //button up
+        if (state == 1 && lastPointerDownObj != null)
+        {
+            Debug.Log("button up");
+            if (lastPointerDownObj == rayCastObj)
+                ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
+
+            ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
+
+            //StopAutoClick
+            CancelInvoke("AutoClicker");
+        }
     }
 
     private void AutoClicker()
@@ -55,14 +94,73 @@ public class KeyboardClicker : MonoBehaviour {
         if (lastPointerDownObj != null)
         {
             if (lastPointerDownObj == rayCastObj)
+            {
+                Debug.Log("auto");
                 ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
-
+            }
+                
         }
     }
 
     /* Support hold button, but need to pass pointerEventData argument.*/
-    private void RayDetect()
+    private void ControllerRayDetect()
     {
+        pointer.position = new Vector2(Screen.width / 2, Screen.height / 2);
+        raycastResults.Clear();
+        m_EventSystem.RaycastAll(pointer, raycastResults);
+        hit = false;
+
+        //Sort raycast results
+        if (raycastResults.Count > 1)
+            raycastResults.Sort(RaycastComparer);
+        /*
+        Debug.Log("=====");
+        foreach (RaycastResult h in raycastResults)
+        {
+            Debug.Log("NAME:" + h.gameObject.name + " ||DISTANCE:" + h.distance);
+        }
+        */
+        Debug.Log("=====");
+        //obj filter
+        foreach (RaycastResult h in raycastResults)
+        {
+            if (h.gameObject.GetComponent<Selectable>())
+            {
+                hit = true;
+                rayCastObj = h.gameObject;
+                break;
+            }
+            if (h.gameObject.name == "mask")
+            {
+                rayCastObj = h.gameObject;
+                break;
+            }
+        }
+        Debug.Log(rayCastObj.name);
+        if (hit)
+        {
+            if (rayCastObj != rayCastObj_last)
+            {
+                if (rayCastObj_last && rayCastObj_last.GetComponent<Selectable>())
+                    ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
+
+                ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerEnterHandler);
+            }
+            rayCastObj_last = rayCastObj;
+        }
+        else
+        {
+            if (rayCastObj_last && rayCastObj_last.GetComponent<Selectable>())
+                ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
+
+            rayCastObj = null;
+            rayCastObj_last = null;
+        }
+    }
+
+    private void EyeTrackerRayDetect()
+    {
+        pointer.position = new Vector2(Screen.width / 2, Screen.height / 2);
         raycastResults.Clear();
         m_EventSystem.RaycastAll(pointer, raycastResults);
         hit = false;
@@ -93,6 +191,7 @@ public class KeyboardClicker : MonoBehaviour {
 
         if (hit)
         {
+            //Debug.Log(rayCastObj.name);
             if (rayCastObj != rayCastObj_last)
             {
                 if (rayCastObj_last && rayCastObj_last.GetComponent<Selectable>())
