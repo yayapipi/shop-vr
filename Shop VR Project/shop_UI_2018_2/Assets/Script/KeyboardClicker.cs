@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.XR;
 
 public class KeyboardClicker : MonoBehaviour {
     private int state = 1;
@@ -14,7 +15,6 @@ public class KeyboardClicker : MonoBehaviour {
     private List<RaycastResult> raycastResults;
     private PointerEventData pointer;
     private bool hit;
-    private MainController mainController;
 
     void OnEnable()
     {
@@ -32,7 +32,6 @@ public class KeyboardClicker : MonoBehaviour {
 
     void Start()
     {
-        mainController = MainController.Instance();
         m_EventSystem = EventSystem.current;
 
         pointer = new PointerEventData(EventSystem.current);
@@ -113,14 +112,7 @@ public class KeyboardClicker : MonoBehaviour {
         //Sort raycast results
         if (raycastResults.Count > 1)
             raycastResults.Sort(RaycastComparer);
-        /*
-        Debug.Log("=====");
-        foreach (RaycastResult h in raycastResults)
-        {
-            Debug.Log("NAME:" + h.gameObject.name + " ||DISTANCE:" + h.distance);
-        }
-        */
-        Debug.Log("=====");
+
         //obj filter
         foreach (RaycastResult h in raycastResults)
         {
@@ -136,7 +128,7 @@ public class KeyboardClicker : MonoBehaviour {
                 break;
             }
         }
-        Debug.Log(rayCastObj.name);
+        //Debug.Log(rayCastObj.name);
         if (hit)
         {
             if (rayCastObj != rayCastObj_last)
@@ -161,6 +153,7 @@ public class KeyboardClicker : MonoBehaviour {
     private void EyeTrackerRayDetect()
     {
         pointer.position = new Vector2(Screen.width / 2, Screen.height / 2);
+        
         raycastResults.Clear();
         m_EventSystem.RaycastAll(pointer, raycastResults);
         hit = false;
@@ -168,11 +161,6 @@ public class KeyboardClicker : MonoBehaviour {
         //Sort raycast results
         if (raycastResults.Count > 1)
             raycastResults.Sort(RaycastComparer);
-
-        //foreach (RaycastResult h in raycastResults)
-        //{
-        //    Debug.Log("NAME:" + h.gameObject.name + " ||DISTANCE:" + h.distance);
-        //}
 
         //obj filter
         foreach (RaycastResult h in raycastResults)
@@ -200,16 +188,6 @@ public class KeyboardClicker : MonoBehaviour {
                 ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerEnterHandler);
             }
 
-            //button down
-            if (Input.GetMouseButtonDown(0))
-            {
-                ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerDownHandler);
-                lastPointerDownObj = rayCastObj;
-
-                //AutoClick
-                InvokeRepeating("AutoClicker", 1.5f, 0.1f);
-            }
-
             rayCastObj_last = rayCastObj;
         }
         else
@@ -219,18 +197,6 @@ public class KeyboardClicker : MonoBehaviour {
 
             rayCastObj = null;
             rayCastObj_last = null;
-        }
-
-        //button up
-        if (Input.GetMouseButtonUp(0) && lastPointerDownObj != null)
-        {
-            if (lastPointerDownObj == rayCastObj)
-                ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
-
-            ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
-
-            //StopAutoClick
-            CancelInvoke("AutoClicker");
         }
     }
 
