@@ -15,12 +15,15 @@ public class KeyboardClicker : MonoBehaviour {
     private List<RaycastResult> raycastResults;
     private PointerEventData pointer;
     private bool hit;
+    private float timer;
 
     void OnEnable()
     {
         MainController.UIPointerEvent += ChangeState;
         MainController.RTriggerClickDown += ControllerPointerDown;
         MainController.RTriggerClickUp += ControllerPointerUp;
+        GameGaze.EyeClose += EyeClose;
+        GameGaze.EyeOpen += EyeOpen;
     }
 
     void OnDisable()
@@ -28,6 +31,8 @@ public class KeyboardClicker : MonoBehaviour {
         MainController.UIPointerEvent -= ChangeState;
         MainController.RTriggerClickDown -= ControllerPointerDown;
         MainController.RTriggerClickUp -= ControllerPointerUp;
+        GameGaze.EyeClose -= EyeClose;
+        GameGaze.EyeOpen -= EyeOpen;
     }
 
     void Start()
@@ -56,6 +61,8 @@ public class KeyboardClicker : MonoBehaviour {
     private void ChangeState(Camera eventCamera, int toState)
     {
         state = toState;
+        rayCastObj = null;
+        lastPointerDownObj = null;
     }
 
     private void ControllerPointerDown()
@@ -63,7 +70,6 @@ public class KeyboardClicker : MonoBehaviour {
         //button down
         if (state == 1 && rayCastObj != null)
         {
-            Debug.Log("button down");
             ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerDownHandler);
             lastPointerDownObj = rayCastObj;
 
@@ -77,7 +83,6 @@ public class KeyboardClicker : MonoBehaviour {
         //button up
         if (state == 1 && lastPointerDownObj != null)
         {
-            Debug.Log("button up");
             if (lastPointerDownObj == rayCastObj)
                 ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
 
@@ -85,6 +90,30 @@ public class KeyboardClicker : MonoBehaviour {
 
             //StopAutoClick
             CancelInvoke("AutoClicker");
+        }
+    }
+
+    private void EyeClose()
+    {
+        timer = Time.time;
+    }
+
+    private void EyeOpen()
+    {
+        if (Time.time - timer < 2)
+        {
+            StartCoroutine(EyeClickEnumerator());
+        }
+    }
+
+    private IEnumerator EyeClickEnumerator()
+    {
+        yield return new WaitForSeconds(0.05f);
+        if (state == 2 && rayCastObj != null)
+        {
+            Debug.Log("click");
+            ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerDownHandler);
+            ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
         }
     }
 

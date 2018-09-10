@@ -5,16 +5,19 @@ using aGlassDKII;
 public class GameGaze : MonoBehaviour
 {
     private int count;
-    public static bool eyeclose;
-    private bool eyeclose_last;
-    public static bool eyeclick;
+    private bool eyeClose;
+    private bool eyeClose_last;
+
+    //Eye tracker events
+    public delegate void EyeTrackerEventManager();
+    public static event EyeTrackerEventManager EyeClose;
+    public static event EyeTrackerEventManager EyeOpen;
 
     void Start ()
 	{
         print(aGlass.Instance.aGlassStart());
-        eyeclose = false;
-        eyeclose_last = false;
-        eyeclick = false;
+        eyeClose = false;
+        eyeClose_last = false;
     }
 
 	void Update ()
@@ -26,9 +29,19 @@ public class GameGaze : MonoBehaviour
         {
             //print(aGlass.Instance.GetGazePoint().x);
             //print(aGlass.Instance.GetGazePoint().y);
-            eyeclose_last = eyeclose;
-            eyeclose = (aGlass.Instance.GetGazePoint().x <= 0 && aGlass.Instance.GetGazePoint().y <= 0);
-            eyeclick = (!eyeclose && eyeclose_last);
+            eyeClose_last = eyeClose;
+            eyeClose = (aGlass.Instance.GetGazePoint().x <= 0 && aGlass.Instance.GetGazePoint().y <= 0);
+            
+            if (eyeClose && !eyeClose_last)
+            {
+                if (EyeClose != null)
+                    EyeClose();
+            }
+            else if (!eyeClose && eyeClose_last)
+            {
+                if (EyeOpen != null)
+                    EyeOpen();
+            }
         }
     }
 
