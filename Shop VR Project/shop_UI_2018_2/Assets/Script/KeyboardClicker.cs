@@ -111,22 +111,20 @@ public class KeyboardClicker : MonoBehaviour {
         yield return new WaitForSeconds(0.05f);
         if (state == 2 && rayCastObj != null)
         {
-            Debug.Log("click");
             ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerDownHandler);
+            lastPointerDownObj = rayCastObj;
+
             ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
+
+            //ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
         }
     }
 
     private void AutoClicker()
     {
-        if (lastPointerDownObj != null)
+        if (lastPointerDownObj != null && lastPointerDownObj == rayCastObj)
         {
-            if (lastPointerDownObj == rayCastObj)
-            {
-                Debug.Log("auto");
-                ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
-            }
-                
+            ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
         }
     }
 
@@ -217,12 +215,26 @@ public class KeyboardClicker : MonoBehaviour {
                 ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerEnterHandler);
             }
 
+            //eye tracker pointer up
+            if (lastPointerDownObj != null)
+            {
+                ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
+                lastPointerDownObj = null;
+            }
+
             rayCastObj_last = rayCastObj;
         }
         else
         {
             if (rayCastObj_last && rayCastObj_last.GetComponent<Selectable>())
                 ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
+
+            //eye tracker pointer up
+            if (lastPointerDownObj != null)
+            {
+                ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
+                lastPointerDownObj = null;
+            }
 
             rayCastObj = null;
             rayCastObj_last = null;
