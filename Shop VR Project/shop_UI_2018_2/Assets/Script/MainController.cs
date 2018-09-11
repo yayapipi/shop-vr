@@ -28,6 +28,7 @@ public class MainController : MonoBehaviour {
     public bool isScale = true;
     public bool isRotate = true;
     public bool isViewRotate = false;
+    public bool isGrab; 
     private static MainController _instance = null;
 
     //Controller state
@@ -43,6 +44,8 @@ public class MainController : MonoBehaviour {
     public delegate void ControllerEventManager();
     public static event ControllerEventManager RTriggerClickDown;
     public static event ControllerEventManager RTriggerClickUp;
+    public static event ControllerEventManager RTriggerPressDown;
+    public static event ControllerEventManager RGripClickDown;
 
     //Canvas UI pointer event
     public delegate void CanvasUIPointerEventManager(Camera eventCamera, int state);
@@ -220,6 +223,8 @@ public class MainController : MonoBehaviour {
     private void DoRTriggerPressed(object sender, VRTK.ControllerInteractionEventArgs e)
     {
         RTriggerPress = true;
+        if (RTriggerPressDown != null)
+            RTriggerPressDown();
     }
 
     private void DoRTriggerUnPressed(object sender, VRTK.ControllerInteractionEventArgs e)
@@ -264,6 +269,8 @@ public class MainController : MonoBehaviour {
     private void DoRGripClicked(object sender, VRTK.ControllerInteractionEventArgs e)
     {
         RGripClick = true;
+        if (RGripClickDown != null)
+            RGripClickDown();
     }
 
     private void DoRGripUnClicked(object sender, VRTK.ControllerInteractionEventArgs e)

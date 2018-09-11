@@ -10,9 +10,19 @@ public class RadioMenuController : MonoBehaviour {
     public GameObject ModelScalePanel;
     public GameObject ModelRotatePanel;
     public GameObject rcontroller;
-    public MainController mainController;
+    private MainController mainController;
 
     protected int panel_type = 1; //1-View_Rotate 2-Model_View
+
+    void OnEnable()
+    {
+        MainController.RGripClickDown += grip_back;
+    }
+
+    void OnDisable()
+    {
+        MainController.RGripClickDown -= grip_back;
+    }
 
     // Use this for initialization
     void Start () {
@@ -26,11 +36,20 @@ public class RadioMenuController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        grip_back();
 	}
 
     public void openpanel(int jud) {
         switch (jud) {
+            case 0:
+                //open base panel
+                Debug.Log("open base");
+                BasePanel.SetActive(true);
+                ViewRotatePanel.SetActive(false);
+                ModelPanel.SetActive(false);
+                ModelScalePanel.SetActive(false);
+                ModelRotatePanel.SetActive(false);
+                BasePanel.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
+                break;
             case 1:
                 //open view rotate panel
                 BasePanel.SetActive(false);
@@ -71,13 +90,7 @@ public class RadioMenuController : MonoBehaviour {
                 panel_type = 2;
                 break;
             default:
-                //open base panel
-                BasePanel.SetActive(true);
-                ViewRotatePanel.SetActive(false);
-                ModelPanel.SetActive(false);
-                ModelScalePanel.SetActive(false);
-                ModelRotatePanel.SetActive(false);
-                BasePanel.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
+                Debug.Log("error radio panel index");
                 break;
         }
     }
@@ -115,21 +128,17 @@ public class RadioMenuController : MonoBehaviour {
     public void ViewRotate()
     {
         mainController.isViewRotate = true;
-        //Call Controller UI
     }
-    public void grip_back()
+    private void grip_back()
     {
-        if (rcontroller.GetComponent<SteamVR_TrackedController>().gripped)
+        if (panel_type == 2)
         {
-            if (panel_type == 2)
-            {
-                openpanel(2); // Open Model Panel
-            }
-            else if (panel_type == 1)
-            {
-                openpanel(0); // Open Default Panel
-                mainController.isViewRotate = false;
-            }
+            openpanel(2); // Open Model Panel
+        }
+        else if (panel_type == 1)
+        {
+            openpanel(0); // Open Default Panel
+            mainController.isViewRotate = false;
         }
     }
 
@@ -200,7 +209,7 @@ public class RadioMenuController : MonoBehaviour {
                     }
                 }
                 break;
-        };
+        }
     }
     
 }
