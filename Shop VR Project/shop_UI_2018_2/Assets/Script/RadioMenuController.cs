@@ -12,8 +12,11 @@ public class RadioMenuController : MonoBehaviour {
     public GameObject rcontroller;
     private MainController mainController;
 
-    protected int panel_type = 1; //1-View_Rotate 2-Model_View
-
+    private static int panel_type = 0;
+    /*
+    0 base panel    1 shop panel    2 view rotate   3 setting panel     4 backpack panel 
+    5 Model panel   6 scale panel   7 draw panel    8 putback panel     9 rotate panel
+    */
     void OnEnable()
     {
         MainController.RGripClickDown += grip_back;
@@ -39,6 +42,17 @@ public class RadioMenuController : MonoBehaviour {
 	}
 
     public void openpanel(int jud) {
+        bool isOpenPanel = true;
+
+        if (jud == 2)
+        {
+            MainController.isViewRotate = true;
+        }
+        else
+        {
+            MainController.isViewRotate = false;
+        }
+
         switch (jud) {
             case 0:
                 //open base panel
@@ -50,7 +64,7 @@ public class RadioMenuController : MonoBehaviour {
                 ModelRotatePanel.SetActive(false);
                 BasePanel.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 break;
-            case 1:
+            case 2:
                 //open view rotate panel
                 BasePanel.SetActive(false);
                 ViewRotatePanel.SetActive(true);
@@ -58,9 +72,8 @@ public class RadioMenuController : MonoBehaviour {
                 ModelScalePanel.SetActive(false);
                 ModelRotatePanel.SetActive(false);
                 ViewRotatePanel.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
-                panel_type = 1;
                 break;
-            case 2:
+            case 5:
                 //open model panel
                 BasePanel.SetActive(false);
                 ViewRotatePanel.SetActive(false);
@@ -69,7 +82,7 @@ public class RadioMenuController : MonoBehaviour {
                 ModelRotatePanel.SetActive(false);
                 ModelPanel.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 break;
-            case 3:
+            case 6:
                 //open model scale panel
                 BasePanel.SetActive(false);
                 ViewRotatePanel.SetActive(false);
@@ -77,9 +90,8 @@ public class RadioMenuController : MonoBehaviour {
                 ModelScalePanel.SetActive(true);
                 ModelRotatePanel.SetActive(false);
                 ModelScalePanel.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
-                panel_type = 2;
                 break;
-            case 4:
+            case 9:
                 //open model rotate panel
                 BasePanel.SetActive(false);
                 ViewRotatePanel.SetActive(false);
@@ -87,12 +99,20 @@ public class RadioMenuController : MonoBehaviour {
                 ModelScalePanel.SetActive(false);
                 ModelRotatePanel.SetActive(true);
                 ModelRotatePanel.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
-                panel_type = 2;
                 break;
             default:
                 Debug.Log("error radio panel index");
+                isOpenPanel = false;
                 break;
         }
+
+        if (isOpenPanel)
+            panel_type = jud;
+    }
+
+    public static int getPanelType()
+    {
+        return panel_type;
     }
 
     public void put_back() {
@@ -102,22 +122,9 @@ public class RadioMenuController : MonoBehaviour {
         mainController.SetIsSelect(false);
     }
 
-    public void scalebtn()
-    {
-        mainController.isScale = true;
-        mainController.isRotate = false;
-        mainController.isViewRotate = false;
-    }
-
     public void Openshop()
     {
         mainController.OpenShop();
-    }
-    public void rotatebtn()
-    {
-        mainController.isScale = false;
-        mainController.isRotate = true;
-        mainController.isViewRotate = false;
     }
 
     public void OpenInventory()
@@ -125,20 +132,18 @@ public class RadioMenuController : MonoBehaviour {
         mainController.OpenInventory();
     }
 
-    public void ViewRotate()
-    {
-        mainController.isViewRotate = true;
-    }
     private void grip_back()
     {
-        if (panel_type == 2)
+        if (panel_type % 5 == 0)
         {
-            openpanel(2); // Open Model Panel
+            if (panel_type != 0)
+            {
+                openpanel(panel_type - 5);
+            }
         }
-        else if (panel_type == 1)
+        else
         {
-            openpanel(0); // Open Default Panel
-            mainController.isViewRotate = false;
+            openpanel(panel_type - panel_type % 5);
         }
     }
 
@@ -150,19 +155,13 @@ public class RadioMenuController : MonoBehaviour {
             case 1:
                 if (mainController.GetIsSelect())
                 {
-                     if (mainController.isScale)
-                     {
-                        mainController.obj_point.transform.localScale += new Vector3(1, 1, 1) * Time.deltaTime;
-                    }
+                    mainController.obj_point.transform.localScale += new Vector3(1, 1, 1) * Time.deltaTime;
                 }
                 break;
             case 2:
                 if (mainController.GetIsSelect())
                 {
-                    if (mainController.isScale)
-                    {
-                        mainController.obj_point.transform.localScale -= new Vector3(1, 1, 1) * Time.deltaTime;
-                    }
+                    mainController.obj_point.transform.localScale -= new Vector3(1, 1, 1) * Time.deltaTime;
                 }
                 break;
         };
@@ -176,37 +175,25 @@ public class RadioMenuController : MonoBehaviour {
             case 1:
                 if (mainController.GetIsSelect())
                 {
-                    if (mainController.isRotate)
-                    {
-                        mainController.obj_point.transform.localEulerAngles += new Vector3(25f, 0f, 0) * Time.deltaTime;
-                    }
+                    mainController.obj_point.transform.localEulerAngles += new Vector3(25f, 0f, 0) * Time.deltaTime;
                 }
                 break;
             case 2:
                 if (mainController.GetIsSelect())
                 {
-                    if (mainController.isRotate)
-                    {
-                        mainController.obj_point.transform.localEulerAngles -= new Vector3(25f,0f, 0) * Time.deltaTime;
-                    }
+                    mainController.obj_point.transform.localEulerAngles -= new Vector3(25f,0f, 0) * Time.deltaTime;
                 }
                 break;
             case 3:
                 if (mainController.GetIsSelect())
                 {
-                    if (mainController.isRotate)
-                    {
-                        mainController.obj_point.transform.localEulerAngles += new Vector3(0, 25f, 0) * Time.deltaTime;
-                    }
+                    mainController.obj_point.transform.localEulerAngles += new Vector3(0, 25f, 0) * Time.deltaTime;
                 }
                 break;
             case 4:
                 if (mainController.GetIsSelect())
                 {
-                    if (mainController.isRotate)
-                    {
-                        mainController.obj_point.transform.localEulerAngles -= new Vector3(0, 25f, 0) * Time.deltaTime;
-                    }
+                    mainController.obj_point.transform.localEulerAngles -= new Vector3(0, 25f, 0) * Time.deltaTime;
                 }
                 break;
         }

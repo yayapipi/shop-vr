@@ -25,10 +25,8 @@ public class MainController : MonoBehaviour {
     [Header("Variables")]
     public GameObject obj_point = null;
     private bool isSelect = false;
-    public bool isScale = true;
-    public bool isRotate = true;
-    public bool isViewRotate = false;
-    public bool isGrab; 
+    public bool isGrab;
+    public static bool isViewRotate = false;
     private static MainController _instance = null;
 
     //Controller state
@@ -193,12 +191,7 @@ public class MainController : MonoBehaviour {
         if (isSelect)
         {
             if (radioMenu)
-                radioMenu.openpanel(2);
-        }
-        else
-        {
-            if (radioMenu)
-                radioMenu.openpanel(0);
+                radioMenu.openpanel(5);
         }
     }
 

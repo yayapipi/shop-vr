@@ -132,7 +132,7 @@
         private void RGripClickDown()
         {
             //Deselect
-            if (mainController.GetIsSelect() && !mainController.isGrab && mainController.obj_point != null)
+            if (RadioMenuController.getPanelType() == 5 && mainController.GetIsSelect() && !mainController.isGrab && mainController.obj_point != null)
             {
                 mainController.obj_point.transform.parent = mainController.obj.transform;
                 ToggleHighlight(mainController.obj_point.transform, Color.clear);

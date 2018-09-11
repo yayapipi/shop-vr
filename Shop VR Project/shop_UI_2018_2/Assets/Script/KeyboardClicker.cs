@@ -95,7 +95,6 @@ public class KeyboardClicker : MonoBehaviour {
 
     private void ControllerPointerUp()
     {
-        //button up
         if (state == 1 && lastPointerDownObj != null)
         {
             if (lastPointerDownObj.GetComponent<Selectable>())
