@@ -138,7 +138,7 @@ public class RadioMenuController : MonoBehaviour {
         {
             if (panel_type != 0)
             {
-                openpanel(panel_type - 5);
+                openpanel(0);
             }
         }
         else

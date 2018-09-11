@@ -664,7 +664,6 @@ MonoBehaviour:
   logExitEvent: 1
   logSetEvent: 1
   rotate_speed: 30
-  scanActivity: 1
 --- !u!1 &122979744
 GameObject:
   m_ObjectHideFlags: 0
@@ -7542,9 +7541,6 @@ MonoBehaviour:
   EyetrackerPointerCamera: {fileID: 1266649114}
   obj: {fileID: 0}
   obj_point: {fileID: 0}
-  isScale: 1
-  isRotate: 1
-  isViewRotate: 0
   isGrab: 0
   RTriggerTouch: 0
   RTriggerPress: 0
@@ -7762,7 +7758,6 @@ MonoBehaviour:
   logExitEvent: 1
   logSetEvent: 1
   rotate_speed: 30
-  scanActivity: 1
 --- !u!1 &1266649112
 GameObject:
   m_ObjectHideFlags: 0
@@ -7772,6 +7767,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1266649113}
   - component: {fileID: 1266649114}
+  - component: {fileID: 1266649115}
   m_Layer: 0
   m_Name: EyeTrackerPointerCamera
   m_TagString: Untagged
@@ -7832,6 +7828,21 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &1266649115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1266649112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -768656878, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_MaxRayIntersections: 0
 --- !u!1 &1270670874
 GameObject:
   m_ObjectHideFlags: 0

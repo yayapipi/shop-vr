@@ -20,7 +20,6 @@
 
         //Rotate And Enlarge
         public float rotate_speed = 30f;
-        public bool scanActivity = true;
 
         void Start()
         {
@@ -125,8 +124,6 @@
 
         private void RTriggerPressDown()
         {
-            Debug.Log("scanActivity = true");
-            scanActivity = true;
         }
 
         private void RGripClickDown()
@@ -252,23 +249,18 @@
         //The tag is Model already, no need to compare tag
         private void PointerSet(GameObject target)
         {
-            if (scanActivity)
+            if (!mainController.GetIsSelect())
             {
-                if (!mainController.GetIsSelect())
-                {
-                    //Select
-                    ToggleHighlight(target.transform, selectColor);
-                    mainController.obj_point = target;
-                    mainController.SetIsSelect(true);
-                    scanActivity = false;
-                }
-                else if (mainController.obj_point == target)
-                {
-                    //Grab
-                    mainController.obj_point.transform.parent = pointer.transform;
-                    mainController.isGrab = true;
-                    scanActivity = false;
-                }
+                //Select
+                ToggleHighlight(target.transform, selectColor);
+                mainController.obj_point = target;
+                mainController.SetIsSelect(true);
+            }
+            else if (mainController.obj_point == target)
+            {
+                //Grab
+                mainController.obj_point.transform.parent = pointer.transform;
+                mainController.isGrab = true;
             }
         }
 

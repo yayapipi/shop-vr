@@ -47,6 +47,7 @@ public class KeyboardClicker : MonoBehaviour {
 
         pointer = new PointerEventData(EventSystem.current);
         pointer.button = PointerEventData.InputButton.Left;
+        pointer.position = new Vector2(Screen.width / 2, Screen.height / 2);
 
         raycastResults = new List<RaycastResult>();
     }
@@ -118,12 +119,15 @@ public class KeyboardClicker : MonoBehaviour {
 
     private void EyeClose()
     {
-        timer = Time.time;
+        if (state == 2)
+        {
+            timer = Time.time;
+        }
     }
 
     private void EyeOpen()
     {
-        if (Time.time - timer < 2)
+        if (state == 2 && (Time.time - timer < 2))
         {
             StartCoroutine(EyeClickEnumerator());
         }
@@ -132,14 +136,22 @@ public class KeyboardClicker : MonoBehaviour {
     private IEnumerator EyeClickEnumerator()
     {
         yield return new WaitForSeconds(0.05f);
+
         if (state == 2 && rayCastObj != null)
         {
-            ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerDownHandler);
-            lastPointerDownObj = rayCastObj;
+            if (rayCastObj.GetComponent<Selectable>())
+            {
+                ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerDownHandler);
 
-            ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
+                ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
 
-            //ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
+                ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
+            }
+            else if (rayCastObj.tag == "Model" && PointerSet != null)
+            {
+                //obj submit
+                PointerSet(rayCastObj);
+            }
         }
     }
 
@@ -154,7 +166,6 @@ public class KeyboardClicker : MonoBehaviour {
     /* Support hold button, but need to pass pointerEventData argument.*/
     private void ControllerRayDetect()
     {
-        pointer.position = new Vector2(Screen.width / 2, Screen.height / 2);
         raycastResults.Clear();
         m_EventSystem.RaycastAll(pointer, raycastResults);
         hit = false;
@@ -178,7 +189,7 @@ public class KeyboardClicker : MonoBehaviour {
                 break;
             }
         }
-        //Debug.Log(rayCastObj.name);
+
         if (hit)
         {
             if (rayCastObj != rayCastObj_last)
@@ -227,8 +238,6 @@ public class KeyboardClicker : MonoBehaviour {
 
     private void EyeTrackerRayDetect()
     {
-        pointer.position = new Vector2(Screen.width / 2, Screen.height / 2);
-        
         raycastResults.Clear();
         m_EventSystem.RaycastAll(pointer, raycastResults);
         hit = false;
@@ -240,7 +249,7 @@ public class KeyboardClicker : MonoBehaviour {
         //obj filter
         foreach (RaycastResult h in raycastResults)
         {
-            if (h.gameObject.GetComponent<Selectable>())
+            if (h.gameObject.GetComponent<Selectable>() || h.gameObject.tag == "Model")
             {
                 hit = true;
                 rayCastObj = h.gameObject;
@@ -248,40 +257,50 @@ public class KeyboardClicker : MonoBehaviour {
             }
             if (h.gameObject.name == "mask")
             {
+                rayCastObj = h.gameObject;
                 break;
             }
         }
 
         if (hit)
         {
-            //Debug.Log(rayCastObj.name);
             if (rayCastObj != rayCastObj_last)
             {
                 if (rayCastObj_last && rayCastObj_last.GetComponent<Selectable>())
+                {
+                    //UI exit
                     ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
+                }
+                else if (rayCastObj_last && rayCastObj_last.tag == "Model" && PointerExit != null)
+                {
+                    //obj exit
+                    PointerExit(rayCastObj_last);
+                }
 
-                ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerEnterHandler);
+                if (rayCastObj.GetComponent<Selectable>())
+                {
+                    //UI enter
+                    ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerEnterHandler);
+                }
+                else if (rayCastObj.tag == "Model" && PointerEnter != null)
+                {
+                    //obj enter
+                    PointerEnter(rayCastObj);
+                }
             }
-
-            //eye tracker pointer up
-            if (lastPointerDownObj != null)
-            {
-                ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
-                lastPointerDownObj = null;
-            }
-
             rayCastObj_last = rayCastObj;
         }
         else
         {
             if (rayCastObj_last && rayCastObj_last.GetComponent<Selectable>())
-                ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
-
-            //eye tracker pointer up
-            if (lastPointerDownObj != null)
             {
-                ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
-                lastPointerDownObj = null;
+                //UI exit
+                ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
+            }
+            else if (rayCastObj_last && rayCastObj_last.tag == "Model" && PointerExit != null)
+            {
+                //obj exit
+                PointerExit(rayCastObj_last);
             }
 
             rayCastObj = null;
