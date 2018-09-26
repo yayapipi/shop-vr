@@ -9,7 +9,7 @@ public class EyeCursor : MonoBehaviour {
 	float x, y;
     void Start()
     {
-		gaze = GameObject.Find ("Gaze").GetComponent<GameGaze>();
+		gaze = this.GetComponent<GameGaze>();
     }
 
 	void Update () {
