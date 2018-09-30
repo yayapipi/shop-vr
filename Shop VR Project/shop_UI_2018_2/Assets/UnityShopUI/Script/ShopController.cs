@@ -202,7 +202,7 @@ public class ShopController : MonoBehaviour {
                     tws = new GetShopItemsThread(1, type, "id", "asc", counter * itemsShowOnce, itemsShowOnce, GetShopItemsFinished());
                     break;
                 case "new":
-                    tws = new GetShopItemsThread(1, type, "created_at", "desc", counter * itemsShowOnce, itemsShowOnce, GetShopItemsFinished());
+                    tws = new GetShopItemsThread(1, type, "shop_items.created_at", "desc", counter * itemsShowOnce, itemsShowOnce, GetShopItemsFinished());
                     break;
                 case "hot":
                     tws = new GetShopItemsThread(1, type, "click_times", "desc", counter * itemsShowOnce, itemsShowOnce, GetShopItemsFinished());
