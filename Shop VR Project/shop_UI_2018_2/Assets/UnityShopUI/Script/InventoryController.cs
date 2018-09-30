@@ -5,6 +5,12 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine.UI;
 
+public struct LockItems
+{
+    public int itemID;
+    public bool isLock;
+}
+
 public class InventoryController : MonoBehaviour
 {
     [Header("Related Objects")]
@@ -33,6 +39,7 @@ public class InventoryController : MonoBehaviour
     private static int counter;
     //private static bool isOpenCart;
     private static InventoryController _instance = null;
+    private LockItems[] itemArray;
 
     void Awake()
     {
@@ -147,7 +154,7 @@ public class InventoryController : MonoBehaviour
     }
     */
 
-    private void ShowMessage()
+    public void ShowMessage()
     {
         GameObject newObj = Instantiate(messagePrefab, messageSpawnPoint.position, messageSpawnPoint.rotation);
         newObj.GetComponent<MessageController>().Set(EventManager.GetMessage1(), EventManager.GetMessage2());
@@ -197,6 +204,14 @@ public class InventoryController : MonoBehaviour
         t.Start();
     }
 
+    public static void UpdateInventoryLock(LockItems[] itemArray)
+    {
+        //using thread to UpdateInventoryLock
+        UpdateInventoryLockThread tws = new UpdateInventoryLockThread(itemArray);
+        Thread t = new Thread(new ThreadStart(tws.UpdateInventoryLock));
+        t.Start();
+    }
+
     public void Disable()
     {
         mask.SetActive(true);
@@ -226,6 +241,24 @@ public class InventoryController : MonoBehaviour
 
     public void Close()
     {
+        //Update inventory lock
+        itemArray = new LockItems[1000];
+        int i = 0;
+
+        foreach (Transform child in itemContent)
+            if(child.gameObject.activeSelf)
+            {
+                InventoryItemController child2 = child.GetComponent<InventoryItemController>();
+                if (child2.serverLock != child2.clientLock)
+                {
+                    itemArray[i].itemID = child2.userInventData.item_id;
+                    itemArray[i].isLock = child2.clientLock;
+                    i++;
+                }
+            }
+
+        Array.Resize<LockItems>(ref itemArray, i);
+        UpdateInventoryLock(itemArray);
         MainController.Instance().CloseInventory();
         Destroy(transform.parent.gameObject);
     }

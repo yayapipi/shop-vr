@@ -142,9 +142,23 @@ public class InventoryThread
             if (uinvent.user_id > 0)
             {
                 if (uinvent.amount > amount)
+                {
                     sqlConnection.Up_userinvent(userData.id, sitems[0].item_id, uinvent.amount - amount);
+                    sqlConnection.Up_users(userData.id, userData.money + sitems[0].cost * amount);
+                    if(amount > 1)
+                        EventManager.SetMessage(amount + " item", "has been sold");
+                    else
+                        EventManager.SetMessage(amount + " items", "have been sold");
+                }
                 else if(uinvent.amount == amount)
+                {
                     sqlConnection.Del_userinvent(userData.id, sitems[0].item_id);
+                    sqlConnection.Up_users(userData.id, userData.money + sitems[0].cost * amount);
+                    if (amount > 1)
+                        EventManager.SetMessage(amount + " item", "has been sold");
+                    else
+                        EventManager.SetMessage(amount + " items", "have been sold");
+                }
                 else
                     EventManager.SetMessage("Not enough item", "For your sell");
             }
@@ -471,6 +485,31 @@ public class PutBackThread
         /*
         if (callbackDelegate != null)
             UnityMainThreadDispatcher.Instance().Enqueue(callbackDelegate);*/
+    }
+}
+
+public class UpdateInventoryLockThread
+{
+    private sqlapi sqlConnection;
+    private int userID;
+    private LockItems[] itemArray;
+
+    public UpdateInventoryLockThread(LockItems[] itemArray)
+    {
+        sqlConnection = MainController.getSqlConnection();
+        userID = MainController.GetUserID();
+        this.itemArray = itemArray;
+    }
+
+    public void UpdateInventoryLock()
+    {
+        //update database here
+        foreach (LockItems items in itemArray)
+        {
+            userinvent invent = sqlConnection.getuserinvent(userID, items.itemID);
+            if(invent.user_id > 0)
+                sqlConnection.Up_userinventlock(userID, items.itemID, items.isLock);
+        }
     }
 }
 

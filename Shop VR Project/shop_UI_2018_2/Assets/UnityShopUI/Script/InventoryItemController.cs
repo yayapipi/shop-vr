@@ -10,10 +10,14 @@ public class InventoryItemController : MonoBehaviour
 
     private Text amountText;
     private int amount;
-    private userinventory userInventData;
+    private GameObject Lock;
+    private GameObject UnLock;
+    public userinventory userInventData;
     private shopcartitems shopCartItemsData;
     private GameObject newObj;
     private bool isOpenCart;
+    public bool serverLock;
+    public bool clientLock;
 
     public void Set(userinventory data)
     {
@@ -21,34 +25,23 @@ public class InventoryItemController : MonoBehaviour
         userInventData = data;
         transform.Find("name").gameObject.GetComponent<Text>().text = userInventData.name;
         transform.Find("amount").gameObject.GetComponent<Text>().text = (" "+(userInventData.amount));
+        Lock = transform.Find("lock").gameObject;
+        UnLock = transform.Find("unlock").gameObject;
 
         //Load picture
         StartCoroutine(LoadTextureToObject("http://140.123.101.103:88/project/public/" + userInventData.pic_url, GetComponentInChildren<RawImage>()));
-    }
-
-    public void Set(shopcartitems data)
-    {
-        //set
-        shopCartItemsData = data;
-        transform.Find("name").gameObject.GetComponent<Text>().text = shopCartItemsData.name;
-        transform.Find("cost").gameObject.GetComponent<Text>().text = ("$ " + shopCartItemsData.cost);
-
-        amountText = transform.Find("amount").GetComponent<Text>();
-        amount = data.amount;
-        amountText.text = amount.ToString();
-        Debug.Log(shopCartItemsData.pic_url);
-        //Load picture
-        StartCoroutine(LoadTextureToObject("http://140.123.101.103:88/project/public/" + shopCartItemsData.pic_url, GetComponentInChildren<RawImage>()));
-    }
-
-    public void SubmitAmount(int newAmount)
-    {
-        if (amount != newAmount)
+        //Lock
+        if (userInventData.locked)
         {
-            CartController.Instance().UpdateTotalCost(shopCartItemsData.cost * (newAmount - amount));
-            amount = newAmount;
-            amountText.text = amount.ToString();
-            shopCartItemsData.amount = newAmount;
+            Lock.SetActive(true);
+            serverLock = true;
+            clientLock = true;
+        }
+        else
+        {
+            serverLock = false;
+            clientLock = false;
+            UnLock.SetActive(true);
         }
     }
 
@@ -56,9 +49,24 @@ public class InventoryItemController : MonoBehaviour
     {
         Transform spawnPoint = InventoryController.Instance().itemInformationSpawnPoint;
         newObj = Instantiate(shopItemInformationPrefab, spawnPoint.position, spawnPoint.rotation, InventoryController.Instance().GetSubUI());
-        newObj.GetComponentInChildren<ShopItemInformationController>().Set(userInventData);
+        newObj.GetComponentInChildren<ShopItemInformationController>().Set(userInventData, clientLock);
     }
-    
+
+    public void SetLock()
+    {
+        if (clientLock)
+        {
+            clientLock = false;
+            Lock.SetActive(false);
+            UnLock.SetActive(true);
+        }
+        else
+        {
+            clientLock = true;
+            Lock.SetActive(true);
+            UnLock.SetActive(false);
+        }
+    }
 
     //Download and load texture
     private IEnumerator LoadTextureToObject(string URL, RawImage img)
@@ -85,4 +93,16 @@ public class InventoryItemController : MonoBehaviour
 
         GetComponent<Animation>().Play("item_panel");
     }
+
+    void OnDestroy()
+    {
+        /*
+        if (serverLock != clientLock)
+        {
+            Debug.Log("update lock : item_id = " + userInventData.item_id);
+            InventoryController.UpdateInventoryLock(userInventData.item_id, clientLock);
+        }
+         * */
+    }
+    
 }

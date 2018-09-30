@@ -769,6 +769,25 @@ public class sqlapi
         return false;
     }
 
+    public bool Up_userinventlock(int userid, int itemid, bool isLock)
+    {
+        string tables = "user_inventories";
+        try
+        {
+            //Debug.Log("inventamount:" + amount);
+            //SqlAccess sql = new SqlAccess();
+            sql.UpdateInto(tables, new string[] { "locked" }, new string[] { isLock.ToString() },
+                new string[] { "user_id", "item_id" }, new string[] { userid.ToString(), itemid.ToString() });
+            //sql.Close();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Error = e.Message;
+        }
+        return false;
+    }
+
     public bool Up_shopcart(int userid, int itemid, int amount)
     {
         string tables = "shop_carts";

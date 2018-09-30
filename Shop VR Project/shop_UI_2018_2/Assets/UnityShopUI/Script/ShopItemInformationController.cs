@@ -19,13 +19,15 @@ public class ShopItemInformationController : MonoBehaviour {
     private int maxAmount;
     private int isOpen; //0 not open 1 open shop 2 open cart 3 open invent
     private ShopItemController shopItemController;
+    private bool isLock;
 
-    public void Set(userinventory data)
+    public void Set(userinventory data, bool clientLock)
     {
         //initialize
         isOpen = 3;
         minAmount = 1;
         maxAmount = 100;
+        isLock = clientLock;
 
         //set
         amount = minAmount;
@@ -138,7 +140,16 @@ public class ShopItemInformationController : MonoBehaviour {
     public void Sell()
     {
         gameObject.SetActive(false);
-        InventoryController.Sell(itemID, amount, Close);
+        if (isLock)
+        {
+            EventManager.SetMessage("Item locked", "Can't not sell");
+            InventoryController.Instance().ShowMessage();
+            Close();
+        }
+        else
+        {
+            InventoryController.Sell(itemID, amount, Close);
+        }
     }
 
     private void GetShopItemPics(int itemID)
@@ -244,6 +255,7 @@ public class ShopItemInformationController : MonoBehaviour {
             mobj.AddComponent<VRTK.Highlighters.VRTK_OutlineObjectCopyHighlighter>();
             mobj.GetComponent<Model_Rotate>().enabled = false;
             mobj.tag = "Model";
+            mobj.AddComponent<Rigidbody>().isKinematic = true;
         }
         ShopController.Grab(itemID);
 
