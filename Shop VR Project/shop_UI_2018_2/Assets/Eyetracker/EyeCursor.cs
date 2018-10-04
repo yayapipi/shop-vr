@@ -4,12 +4,10 @@ using UnityEngine.UI;
 using aGlassDKII;
 
 public class EyeCursor : MonoBehaviour {
-	GameGaze gaze;
 	public GameObject cursor;
 	float x, y;
     void Start()
     {
-		gaze = this.GetComponent<GameGaze>();
     }
 
 	void Update () {
