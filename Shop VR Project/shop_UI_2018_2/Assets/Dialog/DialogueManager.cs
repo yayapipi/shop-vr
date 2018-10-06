@@ -4,35 +4,58 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class DialogueManager : MonoBehaviour {
+    [Header("OBJECT")]
+    public GameObject notificationObject;
+    private Animator notificationAnimator;
+    private Text title;
+    private Text description;
 
-	public Text nameText;
-	public Text dialogueText;
-
-	public Animator animator;
+    private Coroutine Coroutine;
 
     private Dialogue[] dialogue;
 
-	private Queue<string> sentences;
+    private Queue<string> sentences;
 
-	// Use this for initialization
-	void Start () {
-		sentences = new Queue<string>();
+    // Use this for initialization
+    void Start()
+    {
+        sentences = new Queue<string>();
 
         dialogue = new Dialogue[] {
-            new Dialogue("shop", new string[] { "open the shop" }),
-            new Dialogue("inventory", new string[] { "open the inventory" })
+            new Dialogue("Shop", new string[] {"open the shop"}),
+            new Dialogue("Inventory", new string[] { "open the inventory" }),
+            new Dialogue("View", new string[] { "rotate view" }),
+            new Dialogue("Setting", new string[] { "open setting menu" }),
+            new Dialogue("Scale", new string[] { "scale the object" }),
+            new Dialogue("Rotate", new string[] { "rotate the object" }),
+            new Dialogue("Put back", new string[] { "put back the object" }),
+            new Dialogue("Draw", new string[] { "draw on the object" }),
         };
-	}
 
-	public void StartDialogue (Dialogue dialogue)
+        notificationAnimator = notificationObject.GetComponent<Animator>();
+        title = notificationObject.transform.Find("Title").GetComponent<Text>();
+        description = notificationObject.transform.Find("Description").GetComponent<Text>();
+    }
+    /*
+    public void ShowNotification()
+    {
+        //notificationObject.SetActive(true);
+        titleObject.text = titleText;
+        descriptionObject.text = descriptionText;
+
+        notificationAnimator.Play(animationNameIn);
+
+    }
+    */
+	public void StartDialogue (int index)
 	{
-		animator.SetBool("IsOpen", true);
+		title.text = dialogue[index].name;
+        notificationAnimator.SetBool("IsOpen", true);
+        notificationAnimator.Play("Fade Effect");
 
-		nameText.text = dialogue.name;
+        sentences.Clear();
 
-		sentences.Clear();
-
-		foreach (string sentence in dialogue.sentences)
+		foreach (string sentence in dialogue[index].sentences)
 		{
 			sentences.Enqueue(sentence);
 		}
@@ -42,30 +65,40 @@ public class DialogueManager : MonoBehaviour {
 
 	public void DisplayNextSentence ()
 	{
-		if (sentences.Count == 0)
+        if (sentences.Count == 0)
 		{
-			EndDialogue();
-			return;
+            notificationAnimator.SetBool("IsOpen", false);
+            return;
 		}
 
 		string sentence = sentences.Dequeue();
-		StopAllCoroutines();
-		StartCoroutine(TypeSentence(sentence));
+        if(Coroutine != null)
+        {
+            StopCoroutine(Coroutine);
+        }
+        Coroutine = StartCoroutine(TypeSentence(sentence));
 	}
 
 	IEnumerator TypeSentence (string sentence)
 	{
-		dialogueText.text = "";
-		foreach (char letter in sentence.ToCharArray())
+		description.text = "";
+
+        yield return new WaitForSeconds(0.2f);
+
+        foreach (char letter in sentence.ToCharArray())
 		{
-			dialogueText.text += letter;
+			description.text += letter;
 			yield return null;
 		}
-	}
+        yield return new WaitForSeconds(2f);
+        DisplayNextSentence();
+    }
 
+    /*
 	void EndDialogue()
 	{
 		animator.SetBool("IsOpen", false);
 	}
+    */
 
 }
