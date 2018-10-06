@@ -12,6 +12,7 @@ public class GameGaze : MonoBehaviour
     public delegate void EyeTrackerEventManager();
     public static event EyeTrackerEventManager EyeClose;
     public static event EyeTrackerEventManager EyeOpen;
+    public static float x, y;
 
     void Start ()
 	{
@@ -27,10 +28,10 @@ public class GameGaze : MonoBehaviour
 		}
         if (aGlass.Instance.GetEyeValid())
         {
-            //print(aGlass.Instance.GetGazePoint().x);
-            //print(aGlass.Instance.GetGazePoint().y);
+            x = aGlass.Instance.GetGazePoint().x;
+            y = aGlass.Instance.GetGazePoint().y;
             eyeClose_last = eyeClose;
-            eyeClose = (aGlass.Instance.GetGazePoint().x <= 0 && aGlass.Instance.GetGazePoint().y <= 0);
+            eyeClose = (x <= 0 && y <= 0);
             
             if (eyeClose && !eyeClose_last)
             {

@@ -313,6 +313,9 @@ public class MainController : MonoBehaviour {
             case 2:
                 currentPointerCamera = EyetrackerPointerCamera;
                 break;
+            case 3:
+                currentPointerCamera = KeyboardPointerCamera;
+                break;
         }
 
         if(UIPointerEvent != null)
