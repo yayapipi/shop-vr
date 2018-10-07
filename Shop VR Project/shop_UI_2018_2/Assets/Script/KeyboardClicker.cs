@@ -194,21 +194,24 @@ public class KeyboardClicker : MonoBehaviour {
             }
             else if (Input.GetMouseButtonUp(0))
             {
-                if (lastPointerDownObj.GetComponent<Selectable>())
+                if(lastPointerDownObj != null)
                 {
-                    if (lastPointerDownObj == rayCastObj)
+                    if (lastPointerDownObj.GetComponent<Selectable>())
                     {
-                        //UI submit
-                        ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
+                        if (lastPointerDownObj == rayCastObj)
+                        {
+                            //UI submit
+                            ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
+                        }
+
+                        //UI button up
+                        ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
+
+                        //StopAutoClick
+                        CancelInvoke("AutoClicker");
+
+                        lastPointerDownObj = null;
                     }
-
-                    //UI button up
-                    ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
-
-                    //StopAutoClick
-                    CancelInvoke("AutoClicker");
-
-                    lastPointerDownObj = null;
                 }
             }
         }
