@@ -23,12 +23,12 @@ public class TexturePainter : MonoBehaviour {
 	int brushCounter=0,MAX_BRUSH_COUNT=1000; //To avoid having millions of brushes
 	bool saving=false; //Flag to check if we are saving the texture
 
-    private SteamVR_TrackedController ctl;
+    public  SteamVR_TrackedController ctl;
 
-	
 	void Update () {
 		brushColor = ColorSelector.GetColor ();	//Updates our painted color with the selected color
-		if (Input.GetMouseButton(0)) {
+        if(ctl.triggerPressed)  {
+	//	if (Input.GetMouseButton(0)) {
 			DoAction();
 		}
 		UpdateBrushCursor ();
@@ -75,7 +75,8 @@ public class TexturePainter : MonoBehaviour {
 	//Returns the position on the texuremap according to a hit in the mesh collider
 	bool HitTestUVPosition(ref Vector3 uvWorldPosition){
 		RaycastHit hit;
-		Vector3 cursorPos = new Vector3 (Input.mousePosition.x, Input.mousePosition.y, 0.0f);
+		//Vector3 cursorPos = new Vector3 (Input.mousePosition.x, Input.mousePosition.y, 0.0f);
+        Vector3 cursorPos = new Vector3(Screen.width/2, Screen.height/2, 0.0f);
 		Ray cursorRay=sceneCamera.ScreenPointToRay (cursorPos);
 		if (Physics.Raycast(cursorRay,out hit,200)){
 			MeshCollider meshCollider = hit.collider as MeshCollider;
