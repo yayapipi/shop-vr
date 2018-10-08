@@ -5,7 +5,7 @@
 
     public class VRTKExample_PointerObjectHighlighterActivator : MonoBehaviour
     {
-        public VRTK_DestinationMarker pointer;
+        public Transform pointer;
         public Color hoverColor = Color.cyan;
         public Color selectColor = Color.yellow;
         public bool logEnterEvent = true;
@@ -28,47 +28,6 @@
 
         void Update()
         {
-            /*
-            scanActivity = scanActivity|controller.triggerPressDown;
-
-            //Deselect
-            if (controller.triggerPressed && mainController.GetIsSelect() &&  && scanActivity && mainController.obj_point != null)
-            {
-                mainController.obj_point.transform.parent = mainController.obj.transform;
-                ToggleHighlight(mainController.obj_point.transform, Color.clear);
-                mainController.obj_point = null;
-                mainController.SetIsSelect(false);
-                scanActivity = false;
-            }
-            */
-            //DeGrab
-
-           //isHolding = pointer.GetComponent<VRTK_Pointer>().isActiveBtnPress;
-           /*if (MainController.GetIsSelect())
-           {
-               if (MainController.isScale)
-               {
-                    if (controller.dirY > 0.7)
-                    {
-                        MainController.obj_point.transform.localScale += new Vector3(1, 1, 1) * Time.deltaTime;
-                    }
-                    else if (controller.dirY < -0.7)
-                    {
-                        MainController.obj_point.transform.localScale -= new Vector3(1, 1, 1) * Time.deltaTime;
-                    }
-                }
-               if (MainController.isRotate)
-               {
-                    if (controller.dirX > 0.7)
-                    {
-                        MainController.obj_point.transform.localEulerAngles -= new Vector3(0, rotate_speed, 0) * Time.deltaTime;
-                    }
-                    else if (controller.dirX < -0.7)
-                    {
-                        MainController.obj_point.transform.localEulerAngles += new Vector3(0, rotate_speed, 0) * Time.deltaTime;
-                    }
-                }
-           }*/
         }
 
         private void RTriggerClickDown()
@@ -140,7 +99,7 @@
 
         protected virtual void OnEnable()
         {
-            pointer = (pointer == null ? GetComponent<VRTK_DestinationMarker>() : pointer);
+            //pointer = (pointer == null ? GetComponent<VRTK_DestinationMarker>() : pointer);
 
             if (pointer != null)
             {
@@ -259,7 +218,7 @@
             else if (mainController.obj_point == target)
             {
                 //Grab
-                mainController.obj_point.transform.parent = pointer.transform;
+                mainController.obj_point.transform.parent = pointer;
                 mainController.isGrab = true;
             }
         }
