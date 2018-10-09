@@ -5,7 +5,7 @@
 
     public class VRTKExample_PointerObjectHighlighterActivator : MonoBehaviour
     {
-        public Transform pointer;
+        private Transform objParent;
         public Color hoverColor = Color.cyan;
         public Color selectColor = Color.yellow;
         public bool logEnterEvent = true;
@@ -24,6 +24,7 @@
         void Start()
         {
             mainController = MainController.Instance();
+            ChangeObjParent();
         }
 
         void Update()
@@ -32,88 +33,51 @@
 
         private void RTriggerClickDown()
         {
-            /*
-            if (KeyboardClicker.rayCastObj != null && KeyboardClicker.rayCastObj.tag == "Model" && scanActivity)
+            if (mainController.UIPointerState == 1)
             {
-                Debug.Log("in");
-                if (!mainController.GetIsSelect())
-                {
-                    //Select
-                    ToggleHighlight(KeyboardClicker.rayCastObj.transform, selectColor);
-                    mainController.obj_point = KeyboardClicker.rayCastObj;
-                    mainController.SetIsSelect(true);
-                    scanActivity = false;
-                }
-                else if (mainController.obj_point == KeyboardClicker.rayCastObj)
-                {
-                    //Grab
-                    mainController.obj_point.transform.parent = pointer.transform;
-                    mainController.isGrab = true;
-                    scanActivity = false;
-                }
+
             }
-            else if (KeyboardClicker.rayCastObj != null && scanActivity)
-            {
-                Debug.Log("out");
-                Debug.Log(KeyboardClicker.rayCastObj.name);
-            }
-            else
-            {
-                Debug.Log("outout");
-                Debug.Log("scanActivity = " + scanActivity);
-                if (KeyboardClicker.rayCastObj == null)
-                {
-                    Debug.Log("raycastobj = null");
-                }
-                else
-                    Debug.Log("raycastobj name = " + KeyboardClicker.rayCastObj.name);
-            }
-             * */
         }
 
         private void RTriggerClickUp()
         {
-            //DeGrab
-            if (mainController.isGrab && mainController.obj_point != null)
+            if (mainController.UIPointerState == 1)
             {
-                mainController.obj_point.transform.parent = mainController.obj.transform;
-                mainController.isGrab = false;
+                //DeGrab
+                if (mainController.isGrab && mainController.obj_point != null)
+                {
+                    mainController.obj_point.transform.parent = mainController.obj.transform;
+                    mainController.isGrab = false;
+                }
             }
         }
 
         private void RTriggerPressDown()
         {
+            if (mainController.UIPointerState == 1)
+            {
+
+            }
         }
 
         private void RGripClickDown()
         {
-            //Deselect
-            if (RadioMenuController.getPanelType() == 5 && mainController.GetIsSelect() && !mainController.isGrab && mainController.obj_point != null)
+            if (mainController.UIPointerState == 1)
             {
-                mainController.obj_point.transform.parent = mainController.obj.transform;
-                ToggleHighlight(mainController.obj_point.transform, Color.clear);
-                mainController.obj_point = null;
-                mainController.SetIsSelect(false);
+                //Deselect
+                if (RadioMenuController.getPanelType() == 5 && mainController.GetIsSelect() && !mainController.isGrab && mainController.obj_point != null)
+                {
+                    mainController.obj_point.transform.parent = mainController.obj.transform;
+                    ToggleHighlight(mainController.obj_point.transform, Color.clear);
+                    mainController.obj_point = null;
+                    mainController.SetIsSelect(false);
+                }
             }
         }
 
         protected virtual void OnEnable()
         {
-            //pointer = (pointer == null ? GetComponent<VRTK_DestinationMarker>() : pointer);
-
-            if (pointer != null)
-            {
-                /*
-                pointer.DestinationMarkerEnter += DestinationMarkerEnter;
-                pointer.DestinationMarkerHover += DestinationMarkerHover;
-                pointer.DestinationMarkerExit += DestinationMarkerExit;
-                pointer.DestinationMarkerSet += DestinationMarkerSet;
-                 */
-            }
-            else
-            {
-                VRTK_Logger.Error(VRTK_Logger.GetCommonMessage(VRTK_Logger.CommonMessageKeys.REQUIRED_COMPONENT_MISSING_FROM_GAMEOBJECT, "VRTKExample_PointerObjectHighlighterActivator", "VRTK_DestinationMarker", "the Controller Alias"));
-            }
+            MainController.UIPointerEvent += ChangeEventCamera;
 
             MainController.RTriggerClickDown += RTriggerClickDown;
             MainController.RTriggerClickUp += RTriggerClickUp;
@@ -127,15 +91,7 @@
 
         protected virtual void OnDisable()
         {
-            if (pointer != null)
-            {
-                /*
-                pointer.DestinationMarkerEnter -= DestinationMarkerEnter;
-                pointer.DestinationMarkerHover -= DestinationMarkerHover;
-                pointer.DestinationMarkerExit -= DestinationMarkerExit;
-                pointer.DestinationMarkerSet -= DestinationMarkerSet;
-                */
-            }
+            MainController.UIPointerEvent -= ChangeEventCamera;
 
             MainController.RTriggerClickDown -= RTriggerClickDown;
             MainController.RGripClickDown -= RTriggerClickUp;
@@ -205,21 +161,94 @@
             }
         }*/
 
+        private void ChangeEventCamera(Camera eventCamera)
+        {
+            
+        }
+
+        private void ChangeObjParent()
+        {
+            switch (mainController.UIPointerState)
+            {
+                case 0:
+                    objParent = null;
+                    break;
+                case 1:
+                    objParent = mainController.ControllerPointerCamera.transform;
+                    break;
+                case 2:
+                    objParent = mainController.cameraEye;
+                    break;
+                case 3:
+                    objParent = mainController.cameraEye;
+                    break;
+            }
+        }
+
         //The tag is Model already, no need to compare tag
         private void PointerSet(GameObject target)
         {
-            if (!mainController.GetIsSelect())
+            switch (mainController.UIPointerState)
             {
-                //Select
-                ToggleHighlight(target.transform, selectColor);
-                mainController.obj_point = target;
-                mainController.SetIsSelect(true);
-            }
-            else if (mainController.obj_point == target)
-            {
-                //Grab
-                mainController.obj_point.transform.parent = pointer;
-                mainController.isGrab = true;
+                case 0:
+                    break;
+                case 1:
+                    if (!mainController.GetIsSelect())
+                    {
+                        //Select
+                        ToggleHighlight(target.transform, selectColor);
+                        mainController.obj_point = target;
+                        mainController.SetIsSelect(true);
+                    }
+                    else if (mainController.obj_point == target)
+                    {
+                        //Grab
+                        mainController.obj_point.transform.parent = objParent;
+                        mainController.isGrab = true;
+                    }
+                    break;
+                case 2:
+                    if (!mainController.GetIsSelect())
+                    {
+                        //Select
+                        ToggleHighlight(target.transform, selectColor);
+                        mainController.obj_point = target;
+                        mainController.SetIsSelect(true);
+                    }
+                    else if (mainController.obj_point == target && !mainController.isGrab)
+                    {
+                        //Grab
+                        mainController.obj_point.transform.parent = objParent;
+                        mainController.isGrab = true;
+                    }
+                    else if (mainController.obj_point == target && mainController.isGrab)
+                    {
+                        //DeGrab
+                        mainController.obj_point.transform.parent = mainController.obj.transform;
+                        mainController.isGrab = false;
+                    }
+                    break;
+                case 3:
+                    if (!mainController.GetIsSelect())
+                    {
+                        //Select
+                        ToggleHighlight(target.transform, selectColor);
+                        mainController.obj_point = target;
+                        mainController.SetIsSelect(true);
+                    }
+                    else if (mainController.obj_point == target && !mainController.isGrab)
+                    {
+                        //Grab
+                        mainController.obj_point.transform.parent = objParent;
+                        mainController.isGrab = true;
+                    }
+                    else if (mainController.obj_point == target && mainController.isGrab)
+                    {
+                        //DeGrab
+                        mainController.obj_point.transform.parent = mainController.obj.transform;
+                        mainController.isGrab = false;
+                    }
+                    break;
             }
         }
 
@@ -235,21 +264,6 @@
         {
             if (!mainController.GetIsSelect())
                 ToggleHighlight(target.transform, Color.clear);
-        }
-
-        private void EyeEnter()
-        {
-
-        }
-
-        private void EyeExit()
-        {
-
-        }
-
-        private void EyeSet()
-        {
-
         }
 
         protected virtual void ToggleHighlight(Transform target, Color color)

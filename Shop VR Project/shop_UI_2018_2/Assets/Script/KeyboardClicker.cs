@@ -45,6 +45,7 @@ public class KeyboardClicker : MonoBehaviour {
     {
         mainController = MainController.Instance();
         m_EventSystem = EventSystem.current;
+        EnablePhysicsRaycaster();
 
         pointer = new PointerEventData(EventSystem.current);
         pointer.button = PointerEventData.InputButton.Left;
@@ -78,8 +79,25 @@ public class KeyboardClicker : MonoBehaviour {
 
     private void ChangeState(Camera eventCamera)
     {
+        EnablePhysicsRaycaster();
         rayCastObj = null;
         lastPointerDownObj = null;
+    }
+
+    private void EnablePhysicsRaycaster()
+    {
+        if (mainController.ControllerPointerCamera)
+        {
+            mainController.ControllerPointerCamera.GetComponent<PhysicsRaycaster>().enabled = (mainController.UIPointerState == 1);
+        }
+        if (mainController.EyetrackerPointerCamera)
+        {
+            mainController.EyetrackerPointerCamera.GetComponent<PhysicsRaycaster>().enabled = (mainController.UIPointerState == 2);
+        }
+        if (mainController.KeyboardPointerCamera)
+        {
+            mainController.KeyboardPointerCamera.GetComponent<PhysicsRaycaster>().enabled = (mainController.UIPointerState == 3);
+        }
     }
 
     //Controller
