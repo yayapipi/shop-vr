@@ -47,7 +47,7 @@ public class MainController : MonoBehaviour {
     public static event ControllerEventManager RGripClickDown;
 
     //Canvas UI pointer event
-    public delegate void CanvasUIPointerEventManager(Camera eventCamera, int state);
+    public delegate void CanvasUIPointerEventManager(Camera eventCamera);
     public static event CanvasUIPointerEventManager UIPointerEvent;
     public int UIPointerState = 1;
 
@@ -319,6 +319,6 @@ public class MainController : MonoBehaviour {
         }
 
         if(UIPointerEvent != null)
-            UIPointerEvent(currentPointerCamera, UIPointerState);
+            UIPointerEvent(currentPointerCamera);
     }
 }

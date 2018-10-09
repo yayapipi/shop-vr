@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.XR;
 
 public class KeyboardClicker : MonoBehaviour {
-    private int state;
+    private MainController mainController;
     private EventSystem m_EventSystem;
     public static GameObject rayCastObj;
     private GameObject rayCastObj_last = null;
@@ -43,6 +43,7 @@ public class KeyboardClicker : MonoBehaviour {
 
     void Start()
     {
+        mainController = MainController.Instance();
         m_EventSystem = EventSystem.current;
 
         pointer = new PointerEventData(EventSystem.current);
@@ -50,13 +51,11 @@ public class KeyboardClicker : MonoBehaviour {
         pointer.position = new Vector2(Screen.width / 2, Screen.height / 2);
 
         raycastResults = new List<RaycastResult>();
-
-        state = MainController.Instance().UIPointerState;
     }
 
     void Update()
     {
-        switch (state)
+        switch (mainController.UIPointerState)
         {
             case 0:
                 //none
@@ -77,9 +76,8 @@ public class KeyboardClicker : MonoBehaviour {
         }
     }
 
-    private void ChangeState(Camera eventCamera, int toState)
+    private void ChangeState(Camera eventCamera)
     {
-        state = toState;
         rayCastObj = null;
         lastPointerDownObj = null;
     }
@@ -87,7 +85,7 @@ public class KeyboardClicker : MonoBehaviour {
     //Controller
     private void ControllerPointerDown()
     {
-        if (state == 1 && rayCastObj != null)
+        if (mainController.UIPointerState == 1 && rayCastObj != null)
         {
             if (rayCastObj.GetComponent<Selectable>())
             {
@@ -109,7 +107,7 @@ public class KeyboardClicker : MonoBehaviour {
 
     private void ControllerPointerUp()
     {
-        if (state == 1 && lastPointerDownObj != null)
+        if (mainController.UIPointerState == 1 && lastPointerDownObj != null)
         {
             if (lastPointerDownObj.GetComponent<Selectable>())
             {
@@ -133,7 +131,7 @@ public class KeyboardClicker : MonoBehaviour {
     //eyetracker
     private void EyeClose()
     {
-        if (state == 2)
+        if (mainController.UIPointerState == 2)
         {
             timer = Time.time;
         }
@@ -141,7 +139,7 @@ public class KeyboardClicker : MonoBehaviour {
 
     private void EyeOpen()
     {
-        if (state == 2 && (Time.time - timer < 2))
+        if (mainController.UIPointerState == 2 && (Time.time - timer < 2))
         {
             StartCoroutine(EyeClickEnumerator());
         }
@@ -151,7 +149,7 @@ public class KeyboardClicker : MonoBehaviour {
     {
         yield return new WaitForSeconds(0.05f);
 
-        if (state == 2 && rayCastObj != null)
+        if (mainController.UIPointerState == 2 && rayCastObj != null)
         {
             if (rayCastObj.GetComponent<Selectable>())
             {

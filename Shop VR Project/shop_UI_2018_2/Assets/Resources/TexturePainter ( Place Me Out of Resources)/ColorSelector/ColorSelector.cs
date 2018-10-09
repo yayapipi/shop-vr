@@ -7,9 +7,10 @@ using UnityEngine;
 using System.Collections;
 
 public class ColorSelector : MonoBehaviour {
-	public Camera refCamera;
 	public GameObject selectorImage,outerCursor,innerCursor;
 	public SpriteRenderer finalColorSprite;
+    private Camera refCamera;
+    private MainController mainController;
 
 	Color finalColor, selectedColor;
 	float selectorAngle=0.0f;
@@ -19,34 +20,72 @@ public class ColorSelector : MonoBehaviour {
 	void Awake () {
 		myslf = this;
 	}
+
+    void OnEnable()
+    {
+        MainController.UIPointerEvent += ChangeEventCamera;
+    }
+
+    void OnDisable()
+    {
+        MainController.UIPointerEvent -= ChangeEventCamera;
+    }
+
 	void Start () {
+        mainController = MainController.Instance();
+        refCamera = MainController.currentPointerCamera;
+
 		if (refCamera == null)
 			refCamera = Camera.main;
+
 		selectedColor = Color.red;
 		SelectInnerColor (Vector2.zero);
 		finalColorSprite.color=finalColor;
-
 	}
 
 	void Update () {
-		if (Input.GetMouseButton (0)) {
-			UserInputUpdate ();
-		}
+        switch (mainController.UIPointerState)
+        {
+            case 0:
+                break;
+            case 1: //controller
+                if (mainController.RTriggerClick)
+                {
+			        UserInputUpdate ();
+		        }
+                break;
+            case 2: //eyetracker
+                break;
+            case 3: //keyboard
+                if (Input.GetMouseButton(0))
+                {
+			        UserInputUpdate ();
+		        }
+                break;
+        }
 	}
 
+    void ChangeEventCamera(Camera eventCamera)
+    {
+        refCamera = eventCamera;
+    }
+
 	void UserInputUpdate(){
-		Vector3 cursorPos = new Vector3 (Input.mousePosition.x, Input.mousePosition.y, (transform.position.z - refCamera.transform.position.z));
+        Vector3 cursorPos = new Vector3(Screen.width / 2, Screen.height / 2, 0.0f);
 		Ray cursorRay = refCamera.ScreenPointToRay (cursorPos);
 		RaycastHit hit = new RaycastHit ();
 		if(Physics.Raycast(cursorRay,out hit)){
 			Vector3 localPosition=transform.InverseTransformPoint(hit.point);
 			float dist=Vector2.Distance(Vector2.zero,localPosition);
 
-			if(dist>0.22)
-				SelectOuterColor(localPosition);
-			else
-				SelectInnerColor(localPosition);
-
+            if (dist <= 0.22)
+            {
+                SelectInnerColor(localPosition);
+            }
+            else if (dist <= 0.28)
+            {
+                SelectOuterColor(localPosition);
+            }	
 		}
 	}
 	void SelectInnerColor(Vector2 delta){
@@ -60,9 +99,6 @@ public class ColorSelector : MonoBehaviour {
 			finalColorSprite.color=finalColor;
 			innerCursor.transform.localPosition =delta;
 			innerDelta = delta;
-
-		
-
 		}
 
 	}

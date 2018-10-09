@@ -9,7 +9,8 @@ public class RadioMenuController : MonoBehaviour {
     public GameObject ModelPanel;
     public GameObject ModelScalePanel;
     public GameObject ModelRotatePanel;
-    public GameObject rcontroller;
+    public GameObject DrawModule;
+    private GameObject drawModule = null;
     private MainController mainController;
 
     private static int panel_type = 0;
@@ -91,6 +92,9 @@ public class RadioMenuController : MonoBehaviour {
                 ModelRotatePanel.SetActive(false);
                 ModelScalePanel.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 break;
+            case 7:
+                //open draw panel
+                break;
             case 9:
                 //open model rotate panel
                 BasePanel.SetActive(false);
@@ -132,8 +136,24 @@ public class RadioMenuController : MonoBehaviour {
         mainController.OpenInventory();
     }
 
+    public void OpenDraw()
+    {
+        Transform spawnPoint = mainController.cameraEye;
+        openpanel(7);
+
+        if (drawModule == null)
+        {
+            drawModule = Instantiate(DrawModule, new Vector3(spawnPoint.position.x, 0, spawnPoint.position.z), Quaternion.Euler(new Vector3(0, spawnPoint.eulerAngles.y, 0)));
+        }
+    }
+
     private void grip_back()
     {
+        if (panel_type == 7)
+        {
+            Destroy(drawModule);
+        }
+
         if (panel_type % 5 == 0)
         {
             if (panel_type != 0)

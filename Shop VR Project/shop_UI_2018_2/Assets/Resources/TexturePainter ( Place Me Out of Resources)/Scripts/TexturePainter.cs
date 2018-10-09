@@ -12,10 +12,13 @@ using System.Collections;
 public enum Painter_BrushMode{PAINT,DECAL};
 public class TexturePainter : MonoBehaviour {
 	public GameObject brushCursor,brushContainer; //The cursor that overlaps the model and our container for the brushes painted
-	public Camera sceneCamera,canvasCam;  //The camera that looks at the model, and the camera that looks at the canvas.
+    private Camera sceneCamera; //The camera that looks at the model
+    public Camera canvasCam; //the camera that looks at the canvas.
 	public Sprite cursorPaint,cursorDecal; // Cursor for the differen functions 
 	public RenderTexture canvasTexture; // Render Texture that looks at our Base Texture and the painted brushes
 	public Material baseMaterial; // The material of our base texture (Were we will save the painted texture)
+
+    private MainController mainController;
 
 	Painter_BrushMode mode; //Our painter mode (Paint brushes or decals)
 	float brushSize=1.0f; //The size of our brush
@@ -23,16 +26,52 @@ public class TexturePainter : MonoBehaviour {
 	int brushCounter=0,MAX_BRUSH_COUNT=1000; //To avoid having millions of brushes
 	bool saving=false; //Flag to check if we are saving the texture
 
-    public  SteamVR_TrackedController ctl;
+    void OnEnable()
+    {
+        MainController.UIPointerEvent += ChangeEventCamera;
+    }
+
+    void OnDisable()
+    {
+        MainController.UIPointerEvent -= ChangeEventCamera;
+    }
+
+    void Start()
+    {
+        mainController = MainController.Instance();
+        sceneCamera = MainController.currentPointerCamera;
+    }
 
 	void Update () {
 		brushColor = ColorSelector.GetColor ();	//Updates our painted color with the selected color
-        if(ctl.triggerPressed)  {
-	//	if (Input.GetMouseButton(0)) {
-			DoAction();
-		}
-		UpdateBrushCursor ();
+        switch (mainController.UIPointerState)
+        {
+            case 0:
+                break;
+            case 1: //controller
+                if (mainController.RTriggerClick)
+                {
+                    DoAction();
+                }
+                break;
+            case 2: //eyetracker
+                break;
+            case 3: //keyboard
+                if (Input.GetMouseButton(0))
+                {
+                    DoAction();
+                }
+                break;
+        }
+
+        if(sceneCamera)
+            UpdateBrushCursor();
 	}
+
+    void ChangeEventCamera(Camera eventCamera)
+    {
+        sceneCamera = eventCamera;
+    }
 
 	//The main action, instantiates a brush or decal entity at the clicked position on the UV map
 	void DoAction(){	

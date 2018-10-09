@@ -19,7 +19,7 @@ public class CanvasPointerSwitcher : MonoBehaviour {
         MainController.UIPointerEvent -= ChangeEventCamera;
     }
 
-    private void ChangeEventCamera(Camera eventCamera, int state)
+    private void ChangeEventCamera(Camera eventCamera)
     {
         GetComponent<Canvas>().worldCamera = eventCamera;
     }
