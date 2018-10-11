@@ -71,8 +71,8 @@ public class KeyboardClicker : MonoBehaviour {
                 break;
             case 3:
                 //keyboard
-                //RayDetectUI();
-                //MouseDetect();
+                RayDetectUI();
+                MouseDetect();
                 break;
         }
     }
@@ -114,12 +114,12 @@ public class KeyboardClicker : MonoBehaviour {
 
                 //AutoClick
                 InvokeRepeating("AutoClicker", 1.5f, 0.1f);
-            }
+            }/*
             else if (rayCastObj.tag == "Model" && PointerSet != null)
             {
                 //obj submit
                 PointerSet(rayCastObj);
-            }
+            }*/
         }
     }
 
@@ -176,12 +176,12 @@ public class KeyboardClicker : MonoBehaviour {
                 ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
 
                 ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
-            }
+            }/*
             else if (rayCastObj.tag == "Model" && PointerSet != null)
             {
                 //obj submit
                 PointerSet(rayCastObj);
-            }
+            }*/
         }
     }
 
@@ -201,12 +201,12 @@ public class KeyboardClicker : MonoBehaviour {
 
                     //AutoClick
                     InvokeRepeating("AutoClicker", 1.5f, 0.1f);
-                }
+                }/*
                 else if (rayCastObj.tag == "Model" && PointerSet != null)
                 {
                     //obj submit
                     PointerSet(rayCastObj);
-                }
+                }*/
             }
             else if (Input.GetMouseButtonUp(0))
             {
