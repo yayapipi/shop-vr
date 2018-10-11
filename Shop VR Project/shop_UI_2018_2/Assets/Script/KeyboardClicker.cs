@@ -45,7 +45,7 @@ public class KeyboardClicker : MonoBehaviour {
     {
         mainController = MainController.Instance();
         m_EventSystem = EventSystem.current;
-        //EnablePhysicsRaycaster();
+        EnablePhysicsRaycaster();
 
         pointer = new PointerEventData(EventSystem.current);
         pointer.button = PointerEventData.InputButton.Left;
@@ -67,11 +67,11 @@ public class KeyboardClicker : MonoBehaviour {
                 break;
             case 2:
                 //eyetracker
-                //RayDetectUI();
+                RayDetectUIandObj();
                 break;
             case 3:
                 //keyboard
-                RayDetectUI();
+                RayDetectUIandObj();
                 MouseDetect();
                 break;
         }
@@ -79,16 +79,16 @@ public class KeyboardClicker : MonoBehaviour {
 
     private void ChangeState(Camera eventCamera)
     {
-        //EnablePhysicsRaycaster();
+        EnablePhysicsRaycaster();
         rayCastObj = null;
         lastPointerDownObj = null;
     }
-    /*
+    
     private void EnablePhysicsRaycaster()
     {
         if (mainController.ControllerPointerCamera)
         {
-            mainController.ControllerPointerCamera.GetComponent<PhysicsRaycaster>().enabled = (mainController.UIPointerState == 1);
+            //none
         }
         if (mainController.EyetrackerPointerCamera)
         {
@@ -98,7 +98,7 @@ public class KeyboardClicker : MonoBehaviour {
         {
             mainController.KeyboardPointerCamera.GetComponent<PhysicsRaycaster>().enabled = (mainController.UIPointerState == 3);
         }
-    }*/
+    }
 
     //Controller
     private void ControllerPointerDown()
@@ -176,12 +176,12 @@ public class KeyboardClicker : MonoBehaviour {
                 ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
 
                 ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
-            }/*
+            }
             else if (rayCastObj.tag == "Model" && PointerSet != null)
             {
                 //obj submit
                 PointerSet(rayCastObj);
-            }*/
+            }
         }
     }
 
@@ -201,12 +201,12 @@ public class KeyboardClicker : MonoBehaviour {
 
                     //AutoClick
                     InvokeRepeating("AutoClicker", 1.5f, 0.1f);
-                }/*
+                }
                 else if (rayCastObj.tag == "Model" && PointerSet != null)
                 {
                     //obj submit
                     PointerSet(rayCastObj);
-                }*/
+                }
             }
             else if (Input.GetMouseButtonUp(0))
             {
@@ -256,7 +256,7 @@ public class KeyboardClicker : MonoBehaviour {
         //obj filter
         foreach (RaycastResult h in raycastResults)
         {
-            if (h.gameObject.GetComponent<Selectable>()/* || h.gameObject.tag == "Model"*/)
+            if (h.gameObject.GetComponent<Selectable>())
             {
                 hit = true;
                 rayCastObj = h.gameObject;
@@ -278,23 +278,12 @@ public class KeyboardClicker : MonoBehaviour {
                     //UI exit
                     ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
                 }
-                    /*
-                else if (rayCastObj_last && rayCastObj_last.tag == "Model" && PointerExit != null)
-                {
-                    //obj exit
-                    PointerExit(rayCastObj_last);
-                }*/
 
                 if (rayCastObj.GetComponent<Selectable>())
                 {
                     //UI enter
                     ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerEnterHandler);
-                }/*
-                else if (rayCastObj.tag == "Model" && PointerEnter != null)
-                {
-                    //obj enter
-                    PointerEnter(rayCastObj);
-                }*/
+                }
             }
             rayCastObj_last = rayCastObj;
         }
@@ -304,12 +293,7 @@ public class KeyboardClicker : MonoBehaviour {
             {
                 //UI exit
                 ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
-            }/*
-            else if (rayCastObj_last && rayCastObj_last.tag == "Model" && PointerExit != null)
-            {
-                //obj exit
-                PointerExit(rayCastObj_last);
-            }*/
+            }
 
             rayCastObj = null;
             rayCastObj_last = null;
@@ -317,7 +301,7 @@ public class KeyboardClicker : MonoBehaviour {
     }
 
     /* Support hover button, but need to pass pointerEventData argument.*/
-    private void RayDetect()
+    private void RayDetectUIandObj()
     {
         raycastResults.Clear();
         m_EventSystem.RaycastAll(pointer, raycastResults);
@@ -367,6 +351,7 @@ public class KeyboardClicker : MonoBehaviour {
                 {
                     //obj enter
                     PointerEnter(rayCastObj);
+                    Debug.Log("enter");
                 }
             }
             rayCastObj_last = rayCastObj;

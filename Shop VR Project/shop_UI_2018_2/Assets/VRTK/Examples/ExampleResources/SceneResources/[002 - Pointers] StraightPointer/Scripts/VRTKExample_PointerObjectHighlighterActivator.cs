@@ -40,6 +40,10 @@
             {
                 VRTK_Logger.Error(VRTK_Logger.GetCommonMessage(VRTK_Logger.CommonMessageKeys.REQUIRED_COMPONENT_MISSING_FROM_GAMEOBJECT, "VRTKExample_PointerObjectHighlighterActivator", "VRTK_DestinationMarker", "the Controller Alias"));
             }
+
+            KeyboardClicker.PointerSet += PointerSet;
+            KeyboardClicker.PointerEnter += PointerEnter;
+            KeyboardClicker.PointerExit += PointerExit;
         }
 
         protected virtual void OnDisable()
@@ -54,19 +58,28 @@
                 MainController.RTriggerClickUp -= RTriggerClickUp;
                 MainController.RGripClickDown -= RGripClickDown;
             }
+
+            KeyboardClicker.PointerSet -= PointerSet;
+            KeyboardClicker.PointerEnter -= PointerEnter;
+            KeyboardClicker.PointerExit -= PointerExit;
         }
 
         protected virtual void DestinationMarkerEnter(object sender, DestinationMarkerEventArgs e)
         {
-            if (mainController.enablePointerSelect)
-            {
-                if (!mainController.GetIsPointerSelect())
-                    ToggleHighlight(e.target, hoverColor);
-            }
+            PointerEnter(e.target.gameObject);
 
             if (logEnterEvent)
             {
                 DebugLogger(VRTK_ControllerReference.GetRealIndex(e.controllerReference), "POINTER ENTER", e.target, e.raycastHit, e.distance, e.destinationPosition);
+            }
+        }
+
+        private void PointerEnter(GameObject obj)
+        {
+            if (mainController.enablePointerSelect && obj.tag == "Model")
+            {
+                if (!mainController.GetIsPointerSelect())
+                    ToggleHighlight(obj.transform, hoverColor);
             }
         }
 
@@ -80,11 +93,7 @@
 
         protected virtual void DestinationMarkerExit(object sender, DestinationMarkerEventArgs e)
         {
-            if (mainController.enablePointerSelect)
-            {
-                if (!mainController.GetIsPointerSelect())
-                    ToggleHighlight(e.target, Color.clear);
-            }
+            PointerExit(e.target.gameObject);
 
             if (logExitEvent)
             {
@@ -92,9 +101,28 @@
             }
         }
 
+        private void PointerExit(GameObject obj)
+        {
+            if (mainController.enablePointerSelect && obj.tag == "Model")
+            {
+                if (!mainController.GetIsPointerSelect())
+                    ToggleHighlight(obj.transform, Color.clear);
+            }
+        }
+
         protected virtual void DestinationMarkerSet(object sender, DestinationMarkerEventArgs e)
         {
-            if (mainController.enablePointerSelect)
+            PointerSet(e.target.gameObject);
+
+            if (logSetEvent)
+            {
+                DebugLogger(VRTK_ControllerReference.GetRealIndex(e.controllerReference), "POINTER SET", e.target, e.raycastHit, e.distance, e.destinationPosition);
+            }
+        }
+
+        private void PointerSet(GameObject obj)
+        {
+            if (mainController.enablePointerSelect && obj.tag == "Model")
             {
                 switch (mainController.UIPointerState)
                 {
@@ -104,64 +132,60 @@
                         if (!mainController.GetIsPointerSelect())
                         {
                             //Select
-                            ToggleHighlight(e.target, selectColor);
-                            mainController.obj_point = e.target.gameObject;
+                            ToggleHighlight(obj.transform, selectColor);
+                            mainController.obj_point = obj;
                             mainController.SetIsPointerSelect(true);
                         }
-                        else if (mainController.obj_point == e.target.gameObject)
+                        else if (mainController.obj_point == obj)
                         {
                             //Grab
                             mainController.obj_point.transform.parent = objParent;
                             mainController.isPointerGrab = true;
                         }
                         break;
-                    case 2:/*
+                    case 2:
                         if (!mainController.GetIsPointerSelect())
                         {
                             //Select
-                            ToggleHighlight(e.target.transform, selectColor);
-                            mainController.obj_point = e.target.gameObject;
+                            ToggleHighlight(obj.transform, selectColor);
+                            mainController.obj_point = obj;
                             mainController.SetIsPointerSelect(true);
                         }
-                        else if (mainController.obj_point == e.target.gameObject && !mainController.isPointerGrab)
+                        else if (mainController.obj_point == obj && !mainController.isPointerGrab)
                         {
                             //Grab
                             mainController.obj_point.transform.parent = objParent;
                             mainController.isPointerGrab = true;
                         }
-                        else if (mainController.obj_point == e.target.gameObject && mainController.isPointerGrab)
+                        else if (mainController.obj_point == obj && mainController.isPointerGrab)
                         {
                             //DeGrab
                             mainController.obj_point.transform.parent = mainController.obj.transform;
                             mainController.isPointerGrab = false;
-                        }*/
+                        }
                         break;
-                    case 3:/*
+                    case 3:
                         if (!mainController.GetIsPointerSelect())
                         {
                             //Select
-                            ToggleHighlight(e.target, selectColor);
-                            mainController.obj_point = e.target.gameObject;
+                            ToggleHighlight(obj.transform, selectColor);
+                            mainController.obj_point = obj;
                             mainController.SetIsPointerSelect(true);
                         }
-                        else if (mainController.obj_point == e.target.gameObject && !mainController.isPointerGrab)
+                        else if (mainController.obj_point == obj && !mainController.isPointerGrab)
                         {
                             //Grab
                             mainController.obj_point.transform.parent = objParent;
                             mainController.isPointerGrab = true;
                         }
-                        else if (mainController.obj_point == e.target.gameObject && mainController.isPointerGrab)
+                        else if (mainController.obj_point == obj && mainController.isPointerGrab)
                         {
                             //DeGrab
                             mainController.obj_point.transform.parent = mainController.obj.transform;
                             mainController.isPointerGrab = false;
-                        }*/
+                        }
                         break;
                 }
-            }
-            if (logSetEvent)
-            {
-                DebugLogger(VRTK_ControllerReference.GetRealIndex(e.controllerReference), "POINTER SET", e.target, e.raycastHit, e.distance, e.destinationPosition);
             }
         }
 
