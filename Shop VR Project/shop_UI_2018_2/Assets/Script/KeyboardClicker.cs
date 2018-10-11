@@ -63,15 +63,15 @@ public class KeyboardClicker : MonoBehaviour {
                 break;
             case 1:
                 //controller
-                RayDetect();
+                RayDetectUI();
                 break;
             case 2:
                 //eyetracker
-                RayDetect();
+                RayDetectUIandObj();
                 break;
             case 3:
                 //keyboard
-                RayDetect();
+                RayDetectUIandObj();
                 MouseDetect();
                 break;
         }
@@ -83,12 +83,12 @@ public class KeyboardClicker : MonoBehaviour {
         rayCastObj = null;
         lastPointerDownObj = null;
     }
-
+    
     private void EnablePhysicsRaycaster()
     {
         if (mainController.ControllerPointerCamera)
         {
-            mainController.ControllerPointerCamera.GetComponent<PhysicsRaycaster>().enabled = (mainController.UIPointerState == 1);
+            //none
         }
         if (mainController.EyetrackerPointerCamera)
         {
@@ -114,12 +114,12 @@ public class KeyboardClicker : MonoBehaviour {
 
                 //AutoClick
                 InvokeRepeating("AutoClicker", 1.5f, 0.1f);
-            }
+            }/*
             else if (rayCastObj.tag == "Model" && PointerSet != null)
             {
                 //obj submit
                 PointerSet(rayCastObj);
-            }
+            }*/
         }
     }
 
@@ -243,7 +243,65 @@ public class KeyboardClicker : MonoBehaviour {
     }
 
     /* Support hover button, but need to pass pointerEventData argument.*/
-    private void RayDetect()
+    private void RayDetectUI()
+    {
+        raycastResults.Clear();
+        m_EventSystem.RaycastAll(pointer, raycastResults);
+        hit = false;
+
+        //Sort raycast results
+        if (raycastResults.Count > 1)
+            raycastResults.Sort(RaycastComparer);
+
+        //obj filter
+        foreach (RaycastResult h in raycastResults)
+        {
+            if (h.gameObject.GetComponent<Selectable>())
+            {
+                hit = true;
+                rayCastObj = h.gameObject;
+                break;
+            }
+            if (h.gameObject.name == "mask")
+            {
+                rayCastObj = h.gameObject;
+                break;
+            }
+        }
+
+        if (hit)
+        {
+            if (rayCastObj != rayCastObj_last)
+            {
+                if (rayCastObj_last && rayCastObj_last.GetComponent<Selectable>())
+                {
+                    //UI exit
+                    ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
+                }
+
+                if (rayCastObj.GetComponent<Selectable>())
+                {
+                    //UI enter
+                    ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerEnterHandler);
+                }
+            }
+            rayCastObj_last = rayCastObj;
+        }
+        else
+        {
+            if (rayCastObj_last && rayCastObj_last.GetComponent<Selectable>())
+            {
+                //UI exit
+                ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
+            }
+
+            rayCastObj = null;
+            rayCastObj_last = null;
+        }
+    }
+
+    /* Support hover button, but need to pass pointerEventData argument.*/
+    private void RayDetectUIandObj()
     {
         raycastResults.Clear();
         m_EventSystem.RaycastAll(pointer, raycastResults);
@@ -293,6 +351,7 @@ public class KeyboardClicker : MonoBehaviour {
                 {
                     //obj enter
                     PointerEnter(rayCastObj);
+                    Debug.Log("enter");
                 }
             }
             rayCastObj_last = rayCastObj;
