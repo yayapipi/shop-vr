@@ -123,7 +123,7 @@ public class RadioMenuController : MonoBehaviour {
         ShopController.PutBack(mainController.obj_point.GetComponent<id>().item_id);
         openpanel(0);
         Destroy(mainController.obj_point);
-        mainController.SetIsSelect(false);
+        mainController.SetIsPointerSelect(false);
     }
 
     public void Openshop()
@@ -173,13 +173,13 @@ public class RadioMenuController : MonoBehaviour {
         switch (btn)
         {
             case 1:
-                if (mainController.GetIsSelect())
+                if (mainController.GetIsPointerSelect())
                 {
                     mainController.obj_point.transform.localScale += new Vector3(1, 1, 1) * Time.deltaTime;
                 }
                 break;
             case 2:
-                if (mainController.GetIsSelect())
+                if (mainController.GetIsPointerSelect())
                 {
                     mainController.obj_point.transform.localScale -= new Vector3(1, 1, 1) * Time.deltaTime;
                 }
@@ -193,25 +193,25 @@ public class RadioMenuController : MonoBehaviour {
         switch (btn)
         {
             case 1:
-                if (mainController.GetIsSelect())
+                if (mainController.GetIsPointerSelect())
                 {
                     mainController.obj_point.transform.localEulerAngles += new Vector3(25f, 0f, 0) * Time.deltaTime;
                 }
                 break;
             case 2:
-                if (mainController.GetIsSelect())
+                if (mainController.GetIsPointerSelect())
                 {
                     mainController.obj_point.transform.localEulerAngles -= new Vector3(25f,0f, 0) * Time.deltaTime;
                 }
                 break;
             case 3:
-                if (mainController.GetIsSelect())
+                if (mainController.GetIsPointerSelect())
                 {
                     mainController.obj_point.transform.localEulerAngles += new Vector3(0, 25f, 0) * Time.deltaTime;
                 }
                 break;
             case 4:
-                if (mainController.GetIsSelect())
+                if (mainController.GetIsPointerSelect())
                 {
                     mainController.obj_point.transform.localEulerAngles -= new Vector3(0, 25f, 0) * Time.deltaTime;
                 }

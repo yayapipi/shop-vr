@@ -45,7 +45,7 @@ public class KeyboardClicker : MonoBehaviour {
     {
         mainController = MainController.Instance();
         m_EventSystem = EventSystem.current;
-        EnablePhysicsRaycaster();
+        //EnablePhysicsRaycaster();
 
         pointer = new PointerEventData(EventSystem.current);
         pointer.button = PointerEventData.InputButton.Left;
@@ -63,27 +63,27 @@ public class KeyboardClicker : MonoBehaviour {
                 break;
             case 1:
                 //controller
-                RayDetect();
+                RayDetectUI();
                 break;
             case 2:
                 //eyetracker
-                RayDetect();
+                //RayDetectUI();
                 break;
             case 3:
                 //keyboard
-                RayDetect();
-                MouseDetect();
+                //RayDetectUI();
+                //MouseDetect();
                 break;
         }
     }
 
     private void ChangeState(Camera eventCamera)
     {
-        EnablePhysicsRaycaster();
+        //EnablePhysicsRaycaster();
         rayCastObj = null;
         lastPointerDownObj = null;
     }
-
+    /*
     private void EnablePhysicsRaycaster()
     {
         if (mainController.ControllerPointerCamera)
@@ -98,7 +98,7 @@ public class KeyboardClicker : MonoBehaviour {
         {
             mainController.KeyboardPointerCamera.GetComponent<PhysicsRaycaster>().enabled = (mainController.UIPointerState == 3);
         }
-    }
+    }*/
 
     //Controller
     private void ControllerPointerDown()
@@ -239,6 +239,80 @@ public class KeyboardClicker : MonoBehaviour {
         if (lastPointerDownObj != null && lastPointerDownObj == rayCastObj)
         {
             ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
+        }
+    }
+
+    /* Support hover button, but need to pass pointerEventData argument.*/
+    private void RayDetectUI()
+    {
+        raycastResults.Clear();
+        m_EventSystem.RaycastAll(pointer, raycastResults);
+        hit = false;
+
+        //Sort raycast results
+        if (raycastResults.Count > 1)
+            raycastResults.Sort(RaycastComparer);
+
+        //obj filter
+        foreach (RaycastResult h in raycastResults)
+        {
+            if (h.gameObject.GetComponent<Selectable>()/* || h.gameObject.tag == "Model"*/)
+            {
+                hit = true;
+                rayCastObj = h.gameObject;
+                break;
+            }
+            if (h.gameObject.name == "mask")
+            {
+                rayCastObj = h.gameObject;
+                break;
+            }
+        }
+
+        if (hit)
+        {
+            if (rayCastObj != rayCastObj_last)
+            {
+                if (rayCastObj_last && rayCastObj_last.GetComponent<Selectable>())
+                {
+                    //UI exit
+                    ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
+                }
+                    /*
+                else if (rayCastObj_last && rayCastObj_last.tag == "Model" && PointerExit != null)
+                {
+                    //obj exit
+                    PointerExit(rayCastObj_last);
+                }*/
+
+                if (rayCastObj.GetComponent<Selectable>())
+                {
+                    //UI enter
+                    ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerEnterHandler);
+                }/*
+                else if (rayCastObj.tag == "Model" && PointerEnter != null)
+                {
+                    //obj enter
+                    PointerEnter(rayCastObj);
+                }*/
+            }
+            rayCastObj_last = rayCastObj;
+        }
+        else
+        {
+            if (rayCastObj_last && rayCastObj_last.GetComponent<Selectable>())
+            {
+                //UI exit
+                ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
+            }/*
+            else if (rayCastObj_last && rayCastObj_last.tag == "Model" && PointerExit != null)
+            {
+                //obj exit
+                PointerExit(rayCastObj_last);
+            }*/
+
+            rayCastObj = null;
+            rayCastObj_last = null;
         }
     }
 

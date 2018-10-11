@@ -25,8 +25,9 @@ public class MainController : MonoBehaviour {
 
     [Header("Variables")]
     public GameObject obj_point = null;
-    private bool isSelect = false;
-    public bool isGrab;
+    public bool enablePointerSelect = true;
+    private bool isPointerSelect = false;
+    public bool isPointerGrab;
     public static bool isViewRotate = false;
     private static MainController _instance = null;
 
@@ -203,20 +204,20 @@ public class MainController : MonoBehaviour {
         isOpenInventory = false; 
     }
 
-    public void SetIsSelect(bool value)
+    public void SetIsPointerSelect(bool value)
     {
-        isSelect = value;
+        isPointerSelect = value;
         //Call Controller UI here
-        if (isSelect)
+        if (isPointerSelect)
         {
             if (radioMenu)
                 radioMenu.openpanel(5);
         }
     }
 
-    public bool GetIsSelect()
+    public bool GetIsPointerSelect()
     {
-        return isSelect;
+        return isPointerSelect;
     }
 
     /*================
