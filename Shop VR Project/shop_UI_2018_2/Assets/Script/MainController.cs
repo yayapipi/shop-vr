@@ -16,6 +16,7 @@ public class MainController : MonoBehaviour {
     public Camera EyetrackerPointerCamera;
     public Camera KeyboardPointerCamera;
     public static Camera currentPointerCamera;
+    public LayerMask gizmoLayer;
 
     public GameObject obj;
     private static int userID;
@@ -75,6 +76,18 @@ public class MainController : MonoBehaviour {
                 currentPointerCamera = KeyboardPointerCamera;
                 break;
         }
+
+        isOpenShop = false;
+        isOpenInventory = false;
+        sqlConnection = new sqlapi();
+        userID = 1;
+
+        //Find gameobject
+        obj = GameObject.Find("Object");
+        if (!obj)
+        {
+            obj = new GameObject();
+        }
     }
 
     void OnEnable()
@@ -123,18 +136,6 @@ public class MainController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        isOpenShop = false;
-        isOpenInventory = false;
-        sqlConnection = new sqlapi();
-        userID = 1;
-
-        //Find gameobject
-        obj = GameObject.Find("Object");
-        if (!obj)
-        {
-            obj = new GameObject();
-        }
-
         //Update user information
         UpdateUserData();
     }
