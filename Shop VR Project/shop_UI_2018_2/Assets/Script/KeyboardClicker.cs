@@ -351,7 +351,6 @@ public class KeyboardClicker : MonoBehaviour {
                 {
                     //obj enter
                     PointerEnter(rayCastObj);
-                    Debug.Log("enter");
                 }
             }
             rayCastObj_last = rayCastObj;
