@@ -52,6 +52,8 @@ public class CustomGizmoClickDetection : MonoBehaviour {
     /// </summary>
     [HideInInspector]
     public bool pressing = false;
+    [HideInInspector]
+    public bool pressingLast = false;
 
     /// <summary>
     ///     Is the user pressing the plane area?
@@ -62,6 +64,7 @@ public class CustomGizmoClickDetection : MonoBehaviour {
     private MainController mainController;
     public bool clickDown;
     public bool clickUp;
+    public bool firstFrame;
 
     /// <summary>
     ///     On wake-up
@@ -187,6 +190,9 @@ public class CustomGizmoClickDetection : MonoBehaviour {
                 ALREADY_CLICKED = false;
             }
         }
+
+        firstFrame = (pressing && !pressingLast);
+        pressingLast = pressing;
     }
 
 

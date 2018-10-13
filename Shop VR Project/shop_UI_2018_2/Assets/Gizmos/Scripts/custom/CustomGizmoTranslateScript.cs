@@ -44,9 +44,8 @@ public class CustomGizmoTranslateScript : MonoBehaviour {
     private Transform gizmoCamera;
     public Vector3 hitPos;
     private Plane plane;
-    public bool clickDown;
-    public bool clickUp;
-    public bool click;
+    private bool firstFrame;
+    private bool click;
     private Vector3 firstHitPos;
     private Vector3 offset; //offset between target and hitPoint
 
@@ -123,7 +122,6 @@ public class CustomGizmoTranslateScript : MonoBehaviour {
             {
                 if (detectors[i].pressing)
                 {
-
                     Vector3 direction = (gizmoCamera.position - translateTarget.transform.position);
 
                     switch (i)
@@ -186,11 +184,11 @@ public class CustomGizmoTranslateScript : MonoBehaviour {
                             break;
                     }
 
-                    if (clickDown)
+                    if (firstFrame)
                     {
                         offset = translateTarget.transform.position - hitPos;
-                        Debug.Log("yes");
                     }
+                    Debug.Log("click");
                     Vector3 finalPos = hitPos + offset;
                     translateTarget.transform.position = finalPos;
                     break;
@@ -207,28 +205,29 @@ public class CustomGizmoTranslateScript : MonoBehaviour {
         switch (mainController.UIPointerState)
         {
             case 0:
-                clickDown = false;
-                clickUp = false;
                 click = false;
                 break;
             case 1:
                 //controller
-                clickDown = mainController.RTriggerClickDown_bool;
-                clickUp = mainController.RTriggerClickUp_bool;
                 click = mainController.RTriggerClick;
                 break;
             case 2:
                 //eyetracker
-                clickDown = false;
-                clickUp = false;
                 click = false;
                 break;
             case 3:
                 //keyboard
-                clickDown = Input.GetMouseButtonDown(0);
-                clickUp = Input.GetMouseButtonUp(0);
                 click = Input.GetMouseButton(0);
                 break;
+        }
+
+        firstFrame = false;
+        for (int i = 0; i < 3; i++)
+        {
+            if (detectors[i].firstFrame)
+            {
+                firstFrame = true;
+            }
         }
     }
 
@@ -245,7 +244,7 @@ public class CustomGizmoTranslateScript : MonoBehaviour {
             hitPos = hitray.GetPoint(enter);
         }
 
-        if (clickDown)
+        if (firstFrame)
         {
             firstHitPos = hitPos;
         }

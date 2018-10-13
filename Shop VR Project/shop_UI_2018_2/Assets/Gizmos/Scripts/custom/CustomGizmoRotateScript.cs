@@ -50,8 +50,9 @@ public class CustomGizmoRotateScript : MonoBehaviour {
     public Vector3 hitPos;
     private Plane plane;
     private bool firstFrame;
+    private bool click;
     private Vector3 firstHitPos;
-    private Quaternion firstRotation; //offset between target and hitPoint
+    private Quaternion firstRotation;
     private Quaternion offset;
     private Vector3 axis;
     private Vector3 targetPos;
@@ -120,14 +121,15 @@ public class CustomGizmoRotateScript : MonoBehaviour {
     /// </summary>
     public void Update()
     {
-        if (gizmoCamera)
+        GetClick();
+
+        if (gizmoCamera && click)
         {
-            firstFrame = Input.GetMouseButtonDown(0);
             targetPos = rotateTarget.transform.position;
 
             for (int i = 0; i < 3; i++)
             {
-                if (Input.GetMouseButton(0) && detectors[i].pressing)
+                if (detectors[i].pressing)
                 {
 
                     switch (i)
@@ -178,6 +180,37 @@ public class CustomGizmoRotateScript : MonoBehaviour {
         transform.rotation = rotateTarget.transform.rotation;
     }
 
+    private void GetClick()
+    {
+        switch (mainController.UIPointerState)
+        {
+            case 0:
+                click = false;
+                break;
+            case 1:
+                //controller
+                click = mainController.RTriggerClick;
+                break;
+            case 2:
+                //eyetracker
+                click = false;
+                break;
+            case 3:
+                //keyboard
+                click = Input.GetMouseButton(0);
+                break;
+        }
+
+        firstFrame = false;
+        for (int i = 0; i < 3; i++)
+        {
+            if (detectors[i].firstFrame)
+            {
+                firstFrame = true;
+            }
+        }
+    }
+
     private void rayDetect()
     {
         Ray hitray = new Ray(gizmoCamera.position, gizmoCamera.forward);
@@ -198,7 +231,6 @@ public class CustomGizmoRotateScript : MonoBehaviour {
             firstHitPos = hitPos;
             firstRotation = rotateTarget.transform.rotation;
             //offset = rotateTarget.transform.rotation * Quaternion.Inverse(hitRotation);
-            Debug.Log("yes");
         }
     }
 }
