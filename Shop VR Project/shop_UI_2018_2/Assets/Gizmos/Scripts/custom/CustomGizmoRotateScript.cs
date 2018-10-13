@@ -72,6 +72,7 @@ public class CustomGizmoRotateScript : MonoBehaviour {
     {
         // Set the same position for the target and the gizmo
         transform.position = rotateTarget.transform.position;
+        transform.rotation = rotateTarget.transform.rotation;
         mainController = MainController.Instance();
         ChangeGizmoCamera();
         plane = new Plane((gizmoCamera.position - rotateTarget.transform.position).normalized, rotateTarget.transform.position);
@@ -167,12 +168,14 @@ public class CustomGizmoRotateScript : MonoBehaviour {
 
                     Quaternion finalRotation = offset * rotateTarget.transform.rotation;
                     rotateTarget.transform.rotation = finalRotation;
-                    transform.rotation = finalRotation;
                     //Debug.Log("ff: " + finalRotation.eulerAngles);
                     break;
                 }
             }
         }
+
+        transform.position = rotateTarget.transform.position;
+        transform.rotation = rotateTarget.transform.rotation;
     }
 
     private void rayDetect()
@@ -195,7 +198,7 @@ public class CustomGizmoRotateScript : MonoBehaviour {
             firstHitPos = hitPos;
             firstRotation = rotateTarget.transform.rotation;
             //offset = rotateTarget.transform.rotation * Quaternion.Inverse(hitRotation);
-            //Debug.Log("yes");
+            Debug.Log("yes");
         }
     }
 }

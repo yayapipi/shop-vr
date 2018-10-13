@@ -60,6 +60,8 @@ public class CustomGizmoClickDetection : MonoBehaviour {
     public bool pressingPlane = false;
 
     private MainController mainController;
+    public bool clickDown;
+    public bool clickUp;
 
     /// <summary>
     ///     On wake-up
@@ -115,58 +117,102 @@ public class CustomGizmoClickDetection : MonoBehaviour {
     /// <summary>
     ///     Checks for hits on the target objects, highlighting when found
     /// </summary>
-	public void Update () {
+	public void Update () 
+    {
+        GetClick();
 
-        // If the left mouse button is pressed      
-        if (!ALREADY_CLICKED && Input.GetMouseButtonDown(0)) {
+        if (gizmoCamera)
+        {
+            // If the left mouse button is pressed      
+            if (!ALREADY_CLICKED && clickDown)
+            {
 
-            // Detect the object(s) the user has clicked
-            Ray ray = new Ray(gizmoCamera.transform.position, gizmoCamera.transform.forward);
+                // Detect the object(s) the user has clicked
+                Ray ray = new Ray(gizmoCamera.transform.position, gizmoCamera.transform.forward);
                 //gizmoCamera.ScreenPointToRay(Input.mousePosition);
-            RaycastHit[] hits = Physics.RaycastAll(ray, gizmoLayer);
-            bool detected = false;
-            pressingPlane = false;
+                RaycastHit[] hits = Physics.RaycastAll(ray, gizmoLayer);
+                bool detected = false;
+                pressingPlane = false;
 
-            // Check if object are our targets (skipping the collision if the renderer isn't enabled)
-            foreach (RaycastHit hit in hits) {
-                if (Array.IndexOf(targets, hit.collider.gameObject) >= 0) {
-                    if (!hit.collider.gameObject.GetComponent<Renderer>().enabled) continue;
-                    if (hit.collider.gameObject.name.Contains("_plane_")) pressingPlane = true;
-                    detected = true;
-                    pressing = true;
-                }
-            }
-
-            if(detected) {
-                // Store the current materials of the targets, then highlight them
-                if(previousMaterials != null) previousMaterials.Clear();
-
-                foreach (GameObject target in targets) {
-
-                    try {
-                        foreach (MeshRenderer renderer in target.GetComponentsInChildren<MeshRenderer>(false)) {
-                            previousMaterials[renderer] = renderer.sharedMaterial;
-                            renderer.material = highlight;
-                        }
-                    } catch (NullReferenceException exception) {
-                        // Perhaps no previous materials could be found?
+                // Check if object are our targets (skipping the collision if the renderer isn't enabled)
+                foreach (RaycastHit hit in hits)
+                {
+                    if (Array.IndexOf(targets, hit.collider.gameObject) >= 0)
+                    {
+                        if (!hit.collider.gameObject.GetComponent<Renderer>().enabled) continue;
+                        if (hit.collider.gameObject.name.Contains("_plane_")) pressingPlane = true;
+                        detected = true;
+                        pressing = true;
                     }
                 }
 
-                ALREADY_CLICKED = true;
-            }
+                if (detected)
+                {
+                    // Store the current materials of the targets, then highlight them
+                    if (previousMaterials != null) previousMaterials.Clear();
+
+                    foreach (GameObject target in targets)
+                    {
+
+                        try
+                        {
+                            foreach (MeshRenderer renderer in target.GetComponentsInChildren<MeshRenderer>(false))
+                            {
+                                previousMaterials[renderer] = renderer.sharedMaterial;
+                                renderer.material = highlight;
+                            }
+                        }
+                        catch (NullReferenceException exception)
+                        {
+                            // Perhaps no previous materials could be found?
+                        }
+                    }
+
+                    ALREADY_CLICKED = true;
+                }
 
 
-        } else if(Input.GetMouseButtonUp(0) && previousMaterials.Count > 0) {
-            // If the left mouse button was released and we haven't un-highlighted yet 
-             
-            foreach (MeshRenderer renderer in previousMaterials.Keys) {
-                renderer.material = previousMaterials[renderer];
             }
-            previousMaterials.Clear();
-            pressing = false;
-            pressingPlane = false;
-            ALREADY_CLICKED = false;
+            else if (clickUp && previousMaterials.Count > 0)
+            {
+                // If the left mouse button was released and we haven't un-highlighted yet 
+
+                foreach (MeshRenderer renderer in previousMaterials.Keys)
+                {
+                    renderer.material = previousMaterials[renderer];
+                }
+                previousMaterials.Clear();
+                pressing = false;
+                pressingPlane = false;
+                ALREADY_CLICKED = false;
+            }
+        }
+    }
+
+
+    private void GetClick()
+    {
+        switch (mainController.UIPointerState)
+        {
+            case 0:
+                clickDown = false;
+                clickUp = false;
+                break;
+            case 1:
+                //controller
+                clickDown = mainController.RTriggerClickDown_bool;
+                clickUp = mainController.RTriggerClickUp_bool;
+                break;
+            case 2:
+                //eyetracker
+                clickDown = false;
+                clickUp = false;
+                break;
+            case 3:
+                //keyboard
+                clickDown = Input.GetMouseButtonDown(0);
+                clickUp = Input.GetMouseButtonUp(0);
+                break;
         }
     }
 }

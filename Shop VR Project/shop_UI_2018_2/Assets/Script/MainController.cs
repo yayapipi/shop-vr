@@ -37,6 +37,9 @@ public class MainController : MonoBehaviour {
     public bool RTriggerTouch = false;
     public bool RTriggerPress = false;
     public bool RTriggerClick = false;
+    public bool RTriggerClickDown_bool = false;
+    public bool RTriggerClickUp_bool = false;
+    private bool RTriggerClickLast = false;
     public bool RGripTouch = false;
     public bool RGripPress = false;
     public bool RGripClick = false;
@@ -147,7 +150,9 @@ public class MainController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+        RTriggerClickDown_bool = RTriggerClick && !RTriggerClickLast;
+        RTriggerClickUp_bool = !RTriggerClick && RTriggerClickLast;
+        RTriggerClickLast = RTriggerClick;
 	}
 
     void OnApplicationQuit()
