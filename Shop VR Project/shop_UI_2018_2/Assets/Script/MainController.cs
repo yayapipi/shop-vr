@@ -53,6 +53,11 @@ public class MainController : MonoBehaviour {
     public static event CanvasUIPointerEventManager UIPointerEvent;
     public int UIPointerState = 1;
 
+    //Color Material Object
+    public Material material_color;
+    public Texture texture_color;
+    public bool obj_move_color = true;
+
     void Awake()
     {
         if (_instance == null)

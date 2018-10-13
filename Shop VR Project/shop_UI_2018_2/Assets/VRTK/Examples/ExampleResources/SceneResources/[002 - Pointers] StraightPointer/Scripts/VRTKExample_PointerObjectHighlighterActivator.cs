@@ -139,8 +139,11 @@
                         else if (mainController.obj_point == obj)
                         {
                             //Grab
-                            mainController.obj_point.transform.parent = objParent;
-                            mainController.isPointerGrab = true;
+                            if (mainController.obj_move_color)
+                            {
+                                mainController.obj_point.transform.parent = objParent;
+                                mainController.isPointerGrab = true;
+                            }
                         }
                         break;
                     case 2:
@@ -154,14 +157,20 @@
                         else if (mainController.obj_point == obj && !mainController.isPointerGrab)
                         {
                             //Grab
-                            mainController.obj_point.transform.parent = objParent;
-                            mainController.isPointerGrab = true;
+                            if (mainController.obj_move_color)
+                            {
+                                mainController.obj_point.transform.parent = objParent;
+                                mainController.isPointerGrab = true;
+                            }
                         }
                         else if (mainController.obj_point == obj && mainController.isPointerGrab)
                         {
                             //DeGrab
-                            mainController.obj_point.transform.parent = mainController.obj.transform;
-                            mainController.isPointerGrab = false;
+                            if (mainController.obj_move_color)
+                            {
+                                mainController.obj_point.transform.parent = mainController.obj.transform;
+                                mainController.isPointerGrab = false;
+                            }
                         }
                         break;
                     case 3:
@@ -175,14 +184,20 @@
                         else if (mainController.obj_point == obj && !mainController.isPointerGrab)
                         {
                             //Grab
-                            mainController.obj_point.transform.parent = objParent;
-                            mainController.isPointerGrab = true;
+                            if (mainController.obj_move_color)
+                            {
+                                mainController.obj_point.transform.parent = objParent;
+                                mainController.isPointerGrab = true;
+                            }
                         }
                         else if (mainController.obj_point == obj && mainController.isPointerGrab)
                         {
                             //DeGrab
-                            mainController.obj_point.transform.parent = mainController.obj.transform;
-                            mainController.isPointerGrab = false;
+                            if (mainController.obj_move_color)
+                            {
+                                mainController.obj_point.transform.parent = mainController.obj.transform;
+                                mainController.isPointerGrab = false;
+                            }
                         }
                         break;
                 }
