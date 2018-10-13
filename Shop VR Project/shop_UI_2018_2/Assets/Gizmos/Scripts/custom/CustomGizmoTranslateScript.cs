@@ -46,8 +46,11 @@ public class CustomGizmoTranslateScript : MonoBehaviour {
     private Plane plane;
     private bool firstFrame;
     private bool click;
-    private Vector3 firstHitPos;
-    private Vector3 offset; //offset between target and hitPoint
+    private Vector3 lastHitPos;
+    private Vector3 finalPos;
+    private Vector3 axis;
+    private Vector3 targetPos;
+    private Vector3 direction;
 
     /// <summary>
     ///     On wake up
@@ -118,78 +121,49 @@ public class CustomGizmoTranslateScript : MonoBehaviour {
 
         if (gizmoCamera && click)
         {
+            targetPos = translateTarget.transform.position;
+            direction = (targetPos - gizmoCamera.position);
+
             for (int i = 0; i < 3; i++)
             {
                 if (detectors[i].pressing)
                 {
-                    Vector3 direction = (gizmoCamera.position - translateTarget.transform.position);
-
                     switch (i)
                     {
                         // X Axis
                         case 0:
                             {
+                                axis = translateTarget.transform.right.normalized;
                                 // If the user is pressing the plane, move along Y and Z, else move along X
-
-                                if (detectors[i].pressingPlane)
-                                {
-                                    plane.SetNormalAndPosition(new Vector3(1, 0, 0), translateTarget.transform.position);
-                                    rayDetect();
-                                }
-                                else
-                                {
-                                    plane.SetNormalAndPosition(new Vector3(0, direction.y, direction.z).normalized, translateTarget.transform.position);
-                                    rayDetect();
-                                    hitPos = new Vector3(hitPos.x, firstHitPos.y, firstHitPos.z);
-                                }
+                                GetFinalPos(detectors[i].pressingPlane);
                             }
                             break;
 
                         // Y Axis
                         case 1:
                             {
+                                axis = translateTarget.transform.up.normalized;
                                 // If the user is pressing the plane, move along X and Z, else just move along X
-
-                                if (detectors[i].pressingPlane)
-                                {
-                                    plane.SetNormalAndPosition(new Vector3(0, 1, 0), translateTarget.transform.position);
-                                    rayDetect();
-                                }
-                                else
-                                {
-                                    plane.SetNormalAndPosition(new Vector3(direction.x, 0, direction.z).normalized, translateTarget.transform.position);
-                                    rayDetect();
-                                    hitPos = new Vector3(firstHitPos.x, hitPos.y, firstHitPos.z);
-                                }
+                                GetFinalPos(detectors[i].pressingPlane);
                             }
                             break;
 
                         // Z Axis
                         case 2:
                             {
+                                axis = translateTarget.transform.forward.normalized;
                                 // If the user is pressing the plane, move along X and Y, else just move along Z
-
-                                if (detectors[i].pressingPlane)
-                                {
-                                    plane.SetNormalAndPosition(new Vector3(0, 0, 1), translateTarget.transform.position);
-                                    rayDetect();
-                                }
-                                else
-                                {
-                                    plane.SetNormalAndPosition(new Vector3(direction.x, direction.y, 0).normalized, translateTarget.transform.position);
-                                    rayDetect();
-                                    hitPos = new Vector3(firstHitPos.x, firstHitPos.y, hitPos.z);
-                                }
+                                GetFinalPos(detectors[i].pressingPlane);
                             }
                             break;
                     }
-
+                    /*
                     if (firstFrame)
                     {
                         offset = translateTarget.transform.position - hitPos;
-                    }
-                    Debug.Log("click");
-                    Vector3 finalPos = hitPos + offset;
+                    }*/
+                    //offset = hitPos - lastHitPos;
+                    //Vector3 finalPos = translateTarget.transform.position + offset;
                     translateTarget.transform.position = finalPos;
                     break;
                 }
@@ -198,6 +172,23 @@ public class CustomGizmoTranslateScript : MonoBehaviour {
 
         transform.position = translateTarget.transform.position;
         transform.rotation = translateTarget.transform.rotation;
+    }
+
+    private void GetFinalPos(bool pressing)
+    {
+        if (pressing)
+        {
+            plane.SetNormalAndPosition(axis, targetPos);
+            rayDetect();
+            finalPos = targetPos + hitPos - lastHitPos;
+        }
+        else
+        {
+            Vector3 normal = Vector3.Cross(Vector3.Cross(direction, axis), axis).normalized;
+            plane.SetNormalAndPosition(normal, targetPos);
+            rayDetect();
+            finalPos = targetPos + axis * Vector3.Dot(hitPos - lastHitPos, axis);
+        }
     }
 
     private void GetClick()
@@ -237,7 +228,7 @@ public class CustomGizmoTranslateScript : MonoBehaviour {
 
         //Initialise the enter variable
         float enter = 0.0f;
-
+        lastHitPos = hitPos;
         if (plane.Raycast(hitray, out enter))
         {
             //Get the point that is clicked
@@ -246,7 +237,7 @@ public class CustomGizmoTranslateScript : MonoBehaviour {
 
         if (firstFrame)
         {
-            firstHitPos = hitPos;
+            lastHitPos = hitPos;
         }
     }
 

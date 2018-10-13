@@ -51,8 +51,7 @@ public class CustomGizmoRotateScript : MonoBehaviour {
     private Plane plane;
     private bool firstFrame;
     private bool click;
-    private Vector3 firstHitPos;
-    private Quaternion firstRotation;
+    private Vector3 lastHitPos;
     private Quaternion offset;
     private Vector3 axis;
     private Vector3 targetPos;
@@ -139,10 +138,7 @@ public class CustomGizmoRotateScript : MonoBehaviour {
                             axis = rotateTarget.transform.right.normalized;
                             plane.SetNormalAndPosition(axis, targetPos);
                             rayDetect();
-                            offset =  Quaternion.AngleAxis(Vector3.SignedAngle(firstHitPos - targetPos, hitPos - targetPos, axis), axis);
-                            //Debug.DrawLine(rotateTarget.transform.position, rotateTarget.transform.right * 100, Color.green);
-                            //plane.SetNormalAndPosition(new Vector3(1, 0, 0), rotateTarget.transform.position);
-
+                            offset =  Quaternion.AngleAxis(Vector3.SignedAngle(lastHitPos - targetPos, hitPos - targetPos, axis), axis);
                             break;
 
                         // Y Axis
@@ -150,9 +146,7 @@ public class CustomGizmoRotateScript : MonoBehaviour {
                             axis = rotateTarget.transform.up.normalized;
                             plane.SetNormalAndPosition(axis, targetPos);
                             rayDetect();
-                            offset = Quaternion.AngleAxis(Vector3.SignedAngle(firstHitPos - targetPos, hitPos - targetPos, axis), axis);
-                            //Debug.DrawLine(rotateTarget.transform.position, rotateTarget.transform.up * 100, Color.green);
-                            //plane.SetNormalAndPosition(new Vector3(0, 1, 0), rotateTarget.transform.position);
+                            offset = Quaternion.AngleAxis(Vector3.SignedAngle(lastHitPos - targetPos, hitPos - targetPos, axis), axis);
                             break;
 
                         // Z Axis
@@ -160,17 +154,11 @@ public class CustomGizmoRotateScript : MonoBehaviour {
                             axis = rotateTarget.transform.forward.normalized;
                             plane.SetNormalAndPosition(axis, targetPos);
                             rayDetect();
-                            offset = Quaternion.AngleAxis(Vector3.SignedAngle(firstHitPos - targetPos, hitPos - targetPos, axis), axis);
-                            //Debug.DrawLine(rotateTarget.transform.position, rotateTarget.transform.forward * 100, Color.green);
-                            //plane.SetNormalAndPosition(new Vector3(0, 0, 1), rotateTarget.transform.position);
+                            offset = Quaternion.AngleAxis(Vector3.SignedAngle(lastHitPos - targetPos, hitPos - targetPos, axis), axis);
                             break;
                     }
-
-                    //Debug.Log(Vector3.SignedAngle(firstHitPos - targetPos, hitPos - targetPos, axis));
-
                     Quaternion finalRotation = offset * rotateTarget.transform.rotation;
                     rotateTarget.transform.rotation = finalRotation;
-                    //Debug.Log("ff: " + finalRotation.eulerAngles);
                     break;
                 }
             }
@@ -217,20 +205,16 @@ public class CustomGizmoRotateScript : MonoBehaviour {
 
         //Initialise the enter variable
         float enter = 0.0f;
-        firstHitPos = hitPos;
+        lastHitPos = hitPos;
         if (plane.Raycast(hitray, out enter))
         {
             //Get the Quaternion
-            //hitRotation = Quaternion.LookRotation(hitray.GetPoint(enter) - rotateTarget.transform.position);
-            //Debug.Log("hit rotation = " + hitRotation.eulerAngles);
             hitPos = hitray.GetPoint(enter);
         }
 
         if (firstFrame)
         {
-            firstHitPos = hitPos;
-            firstRotation = rotateTarget.transform.rotation;
-            //offset = rotateTarget.transform.rotation * Quaternion.Inverse(hitRotation);
+            lastHitPos = hitPos;
         }
     }
 }
