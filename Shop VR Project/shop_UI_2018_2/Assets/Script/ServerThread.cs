@@ -513,3 +513,25 @@ public class UpdateInventoryLockThread
     }
 }
 
+
+public class UpdateItemPanalThread
+{
+    private sqlapi sqlConnection;
+    private int itemid;
+    private string s_scale;
+
+    public UpdateItemPanalThread(int itemid, string s_scale)
+    {
+        sqlConnection = MainController.getSqlConnection();
+        this.itemid = itemid;
+    }
+
+    public void UpdateItemPanal()
+    {
+        //update database here
+        items upitem = sqlConnection.getitems(itemid);
+        if (itemid > 0)
+            sqlConnection.Up_item_sscale(itemid,  s_scale);
+    }
+}
+

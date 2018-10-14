@@ -17,6 +17,8 @@ public struct items
     public bool enabled;
     public string model_name;
     public string model_linkurl;
+    public string standard_scale;
+    public double panel_scale;
     public string created_at;
     public string updated_at;
 
@@ -34,6 +36,8 @@ public struct shopitems
     public bool enabled;
     public string model_name;
     public string model_linkurl;
+    public string standard_scale;
+    public double panel_scale;
     public string created_at;
     public string updated_at;
 
@@ -107,6 +111,8 @@ public struct shopcartitems
     public bool enabled;
     public string model_name;
     public string model_linkurl;
+    public string standard_scale;
+    public double panel_scale;
     public string created_at;
     public string updated_at;
 
@@ -146,6 +152,8 @@ public struct userinventory
     public bool enabled;
     public string model_name;
     public string model_linkurl;
+    public string standard_scale;
+    public double panel_scale;
     //public string created_at;
     //public string updated_at;
 };
@@ -269,6 +277,8 @@ public class sqlapi
                     vvv[i].enabled = Convert.ToBoolean(row["enabled"]);
                     vvv[i].model_name = row["model_name"].ToString();
                     vvv[i].model_linkurl = row["model_linkurl"].ToString();
+                    vvv[i].standard_scale = row["standard_scale"].ToString();
+                    vvv[i].panel_scale = Convert.ToDouble(row["panel_scale"]);
                 }
                 else
                 {
@@ -352,6 +362,8 @@ public class sqlapi
                     vvv[i].enabled = Convert.ToBoolean(row["enabled"]);
                     vvv[i].model_name = row["model_name"].ToString();
                     vvv[i].model_linkurl = row["model_linkurl"].ToString();
+                    vvv[i].standard_scale = row["standard_scale"].ToString();
+                    vvv[i].panel_scale = Convert.ToDouble(row["panel_scale"]);
                     vvv[i].created_at = row["created_at2"].ToString();
                     vvv[i].updated_at = row["updated_at2"].ToString();
 
@@ -405,8 +417,10 @@ public class sqlapi
                 vvv.enabled = Convert.ToBoolean(RT.Rows[0][6]);
                 vvv.model_name = RT.Rows[0][7].ToString();
                 vvv.model_linkurl = RT.Rows[0][8].ToString();
-                vvv.created_at = RT.Rows[0][9].ToString();
-                vvv.updated_at = RT.Rows[0][10].ToString();
+                vvv.standard_scale = RT.Rows[0][9].ToString();
+                vvv.panel_scale = Convert.ToDouble(RT.Rows[0][10]);
+                vvv.created_at = RT.Rows[0][10].ToString();
+                vvv.updated_at = RT.Rows[0][11].ToString();
                 //    Debug.Log("id=" + RT.Rows[0][10].GetType());
 
             }
@@ -525,6 +539,8 @@ public class sqlapi
                     vvv[i].enabled = Convert.ToBoolean(row["enabled"]);
                     vvv[i].model_name = row["model_name"].ToString();
                     vvv[i].model_linkurl = row["model_linkurl"].ToString();
+                    vvv[i].standard_scale = row["standard_scale"].ToString();
+                    vvv[i].panel_scale = Convert.ToDouble(row["panel_scale"]);
                     vvv[i].created_at = row["created_at1"].ToString();
                     vvv[i].updated_at = row["updated_at1"].ToString();
 
@@ -586,6 +602,8 @@ public class sqlapi
                     vvv[i].enabled = Convert.ToBoolean(row["enabled"]);
                     vvv[i].model_name = row["model_name"].ToString();
                     vvv[i].model_linkurl = row["model_linkurl"].ToString();
+                    vvv[i].standard_scale = row["standard_scale"].ToString();
+                    vvv[i].panel_scale = Convert.ToDouble(row["panel_scale"]);
                     vvv[i].created_at = row["created_at1"].ToString();
                     vvv[i].updated_at = row["updated_at1"].ToString();
 
@@ -660,6 +678,8 @@ public class sqlapi
                     vvv[i].enabled = Convert.ToBoolean(row["enabled"]);
                     vvv[i].model_name = row["model_name"].ToString();
                     vvv[i].model_linkurl = row["model_linkurl"].ToString();
+                    vvv[i].standard_scale = row["standard_scale"].ToString();
+                    vvv[i].panel_scale = Convert.ToDouble(row["panel_scale"]);
                     vvv[i].created_at = row["created_at1"].ToString();
                     vvv[i].updated_at = row["updated_at1"].ToString();
 
@@ -797,6 +817,25 @@ public class sqlapi
             //SqlAccess sql = new SqlAccess();
             sql.UpdateInto(tables, new string[] { "amount" }, new string[] { amount.ToString() },
                 new string[] { "user_id", "item_id" }, new string[] { userid.ToString(), itemid.ToString() });
+            //sql.Close();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Error = e.Message;
+        }
+        return false;
+    }
+
+    public bool Up_item_sscale(int itemid, string s_scale)
+    {
+        string tables = "items";
+        try
+        {
+            Debug.Log("standard_scale:" + s_scale);
+            //SqlAccess sql = new SqlAccess();
+            sql.UpdateInto(tables, new string[] { "standard_scale" }, new string[] { s_scale.ToString() },
+                new string[] { "id" }, new string[] { itemid.ToString() });
             //sql.Close();
             return true;
         }

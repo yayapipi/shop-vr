@@ -208,6 +208,7 @@ public class SqlAccess
 
     public DataSet UpdateInto(string tableName, string[] cols, string[] colsvalues, string[] selectkey, string[] selectvalue)
     {
+        //UPDATE tableName SET cols = colsvalues WHERE selectkey = selectvalue;
 
         string query = "UPDATE " + tableName + " SET " + cols[0] + " = " + colsvalues[0];
 
