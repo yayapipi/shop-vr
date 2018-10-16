@@ -519,19 +519,32 @@ public class UpdateItemPanalThread
     private sqlapi sqlConnection;
     private int itemid;
     private string s_scale;
+    private float l_length;
 
-    public UpdateItemPanalThread(int itemid, string s_scale)
+    public UpdateItemPanalThread(int itemid, string s_scale, float l_length)
     {
         sqlConnection = MainController.getSqlConnection();
         this.itemid = itemid;
+        this.s_scale = s_scale;
+        this.l_length = l_length;
     }
 
-    public void UpdateItemPanal()
+    public void UpdateItemSscale()
     {
         //update database here
         items upitem = sqlConnection.getitems(itemid);
         if (itemid > 0)
-            sqlConnection.Up_item_sscale(itemid,  s_scale);
+            sqlConnection.Up_item_sscale(itemid, s_scale);
     }
+
+    //public void UpdateItemLlength()
+    //{
+    //    //update database here
+    //    items upitem = sqlConnection.getitems(itemid);
+    //    if (itemid > 0)
+    //        sqlConnection.Up_item_llength(itemid, l_length.ToString());
+    //}
 }
+
+
 

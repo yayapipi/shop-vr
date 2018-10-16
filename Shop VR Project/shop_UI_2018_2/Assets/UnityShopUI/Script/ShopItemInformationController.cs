@@ -3,6 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Threading;
+using System.Globalization;
 
 public class ShopItemInformationController : MonoBehaviour {
     [Header("Related Objects")]
@@ -42,7 +44,7 @@ public class ShopItemInformationController : MonoBehaviour {
         GetInventItemPics(data.item_id);
 
         //Load model
-        StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl));
+        StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl, data.standard_scale));
 
         //Close Back Collision UI
     }
@@ -53,7 +55,7 @@ public class ShopItemInformationController : MonoBehaviour {
         isOpen = 1;
         minAmount = 1;
         maxAmount = 100;
-
+        
         //set
         amount = minAmount;
         ShopController.Instance().Disable();
@@ -67,7 +69,7 @@ public class ShopItemInformationController : MonoBehaviour {
         GetShopItemPics(data.item_id);
 
         //Load model
-        StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl));
+        StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl, data.standard_scale));
 
         //Close Back Collision UI
     }
@@ -93,7 +95,7 @@ public class ShopItemInformationController : MonoBehaviour {
         GetShopItemPics(data.item_id);
 
         //Load model
-        StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl));
+        StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl, data.standard_scale));
 
         //Close Back Collision UI
     }
@@ -196,7 +198,7 @@ public class ShopItemInformationController : MonoBehaviour {
         }
     }
 
-    private IEnumerator LoadModel(string name, string url)
+    private IEnumerator LoadModel(string name, string url, string s_scale)
     {
         CleanCache();
         WWW www = new WWW(url);
@@ -204,8 +206,25 @@ public class ShopItemInformationController : MonoBehaviour {
         AssetBundle bundle = www.assetBundle;
         if (www.error == null)
         {
+            string[] splits = s_scale.Split('x');
+            float scalex = float.Parse(splits[0], CultureInfo.InvariantCulture.NumberFormat);
+            float scaley = float.Parse(splits[1], CultureInfo.InvariantCulture.NumberFormat);
+            float scalez = float.Parse(splits[2], CultureInfo.InvariantCulture.NumberFormat);
+
             GameObject obj = (GameObject)bundle.LoadAsset(name);
             model_obj =  Instantiate(obj, modelSpawnPoint.position, modelSpawnPoint.rotation, modelSpawnPoint);
+            model_obj.transform.localScale = new Vector3(scalex, scaley, scalez);
+            if (model_obj.GetComponent<MeshFilter>() != null)
+            {
+                Debug.Log("scalex:" + scalex + "|X:" + model_obj.GetComponent<MeshFilter>().mesh.bounds.size.x * scalex);
+                Debug.Log("scaley:" + scaley + "|Y:" + model_obj.GetComponent<MeshFilter>().mesh.bounds.size.y * scaley);
+                Debug.Log("scalez:" + scalez + "|Z:" + model_obj.GetComponent<MeshFilter>().mesh.bounds.size.z * scalez);
+            }
+            else if(model_obj.transform.GetComponent<BoxCollider>() != null)
+                Debug.Log("no mesh renderer");
+
+            
+
             model_obj.AddComponent<VRTK.Highlighters.VRTK_OutlineObjectCopyHighlighter>();
             model_obj.AddComponent<Model_Rotate>();
             
