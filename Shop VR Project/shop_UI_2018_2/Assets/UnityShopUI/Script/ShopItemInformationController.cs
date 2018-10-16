@@ -214,6 +214,16 @@ public class ShopItemInformationController : MonoBehaviour {
             */
             GameObject obj = (GameObject)bundle.LoadAsset(name);
             model_obj =  Instantiate(obj, modelSpawnPoint.position, modelSpawnPoint.rotation, modelSpawnPoint);
+
+            Debug.Log("scale by mesh");
+            Vector3 scale = model_obj.transform.localScale;
+            Vector3 size = getTargetSizeByRender(model_obj);
+            //Vector3 size = model_obj.GetComponent<MeshFilter>().mesh.bounds.size;
+            float ratio = 2f / Mathf.Max(size.x, size.y, size.z);
+
+            model_obj.transform.localScale = new Vector3(scale.x * ratio, scale.y * ratio, scale.z * ratio);
+
+            /*
             if (model_obj.GetComponent<MeshFilter>() != null)
             {
                 Debug.Log("scale by mesh");
@@ -235,7 +245,7 @@ public class ShopItemInformationController : MonoBehaviour {
             else
             {
                 Debug.Log("Error: no mesh renderer or collider");
-            }
+            }*/
 
             model_obj.AddComponent<VRTK.Highlighters.VRTK_OutlineObjectCopyHighlighter>();
             model_obj.AddComponent<Model_Rotate>();
@@ -259,6 +269,35 @@ public class ShopItemInformationController : MonoBehaviour {
             Debug.Log(www.error);
         }
         bundle.Unload(false);
+    }
+
+    public Vector3 getTargetSizeByRender(GameObject target)
+    {
+        Vector3 vec = Vector3.one;
+        Quaternion localQuaternion = target.transform.rotation;
+        target.transform.rotation = Quaternion.identity;
+        var renders = target.transform.GetComponentsInChildren<Renderer>();
+        if (renders.Length > 0)
+        {
+            Bounds bounds = renders[0].bounds;
+            for (int i = 1; i < renders.Length; i++)
+            {
+                bounds.Encapsulate(renders[i].bounds);
+            }
+
+            if (target.transform.GetComponent<Renderer>())
+            {
+                bounds.Encapsulate(target.transform.GetComponent<Renderer>().bounds);
+            }
+
+            vec = bounds.size;
+        }
+        else
+        {
+            vec = target.transform.GetComponent<Renderer>().bounds.size;
+        }
+        target.transform.rotation = localQuaternion;
+        return vec;
     }
 
     public void Close()
