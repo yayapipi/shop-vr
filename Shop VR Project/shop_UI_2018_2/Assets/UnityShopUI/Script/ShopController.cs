@@ -67,8 +67,8 @@ public class ShopController : MonoBehaviour {
 
         void Update()
         {
-            //load items
-            if (itemScrollRect.verticalNormalizedPosition < 0 && !isLoadToEnd && !isLoadingItems)
+        //load items
+            if (itemScrollRect.verticalNormalizedPosition <= 0.01 && !isLoadToEnd && !isLoadingItems)
                 GetShopItems(viewKind, viewType);
 
             if (itemScrollUp.buttonPressed)

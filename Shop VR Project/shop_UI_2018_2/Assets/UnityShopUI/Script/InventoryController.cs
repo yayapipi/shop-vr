@@ -77,7 +77,7 @@ public class InventoryController : MonoBehaviour
     void Update()
     {
         //load items
-        if (itemScrollRect.verticalNormalizedPosition < 0 && !isLoadToEnd && !isLoadingItems)
+        if (itemScrollRect.verticalNormalizedPosition <= 0.01 && !isLoadToEnd && !isLoadingItems)
             GetInventItems(viewType);
 
         if (itemScrollUp.buttonPressed)
