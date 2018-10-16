@@ -206,27 +206,44 @@ public class ShopItemInformationController : MonoBehaviour {
         AssetBundle bundle = www.assetBundle;
         if (www.error == null)
         {
+            /*
             string[] splits = s_scale.Split('x');
             float scalex = float.Parse(splits[0], CultureInfo.InvariantCulture.NumberFormat);
             float scaley = float.Parse(splits[1], CultureInfo.InvariantCulture.NumberFormat);
             float scalez = float.Parse(splits[2], CultureInfo.InvariantCulture.NumberFormat);
-
+            */
             GameObject obj = (GameObject)bundle.LoadAsset(name);
             model_obj =  Instantiate(obj, modelSpawnPoint.position, modelSpawnPoint.rotation, modelSpawnPoint);
-            model_obj.transform.localScale = new Vector3(scalex, scaley, scalez);
             if (model_obj.GetComponent<MeshFilter>() != null)
             {
-                Debug.Log("scalex:" + scalex + "|X:" + model_obj.GetComponent<MeshFilter>().mesh.bounds.size.x * scalex);
-                Debug.Log("scaley:" + scaley + "|Y:" + model_obj.GetComponent<MeshFilter>().mesh.bounds.size.y * scaley);
-                Debug.Log("scalez:" + scalez + "|Z:" + model_obj.GetComponent<MeshFilter>().mesh.bounds.size.z * scalez);
-            }
-            else if(model_obj.transform.GetComponent<BoxCollider>() != null)
-                Debug.Log("no mesh renderer");
+                Debug.Log("scale by mesh");
+                Vector3 scale = model_obj.transform.localScale;
+                Vector3 size = model_obj.GetComponent<MeshFilter>().mesh.bounds.size;
+                float ratio = 6.5f / Mathf.Max(size.x, size.y, size.z);
 
-            
+                model_obj.transform.localScale = new Vector3(scale.x * ratio, scale.y * ratio, scale.z * ratio);
+            }
+            else if (model_obj.transform.GetComponent<BoxCollider>() != null)
+            {
+                Debug.Log("scale by Collider");
+                Vector3 scale = model_obj.transform.localScale;
+                Vector3 size = model_obj.GetComponent<BoxCollider>().bounds.size;
+                float ratio = 6.5f / Mathf.Max(size.x, size.y, size.z);
+
+                model_obj.transform.localScale = new Vector3(scale.x * ratio, scale.y * ratio, scale.z * ratio);
+            }
+            else
+            {
+                Debug.Log("Error: no mesh renderer or collider");
+            }
 
             model_obj.AddComponent<VRTK.Highlighters.VRTK_OutlineObjectCopyHighlighter>();
             model_obj.AddComponent<Model_Rotate>();
+            if (model_obj.GetComponent<Rigidbody>())
+            {
+                model_obj.GetComponent<Rigidbody>().isKinematic = true;
+                model_obj.GetComponent<Rigidbody>().useGravity = false;
+            }
             
 
             //newItem = Instantiate(obj, modelSpawnPoint.transform.position, modelSpawnPoint.transform.rotation, modelSpawnPoint.transform);
