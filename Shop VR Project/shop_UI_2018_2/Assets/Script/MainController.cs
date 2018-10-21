@@ -59,6 +59,7 @@ public class MainController : MonoBehaviour {
     //Color Material Object
     public Material material_color;
     public Texture texture_color;
+    public Material baseMaterial;
     public bool obj_move_color = true;
 
     void Awake()

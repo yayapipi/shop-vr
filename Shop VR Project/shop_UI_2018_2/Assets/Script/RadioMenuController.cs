@@ -11,7 +11,8 @@ public class RadioMenuController : MonoBehaviour {
     public GameObject ModelRotatePanel;
     public GameObject drawModule;
 
-    public Texture[] paint_texture = new Texture[200];
+    //public Texture[] paint_texture = new Texture[100];
+    //public Material[] paint_material = new Material[100];
     int color_count = 0;
    // private GameObject drawModule = null;
     private MainController mainController;
@@ -159,26 +160,36 @@ public class RadioMenuController : MonoBehaviour {
        // color_count = MainController.Instance().obj_point.GetComponent<id>().item_id;
         mtl = Instantiate(MainController.Instance().material_color, transform.position, transform.rotation);
         Texture txp = Instantiate(MainController.Instance().texture_color, transform.position, transform.rotation);
-        paint_texture[color_count] = txp;
+        //paint_texture[color_count] = txp;
+        Material mtl2 = Instantiate(MainController.Instance().baseMaterial, transform.position, transform.rotation);
+        //paint_material[color_count] = mtl2;
         metallic_texture = MainController.Instance().obj_point.GetComponent<Renderer>().material.GetTexture("_MainTex");
         normal_map_texture = MainController.Instance().obj_point.GetComponent<Renderer>().material.GetTexture("_BumpMap");
 
         //Change Shader To Color Shader And Setting Variable
         MainController.Instance().obj_point.GetComponent<MeshRenderer>().material = mtl;
-        MainController.Instance().obj_point.GetComponent<Renderer>().material.SetTexture("_MainTex", paint_texture[color_count]);
+        //MainController.Instance().obj_point.GetComponent<Renderer>().material = paint_material[color_count];
+        MainController.Instance().obj_point.GetComponent<Renderer>().material.SetTexture("_MainTex", txp);
         if(metallic_texture)
             MainController.Instance().obj_point.GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", metallic_texture);
         if(normal_map_texture)
             MainController.Instance().obj_point.GetComponent<Renderer>().material.SetTexture("_BumpMap", normal_map_texture);
 
         //Change DrawModule Texture Target
-        GameObject.Find("CanvasCamera").GetComponent<Camera>().targetTexture = (RenderTexture) paint_texture[color_count];
-        drawModule.GetComponentInChildren<TexturePainter>().canvasTexture = (RenderTexture) paint_texture[color_count];
+        GameObject.Find("CanvasBase").GetComponent<Renderer>().material = mtl2;
+        GameObject.Find("CanvasBase").GetComponent<Renderer>().material.SetTexture("_MainTex", metallic_texture);
+        drawModule.GetComponentInChildren<TexturePainter>().baseMaterial = GameObject.Find("CanvasBase").GetComponent<Renderer>().material;
+        //Material newMaterial = GameObject.Find("CanvasBase").GetComponent<Renderer>().material;
+        //newMaterial.SetTexture("_MainTex", paint_texture[color_count]);
+        //drawModule.GetComponentInChildren<TexturePainter>().baseMaterial = newMaterial;
+        GameObject.Find("CanvasCamera").GetComponent<Camera>().targetTexture = (RenderTexture) txp;
+        drawModule.GetComponentInChildren<TexturePainter>().canvasTexture = (RenderTexture) txp;
 
         //Disable Object Grab
          MainController.Instance().obj_point.transform.parent = mainController.obj.transform;
          MainController.Instance().isPointerGrab = false;
          MainController.Instance().obj_move_color = false;
+         color_count++;
     }
 
     private void grip_back()
