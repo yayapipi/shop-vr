@@ -325,6 +325,7 @@ public class ShopItemInformationController : MonoBehaviour {
         GameObject mobj = Instantiate(model_obj, modelSpawnPoint.position, modelSpawnPoint.rotation);
         if (mobj)
         {
+            mobj.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
             mobj.AddComponent<id>().item_id = itemID;
             mobj.AddComponent<MeshCollider>();
             mobj.AddComponent<VRTK.Highlighters.VRTK_OutlineObjectCopyHighlighter>();

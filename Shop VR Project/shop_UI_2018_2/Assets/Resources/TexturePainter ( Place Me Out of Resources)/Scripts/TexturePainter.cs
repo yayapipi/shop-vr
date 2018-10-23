@@ -95,12 +95,25 @@ public class TexturePainter : MonoBehaviour {
 		}
 		brushCounter++; //Add to the max brushes
 		if (brushCounter >= MAX_BRUSH_COUNT) { //If we reach the max brushes available, flatten the texture and clear the brushes
-			brushCursor.SetActive (false);
-			saving=true;
-			Invoke("SaveTexture",0.1f);
-			
+            brushCursor.SetActive(false);
+            saving = true;
+            Invoke("SaveTexture", 0.1f);
 		}
 	}
+
+    public void SaveAndClose()
+    {
+        brushCursor.SetActive(false);
+        saving = true;
+        Invoke("SaveTexture", 0.1f);
+        Invoke("DisableModule", 0.15f);
+    }
+
+    void DisableModule()
+    {
+        this.transform.parent.parent.gameObject.SetActive(false);
+    }
+
 	//To update at realtime the painting cursor on the mesh
 	void UpdateBrushCursor(){
 		Vector3 uvWorldPosition=Vector3.zero;

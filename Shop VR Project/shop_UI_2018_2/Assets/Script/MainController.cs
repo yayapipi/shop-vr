@@ -27,6 +27,7 @@ public class MainController : MonoBehaviour {
     [Header("Variables")]
     public GameObject obj_point = null;
     public bool enablePointerSelect = true;
+    public bool enablePointerGrab = true;
     private bool isPointerSelect = false;
     public bool isPointerGrab;
     public static bool isViewRotate = false;
@@ -60,7 +61,6 @@ public class MainController : MonoBehaviour {
     public Material material_color;
     public Texture texture_color;
     public Material baseMaterial;
-    public bool obj_move_color = true;
 
     void Awake()
     {

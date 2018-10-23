@@ -136,14 +136,11 @@
                             mainController.obj_point = obj;
                             mainController.SetIsPointerSelect(true);
                         }
-                        else if (mainController.obj_point == obj)
+                        else if (mainController.obj_point == obj && !mainController.isPointerGrab && mainController.enablePointerGrab)
                         {
                             //Grab
-                            if (mainController.obj_move_color)
-                            {
-                                mainController.obj_point.transform.parent = objParent;
-                                mainController.isPointerGrab = true;
-                            }
+                            mainController.obj_point.transform.parent = objParent;
+                            mainController.isPointerGrab = true;
                         }
                         break;
                     case 2:
@@ -154,23 +151,17 @@
                             mainController.obj_point = obj;
                             mainController.SetIsPointerSelect(true);
                         }
-                        else if (mainController.obj_point == obj && !mainController.isPointerGrab)
+                        else if (mainController.obj_point == obj && !mainController.isPointerGrab && mainController.enablePointerGrab)
                         {
                             //Grab
-                            if (mainController.obj_move_color)
-                            {
-                                mainController.obj_point.transform.parent = objParent;
-                                mainController.isPointerGrab = true;
-                            }
+                            mainController.obj_point.transform.parent = objParent;
+                            mainController.isPointerGrab = true;
                         }
                         else if (mainController.obj_point == obj && mainController.isPointerGrab)
                         {
                             //DeGrab
-                            if (mainController.obj_move_color)
-                            {
-                                mainController.obj_point.transform.parent = mainController.obj.transform;
-                                mainController.isPointerGrab = false;
-                            }
+                            mainController.obj_point.transform.parent = mainController.obj.transform;
+                            mainController.isPointerGrab = false;
                         }
                         break;
                     case 3:
@@ -181,23 +172,17 @@
                             mainController.obj_point = obj;
                             mainController.SetIsPointerSelect(true);
                         }
-                        else if (mainController.obj_point == obj && !mainController.isPointerGrab)
+                        else if (mainController.obj_point == obj && !mainController.isPointerGrab && mainController.enablePointerGrab)
                         {
                             //Grab
-                            if (mainController.obj_move_color)
-                            {
-                                mainController.obj_point.transform.parent = objParent;
-                                mainController.isPointerGrab = true;
-                            }
+                            mainController.obj_point.transform.parent = objParent;
+                            mainController.isPointerGrab = true;
                         }
                         else if (mainController.obj_point == obj && mainController.isPointerGrab)
                         {
                             //DeGrab
-                            if (mainController.obj_move_color)
-                            {
-                                mainController.obj_point.transform.parent = mainController.obj.transform;
-                                mainController.isPointerGrab = false;
-                            }
+                            mainController.obj_point.transform.parent = mainController.obj.transform;
+                            mainController.isPointerGrab = false;
                         }
                         break;
                 }

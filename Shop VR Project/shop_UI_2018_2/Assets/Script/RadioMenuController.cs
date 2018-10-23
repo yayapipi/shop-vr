@@ -9,12 +9,12 @@ public class RadioMenuController : MonoBehaviour {
     public GameObject ModelPanel;
     public GameObject ModelScalePanel;
     public GameObject ModelRotatePanel;
+    [Header("draeModule")]
     public GameObject drawModule;
+    public Renderer canvasBase;
+    public Camera canvasCamera;
+    public TexturePainter texturePainter;
 
-    //public Texture[] paint_texture = new Texture[100];
-    //public Material[] paint_material = new Material[100];
-    int color_count = 0;
-   // private GameObject drawModule = null;
     private MainController mainController;
 
     private static int panel_type = 0;
@@ -123,7 +123,15 @@ public class RadioMenuController : MonoBehaviour {
         return panel_type;
     }
 
-    public void put_back() {
+    public void put_back()
+    {
+
+        if (panel_type == 7)
+        {
+            texturePainter.SaveAndClose();
+            mainController.enablePointerGrab = true;
+        }
+
         ShopController.PutBack(mainController.obj_point.GetComponent<id>().item_id);
         openpanel(0);
         Destroy(mainController.obj_point);
@@ -142,63 +150,58 @@ public class RadioMenuController : MonoBehaviour {
 
     public void OpenDraw()
     {
-        Transform spawnPoint = mainController.cameraEye;
-        Material mtl;
-        
-        Texture metallic_texture;
-        Texture normal_map_texture;
-        
-        //Open Panel Color Selector
-        openpanel(7);
+        if (panel_type != 7)
+        {
+            //Disable Object Grab
+            mainController.enablePointerGrab = false;
 
-        //Setting Color Selector Position
-        drawModule.SetActive(true);
-        drawModule.transform.position = new Vector3(spawnPoint.position.x, 0, spawnPoint.position.z);
-        drawModule.transform.rotation = Quaternion.Euler(new Vector3(0, spawnPoint.eulerAngles.y, 0));
+            //DeGrab
+            if (mainController.isPointerGrab && mainController.obj_point != null)
+            {
+                mainController.obj_point.transform.parent = mainController.obj.transform;
+                mainController.isPointerGrab = false;
+            }
 
-        //Initial Color Matetial Object
-       // color_count = MainController.Instance().obj_point.GetComponent<id>().item_id;
-        mtl = Instantiate(MainController.Instance().material_color, transform.position, transform.rotation);
-        Texture txp = Instantiate(MainController.Instance().texture_color, transform.position, transform.rotation);
-        //paint_texture[color_count] = txp;
-        Material mtl2 = Instantiate(MainController.Instance().baseMaterial, transform.position, transform.rotation);
-        //paint_material[color_count] = mtl2;
-        metallic_texture = MainController.Instance().obj_point.GetComponent<Renderer>().material.GetTexture("_MainTex");
-        normal_map_texture = MainController.Instance().obj_point.GetComponent<Renderer>().material.GetTexture("_BumpMap");
+            //Open Panel Color Selector
+            openpanel(7);
 
-        //Change Shader To Color Shader And Setting Variable
-        MainController.Instance().obj_point.GetComponent<MeshRenderer>().material = mtl;
-        //MainController.Instance().obj_point.GetComponent<Renderer>().material = paint_material[color_count];
-        MainController.Instance().obj_point.GetComponent<Renderer>().material.SetTexture("_MainTex", txp);
-        if(metallic_texture)
-            MainController.Instance().obj_point.GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", metallic_texture);
-        if(normal_map_texture)
-            MainController.Instance().obj_point.GetComponent<Renderer>().material.SetTexture("_BumpMap", normal_map_texture);
+            //Setting Color Selector Position
+            drawModule.SetActive(true);
+            drawModule.transform.position = new Vector3(mainController.cameraEye.position.x, 0, mainController.cameraEye.position.z);
+            drawModule.transform.rotation = Quaternion.Euler(new Vector3(0, mainController.cameraEye.eulerAngles.y, 0));
 
-        //Change DrawModule Texture Target
-        GameObject.Find("CanvasBase").GetComponent<Renderer>().material = mtl2;
-        GameObject.Find("CanvasBase").GetComponent<Renderer>().material.SetTexture("_MainTex", metallic_texture);
-        drawModule.GetComponentInChildren<TexturePainter>().baseMaterial = GameObject.Find("CanvasBase").GetComponent<Renderer>().material;
-        //Material newMaterial = GameObject.Find("CanvasBase").GetComponent<Renderer>().material;
-        //newMaterial.SetTexture("_MainTex", paint_texture[color_count]);
-        //drawModule.GetComponentInChildren<TexturePainter>().baseMaterial = newMaterial;
-        GameObject.Find("CanvasCamera").GetComponent<Camera>().targetTexture = (RenderTexture) txp;
-        drawModule.GetComponentInChildren<TexturePainter>().canvasTexture = (RenderTexture) txp;
+            //Initial Color Matetial Object
+            Texture painterRT = Instantiate(mainController.texture_color, transform.position, transform.rotation);
+            Material baseMaterial = Instantiate(mainController.baseMaterial, transform.position, transform.rotation);
 
-        //Disable Object Grab
-         MainController.Instance().obj_point.transform.parent = mainController.obj.transform;
-         MainController.Instance().isPointerGrab = false;
-         MainController.Instance().obj_move_color = false;
-         color_count++;
+            Material objMaterial = mainController.obj_point.GetComponent<Renderer>().material;
+            Texture objTexture = objMaterial.GetTexture("_MainTex");
+
+            //Change base material texture to obj texture
+            baseMaterial.SetTexture("_MainTex", objTexture);
+
+            //Change obj material texture to painterRT
+            objMaterial.SetTexture("_MainTex", painterRT);
+
+            //Change DrawModule Texture Target
+            canvasBase.material = baseMaterial;
+            canvasCamera.targetTexture = (RenderTexture)painterRT;
+            texturePainter.canvasTexture = (RenderTexture)painterRT;
+            texturePainter.baseMaterial = baseMaterial;
+        }
+        else
+        {
+            drawModule.transform.position = new Vector3(mainController.cameraEye.position.x, 0, mainController.cameraEye.position.z);
+            drawModule.transform.rotation = Quaternion.Euler(new Vector3(0, mainController.cameraEye.eulerAngles.y, 0));
+        }
     }
 
     private void grip_back()
     {
         if (panel_type == 7)
         {
-            drawModule.SetActive(false);
-            MainController.Instance().obj_move_color = true;
-            //Destroy(drawModule);
+            texturePainter.SaveAndClose();
+            mainController.enablePointerGrab = true;
         }
 
         if (panel_type % 5 == 0)
