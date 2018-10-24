@@ -4,32 +4,77 @@ using System.Collections;
 public class ExampleUseof_MeshCut : MonoBehaviour {
 
 	public Material capMaterial;
+    private MainController mainController;
 
 	// Use this for initialization
-	void Start () {
-
-		
+	void Start () 
+    {
+        mainController = MainController.Instance();
+        this.transform.parent = MainController.currentPointerCamera.transform;
+        this.transform.localPosition = new Vector3(0, 0, 0);
+        this.transform.localRotation = Quaternion.identity;
 	}
-	
-	void Update(){
 
-		if(Input.GetMouseButtonDown(0)){
-			RaycastHit hit;
+    void OnEnable()
+    {
+        MainController.UIPointerEvent += ChangeEventCamera;
+        MainController.RTriggerClickDown += ControllerCut;
+    }
 
-			if(Physics.Raycast(transform.position, transform.forward, out hit)){
+    void OnDisable()
+    {
+        MainController.UIPointerEvent -= ChangeEventCamera;
+        MainController.RTriggerClickDown -= ControllerCut;
+    }
 
-				GameObject victim = hit.collider.gameObject;
+    private void ChangeEventCamera(Camera eventCamera)
+    {
+        if (eventCamera != null)
+        {
+            this.transform.parent = eventCamera.transform;
+            this.transform.localPosition = new Vector3(0, 0, 0);
+            this.transform.localRotation = Quaternion.identity;
+        }
+    }
 
-				GameObject[] pieces = BLINDED_AM_ME.MeshCut.Cut(victim, transform.position, transform.right, capMaterial);
-
-				if(!pieces[1].GetComponent<Rigidbody>())
-					pieces[1].AddComponent<Rigidbody>();
-
-				Destroy(pieces[1], 1);
-			}
-
-		}
+	void Update()
+    {
+        if (mainController.UIPointerState == 3 && Input.GetMouseButtonDown(0))
+        {
+            cut();
+        }
 	}
+
+    private void ControllerCut()
+    {
+        if (mainController.UIPointerState == 1)
+        {
+            cut();
+        }
+    }
+
+    private void cut()
+    {
+        if (mainController.enablePointerCutMesh)
+        {
+            RaycastHit hit;
+            
+            if (Physics.Raycast(transform.position, transform.forward, out hit))
+            {
+                GameObject victim = hit.collider.gameObject;
+
+                if (victim.tag == "Model")
+                {
+                    GameObject[] pieces = BLINDED_AM_ME.MeshCut.Cut(victim, transform.position, transform.right, capMaterial);
+
+                    if (!pieces[1].GetComponent<Rigidbody>())
+                        pieces[1].AddComponent<Rigidbody>();
+
+                    Destroy(pieces[1], 1);
+                }
+            }
+        }
+    }
 
 	void OnDrawGizmosSelected() {
 

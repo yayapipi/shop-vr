@@ -23,7 +23,7 @@ public class TexturePainter : MonoBehaviour {
 	Painter_BrushMode mode; //Our painter mode (Paint brushes or decals)
 	float brushSize=1.0f; //The size of our brush
 	Color brushColor; //The selected color
-	int brushCounter=0,MAX_BRUSH_COUNT=100; //To avoid having millions of brushes
+	int brushCounter=0,MAX_BRUSH_COUNT=1000; //To avoid having millions of brushes
 	bool saving=false; //Flag to check if we are saving the texture
 
     void OnEnable()

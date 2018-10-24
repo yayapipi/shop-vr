@@ -28,6 +28,7 @@ public class MainController : MonoBehaviour {
     public GameObject obj_point = null;
     public bool enablePointerSelect = true;
     public bool enablePointerGrab = true;
+    public bool enablePointerCutMesh = true;
     private bool isPointerSelect = false;
     public bool isPointerGrab;
     public static bool isViewRotate = false;
