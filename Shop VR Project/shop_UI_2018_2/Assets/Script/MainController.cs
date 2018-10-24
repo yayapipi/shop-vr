@@ -21,8 +21,7 @@ public class MainController : MonoBehaviour {
     public GameObject obj;
     private static int userID;
     private static sqlapi sqlConnection;
-    private bool isOpenShop;
-    private bool isOpenInventory;
+    private int isOpenUI;
 
     [Header("Variables")]
     public GameObject obj_point = null;
@@ -33,6 +32,11 @@ public class MainController : MonoBehaviour {
     public bool isPointerGrab;
     public static bool isViewRotate = false;
     private static MainController _instance = null;
+
+    [Header("Tools")]
+    public GameObject drawModule;
+    public GameObject gizmos;
+    public GameObject blade;
 
     //Controller state
     [Header("Controller States")]
@@ -58,11 +62,6 @@ public class MainController : MonoBehaviour {
     public static event CanvasUIPointerEventManager UIPointerEvent;
     public int UIPointerState = 1;
 
-    //Color Material Object
-    public Material material_color;
-    public Texture texture_color;
-    public Material baseMaterial;
-
     void Awake()
     {
         if (_instance == null)
@@ -87,8 +86,8 @@ public class MainController : MonoBehaviour {
                 break;
         }
 
-        isOpenShop = false;
-        isOpenInventory = false;
+        isOpenUI = 0;
+        
         sqlConnection = new sqlapi();
         userID = 1;
 
@@ -183,19 +182,52 @@ public class MainController : MonoBehaviour {
 
     public void OpenShop()
     {
-        if (!isOpenInventory && !isOpenShop)
-        {
-            isOpenShop = true;
-            Instantiate(shopMain, new Vector3(cameraEye.position.x, 0, cameraEye.position.z), Quaternion.Euler(new Vector3(0, cameraEye.eulerAngles.y, 0)));
-        }
+        StartCoroutine(OpenUI(1));
     }
 
     public void OpenInventory()
     {
-        if (!isOpenInventory && !isOpenShop)
+        StartCoroutine(OpenUI(2));
+    }
+
+    public void OpenSetting()
+    {
+        StartCoroutine(OpenUI(3));
+    }
+
+    private IEnumerator OpenUI(int index)
+    {
+        if (isOpenUI != index)
         {
-            isOpenInventory = true;
-            Instantiate(inventoryMain, new Vector3(cameraEye.position.x, 0, cameraEye.position.z), Quaternion.Euler(new Vector3(0, cameraEye.eulerAngles.y, 0)));
+            if (isOpenUI == 1)
+            {
+                ShopController.Instance().Close();
+            }
+            else if (isOpenUI == 2)
+            {
+                InventoryController.Instance().Close();
+            }
+            else if (isOpenUI == 3)
+            {
+                //close setting
+            }
+
+            isOpenUI = index;
+
+            yield return new WaitForSeconds(0.1f);
+
+            switch (index)
+            {
+                case 1:
+                    Instantiate(shopMain, new Vector3(cameraEye.position.x, 0, cameraEye.position.z), Quaternion.Euler(new Vector3(0, cameraEye.eulerAngles.y, 0)));
+                    break;
+                case 2:
+                    Instantiate(inventoryMain, new Vector3(cameraEye.position.x, 0, cameraEye.position.z), Quaternion.Euler(new Vector3(0, cameraEye.eulerAngles.y, 0)));
+                    break;
+                case 3:
+                    //open setting
+                    break;
+            }
         }
     }
 
@@ -209,12 +241,17 @@ public class MainController : MonoBehaviour {
 
     public void CloseShop()
     {
-        isOpenShop = false;
+        isOpenUI = 1;
     }
 
     public void CloseInventory()
     {
-        isOpenInventory = false; 
+        isOpenUI = 2; 
+    }
+
+    public void CloseSetting()
+    {
+        isOpenUI = 3;
     }
 
     public void SetIsPointerSelect(bool value)
@@ -224,7 +261,7 @@ public class MainController : MonoBehaviour {
         if (isPointerSelect)
         {
             if (radioMenu)
-                radioMenu.openpanel(5);
+                radioMenu.openpanel(1);
         }
     }
 

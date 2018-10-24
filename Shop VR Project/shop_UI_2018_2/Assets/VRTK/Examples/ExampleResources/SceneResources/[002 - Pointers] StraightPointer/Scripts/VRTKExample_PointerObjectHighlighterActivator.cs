@@ -207,7 +207,7 @@
             if (mainController.UIPointerState == 1)
             {
                 //Deselect
-                if (RadioMenuController.getPanelType() == 5 && mainController.GetIsPointerSelect() && !mainController.isPointerGrab && mainController.obj_point != null)
+                if (RadioMenuController.getPanelType() == 1 && mainController.GetIsPointerSelect() && !mainController.isPointerGrab && mainController.obj_point != null)
                 {
                     mainController.obj_point.transform.parent = mainController.obj.transform;
                     ToggleHighlight(mainController.obj_point.transform, Color.clear);
