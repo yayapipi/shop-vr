@@ -165,7 +165,7 @@ public class MainController : MonoBehaviour {
     {
         if (_instance == null)
         {
-            throw new Exception("UnityMainThreadDispatcher could not find the MainController object.");
+            throw new Exception("could not find the MainController object.");
         }
         return _instance;
     }
@@ -241,17 +241,17 @@ public class MainController : MonoBehaviour {
 
     public void CloseShop()
     {
-        isOpenUI = 1;
+        isOpenUI = 0;
     }
 
     public void CloseInventory()
     {
-        isOpenUI = 2; 
+        isOpenUI = 0; 
     }
 
     public void CloseSetting()
     {
-        isOpenUI = 3;
+        isOpenUI = 0;
     }
 
     public void SetIsPointerSelect(bool value)

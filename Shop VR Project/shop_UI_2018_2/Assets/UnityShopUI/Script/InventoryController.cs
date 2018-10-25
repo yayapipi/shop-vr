@@ -53,7 +53,7 @@ public class InventoryController : MonoBehaviour
     {
         if (_instance == null)
         {
-            throw new Exception("UnityMainThreadDispatcher could not find the InventoryController object.");
+            throw new Exception("could not find the InventoryController object.");
         }
         return _instance;
     }

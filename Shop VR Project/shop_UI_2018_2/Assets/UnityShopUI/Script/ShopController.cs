@@ -44,7 +44,7 @@ public class ShopController : MonoBehaviour {
         {
             if (_instance == null)
             {
-                throw new Exception("UnityMainThreadDispatcher could not find the ShopController object.");
+                throw new Exception("could not find the ShopController object.");
             }
             return _instance;
         }
