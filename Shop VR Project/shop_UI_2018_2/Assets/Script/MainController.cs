@@ -29,7 +29,7 @@ public class MainController : MonoBehaviour {
     public bool enablePointerGrab = true;
     public bool enablePointerCutMesh = true;
     private bool isPointerSelect = false;
-    public bool isPointerGrab;
+    private bool isPointerGrab = false;
     public static bool isViewRotate = false;
     private static MainController _instance = null;
 
@@ -182,20 +182,20 @@ public class MainController : MonoBehaviour {
 
     public void OpenShop()
     {
-        StartCoroutine(OpenUI(1));
+        StartCoroutine(SwitchUI(1));
     }
 
     public void OpenInventory()
     {
-        StartCoroutine(OpenUI(2));
+        StartCoroutine(SwitchUI(2));
     }
 
     public void OpenSetting()
     {
-        StartCoroutine(OpenUI(3));
+        StartCoroutine(SwitchUI(3));
     }
 
-    private IEnumerator OpenUI(int index)
+    private IEnumerator SwitchUI(int index)
     {
         if (isOpenUI != index)
         {
@@ -229,6 +229,24 @@ public class MainController : MonoBehaviour {
                     break;
             }
         }
+        else
+        {
+            //close all
+            if (isOpenUI == 1)
+            {
+                ShopController.Instance().Close();
+            }
+            else if (isOpenUI == 2)
+            {
+                InventoryController.Instance().Close();
+            }
+            else if (isOpenUI == 3)
+            {
+                //close setting
+            }
+
+            isOpenUI = 0;
+        }
     }
 
     public static void UpdateUserData()
@@ -239,17 +257,7 @@ public class MainController : MonoBehaviour {
         t.Start();
     }
 
-    public void CloseShop()
-    {
-        isOpenUI = 0;
-    }
-
-    public void CloseInventory()
-    {
-        isOpenUI = 0; 
-    }
-
-    public void CloseSetting()
+    public void CloseUI()
     {
         isOpenUI = 0;
     }
@@ -257,17 +265,36 @@ public class MainController : MonoBehaviour {
     public void SetIsPointerSelect(bool value)
     {
         isPointerSelect = value;
-        //Call Controller UI here
         if (isPointerSelect)
         {
             if (radioMenu)
-                radioMenu.openpanel(1);
+                radioMenu.SelectObj();
         }
     }
 
     public bool GetIsPointerSelect()
     {
         return isPointerSelect;
+    }
+
+    public void SetIsPointerGrab(bool value)
+    {
+        isPointerGrab = value;
+        if (isPointerGrab)
+        {
+            if (radioMenu)
+                radioMenu.GrabObj();
+        }
+        else
+        {
+            if (radioMenu)
+                radioMenu.DeGrabObj();
+        }
+    }
+
+    public bool GetIsPointerGrab()
+    {
+        return isPointerGrab;
     }
 
     /*================

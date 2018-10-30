@@ -136,11 +136,11 @@
                             mainController.obj_point = obj;
                             mainController.SetIsPointerSelect(true);
                         }
-                        else if (mainController.obj_point == obj && !mainController.isPointerGrab && mainController.enablePointerGrab)
+                        else if (mainController.obj_point == obj && !mainController.GetIsPointerGrab() && mainController.enablePointerGrab)
                         {
                             //Grab
                             mainController.obj_point.transform.parent = objParent;
-                            mainController.isPointerGrab = true;
+                            mainController.SetIsPointerGrab(true);
                         }
                         break;
                     case 2:
@@ -151,17 +151,17 @@
                             mainController.obj_point = obj;
                             mainController.SetIsPointerSelect(true);
                         }
-                        else if (mainController.obj_point == obj && !mainController.isPointerGrab && mainController.enablePointerGrab)
+                        else if (mainController.obj_point == obj && !mainController.GetIsPointerGrab() && mainController.enablePointerGrab)
                         {
                             //Grab
                             mainController.obj_point.transform.parent = objParent;
-                            mainController.isPointerGrab = true;
+                            mainController.SetIsPointerGrab(true);
                         }
-                        else if (mainController.obj_point == obj && mainController.isPointerGrab)
+                        else if (mainController.obj_point == obj && mainController.GetIsPointerGrab())
                         {
                             //DeGrab
                             mainController.obj_point.transform.parent = mainController.obj.transform;
-                            mainController.isPointerGrab = false;
+                            mainController.SetIsPointerGrab(false);
                         }
                         break;
                     case 3:
@@ -172,17 +172,17 @@
                             mainController.obj_point = obj;
                             mainController.SetIsPointerSelect(true);
                         }
-                        else if (mainController.obj_point == obj && !mainController.isPointerGrab && mainController.enablePointerGrab)
+                        else if (mainController.obj_point == obj && !mainController.GetIsPointerGrab() && mainController.enablePointerGrab)
                         {
                             //Grab
                             mainController.obj_point.transform.parent = objParent;
-                            mainController.isPointerGrab = true;
+                            mainController.SetIsPointerGrab(true);
                         }
-                        else if (mainController.obj_point == obj && mainController.isPointerGrab)
+                        else if (mainController.obj_point == obj && mainController.GetIsPointerGrab())
                         {
                             //DeGrab
                             mainController.obj_point.transform.parent = mainController.obj.transform;
-                            mainController.isPointerGrab = false;
+                            mainController.SetIsPointerGrab(false);
                         }
                         break;
                 }
@@ -194,10 +194,10 @@
             if (mainController.UIPointerState == 1)
             {
                 //DeGrab
-                if (mainController.isPointerGrab && mainController.obj_point != null)
+                if (mainController.GetIsPointerGrab() && mainController.obj_point != null)
                 {
                     mainController.obj_point.transform.parent = mainController.obj.transform;
-                    mainController.isPointerGrab = false;
+                    mainController.SetIsPointerGrab(false);
                 }
             }
         }
@@ -207,7 +207,7 @@
             if (mainController.UIPointerState == 1)
             {
                 //Deselect
-                if (RadioMenuController.getPanelType() == 1 && mainController.GetIsPointerSelect() && !mainController.isPointerGrab && mainController.obj_point != null)
+                if (RadioMenuController.getPanelType() == 1 && mainController.GetIsPointerSelect() && !mainController.GetIsPointerGrab() && mainController.obj_point != null)
                 {
                     mainController.obj_point.transform.parent = mainController.obj.transform;
                     ToggleHighlight(mainController.obj_point.transform, Color.clear);

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -98,10 +99,10 @@ public class RadioMenuController : MonoBehaviour {
                     mainController.enablePointerGrab = false;
 
                     //DeGrab
-                    if (mainController.isPointerGrab && mainController.obj_point != null)
+                    if (mainController.GetIsPointerGrab() && mainController.obj_point != null)
                     {
                         mainController.obj_point.transform.parent = mainController.obj.transform;
-                        mainController.isPointerGrab = false;
+                        mainController.SetIsPointerGrab(false);
                     }
 
                     //Enable Color Painter
@@ -185,6 +186,41 @@ public class RadioMenuController : MonoBehaviour {
             panel_type = jud;
     }
 
+    public void SelectObj()
+    {
+        if (panel_type != 10)
+        {
+            openpanel(1);
+        }
+        else
+        {
+            SetPanelBack(1);
+        }
+    }
+
+    public void GrabObj()
+    {
+        SetPanelBack(panel_type);
+        openpanel(11);
+    }
+
+    public void DeGrabObj()
+    {
+        if (panel_back == 10)
+        {
+            grip_back();
+            SetPanelBack(1);
+        }
+        else if (panel_back > 10)
+        {
+            throw new Exception("Error code: 1");
+        }
+        else
+        {
+            grip_back();
+        }
+    }
+
     public static int getPanelType()
     {
         return panel_type;
@@ -201,7 +237,7 @@ public class RadioMenuController : MonoBehaviour {
         ShopController.PutBack(mainController.obj_point.GetComponent<id>().item_id);
         Destroy(mainController.obj_point);
         mainController.SetIsPointerSelect(false);
-        mainController.isPointerGrab = false;
+        mainController.SetIsPointerGrab(false);
     }
 
     public void Openshop()
@@ -212,6 +248,11 @@ public class RadioMenuController : MonoBehaviour {
     public void OpenInventory()
     {
         mainController.OpenInventory();
+    }
+
+    public void OpenSetting()
+    {
+        mainController.OpenSetting();
     }
 
     public void OpenDraw()

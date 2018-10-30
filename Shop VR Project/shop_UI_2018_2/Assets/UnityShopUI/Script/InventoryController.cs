@@ -259,7 +259,7 @@ public class InventoryController : MonoBehaviour
 
         Array.Resize<LockItems>(ref itemArray, i);
         UpdateInventoryLock(itemArray);
-        MainController.Instance().CloseInventory();
+        MainController.Instance().CloseUI();
         Destroy(transform.parent.gameObject);
     }
 
