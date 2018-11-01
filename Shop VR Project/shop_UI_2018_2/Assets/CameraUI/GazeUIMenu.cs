@@ -6,7 +6,7 @@ using UnityEngine.Events;
 public class GazeUIMenu : MonoBehaviour {
 
     [System.Serializable]
-    public class GazeMenuButton
+    public class eventButton
     {
         public Sprite ButtonIcon;
         public UnityEvent OnClick = new UnityEvent();
@@ -15,8 +15,8 @@ public class GazeUIMenu : MonoBehaviour {
         public UnityEvent OnHover = new UnityEvent();
     }
 
-    public GazeMenuButton[] buttons = new GazeMenuButton[4];
-    private bool[] buttonOnHover = new bool[4];
+    public eventButton[] buttons = new eventButton[3];
+    private bool[] buttonOnHover = new bool[3];
     
     // Use this for initialization
     void Start ()

@@ -262,7 +262,7 @@ public class KeyboardClicker : MonoBehaviour {
                 rayCastObj = h.gameObject;
                 break;
             }
-            if (h.gameObject.name == "mask")
+            if (h.gameObject.name == "mask" || h.gameObject.GetComponent<MeshRenderer>())
             {
                 rayCastObj = h.gameObject;
                 break;
@@ -320,7 +320,7 @@ public class KeyboardClicker : MonoBehaviour {
                 rayCastObj = h.gameObject;
                 break;
             }
-            if (h.gameObject.name == "mask")
+            if (h.gameObject.name == "mask" || h.gameObject.GetComponent<MeshRenderer>())
             {
                 rayCastObj = h.gameObject;
                 break;

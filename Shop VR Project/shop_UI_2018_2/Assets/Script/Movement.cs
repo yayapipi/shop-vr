@@ -70,5 +70,15 @@ public class Movement : MonoBehaviour {
             Vector3 newRotation = new Vector3(0, rcontrol.GetComponent<SteamVR_TrackedController>().dirX * speed_rotate, 0);
             transform.Rotate(newRotation);
         }
+        if(MainController.isViewRotateLeft)
+        {
+            Vector3 newRotation = new Vector3(0, -0.5f * speed_rotate, 0);
+            transform.Rotate(newRotation);
+        }
+        else if (MainController.isViewRotateRight)
+        {
+            Vector3 newRotation = new Vector3(0, 0.5f * speed_rotate, 0);
+            transform.Rotate(newRotation);
+        }
     }
 }
