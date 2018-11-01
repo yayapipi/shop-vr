@@ -23,7 +23,7 @@ public class GizmosModule : MonoBehaviour {
     {
         if (_instance == null)
         {
-            throw new Exception(" could not find the DrawModule object.");
+            throw new Exception(" could not find the Gizmos object.");
         }
         return _instance;
     }
@@ -51,13 +51,13 @@ public class GizmosModule : MonoBehaviour {
 
     public void DisableTranslateGizmos()
     {
-        translateGizmos.gameObject.SetActive(true);
+        translateGizmos.gameObject.SetActive(false);
         translateGizmos.translateTarget = MainController.Instance().obj_point;
     }
 
     public void DisbleRotationGizmos()
     {
-        rotationGizmos.gameObject.SetActive(true);
+        rotationGizmos.gameObject.SetActive(false);
         Capsule.SetActive(false);
         rotationGizmos.rotateTarget = MainController.Instance().obj_point;
     }

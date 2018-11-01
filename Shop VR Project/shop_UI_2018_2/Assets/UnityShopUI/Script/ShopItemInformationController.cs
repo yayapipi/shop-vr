@@ -16,6 +16,7 @@ public class ShopItemInformationController : MonoBehaviour {
     public GameObject model_obj;
 
     private int itemID;
+    private Vector3 standard_scale;
     private int amount;
     private int minAmount;
     private int maxAmount;
@@ -35,6 +36,12 @@ public class ShopItemInformationController : MonoBehaviour {
         amount = minAmount;
         InventoryController.Instance().Disable();
         itemID = data.item_id;
+
+        string[] splits = data.standard_scale.Split('x');
+        standard_scale = new Vector3(float.Parse(splits[0], CultureInfo.InvariantCulture.NumberFormat), 
+            float.Parse(splits[1], CultureInfo.InvariantCulture.NumberFormat), 
+            float.Parse(splits[2], CultureInfo.InvariantCulture.NumberFormat));
+
         informationContent.Find("name").gameObject.GetComponent<Text>().text = data.name;
         informationContent.Find("cost").gameObject.GetComponent<Text>().text = " " + data.amount;
         informationContent.Find("description_text").gameObject.GetComponent<Text>().text = data.description;
@@ -44,7 +51,7 @@ public class ShopItemInformationController : MonoBehaviour {
         GetInventItemPics(data.item_id);
 
         //Load model
-        StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl, data.standard_scale));
+        StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl));
 
         //Close Back Collision UI
     }
@@ -60,6 +67,12 @@ public class ShopItemInformationController : MonoBehaviour {
         amount = minAmount;
         ShopController.Instance().Disable();
         itemID = data.item_id;
+
+        string[] splits = data.standard_scale.Split('x');
+        standard_scale = new Vector3(float.Parse(splits[0], CultureInfo.InvariantCulture.NumberFormat),
+            float.Parse(splits[1], CultureInfo.InvariantCulture.NumberFormat),
+            float.Parse(splits[2], CultureInfo.InvariantCulture.NumberFormat));
+
         informationContent.Find("name").gameObject.GetComponent<Text>().text = data.name;
         informationContent.Find("cost").gameObject.GetComponent<Text>().text = "$ " + data.cost;
         informationContent.Find("description_text").gameObject.GetComponent<Text>().text = data.description;
@@ -69,7 +82,7 @@ public class ShopItemInformationController : MonoBehaviour {
         GetShopItemPics(data.item_id);
 
         //Load model
-        StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl, data.standard_scale));
+        StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl));
 
         //Close Back Collision UI
     }
@@ -86,6 +99,12 @@ public class ShopItemInformationController : MonoBehaviour {
         amount = data.amount;
         CartController.Instance().Disable();
         itemID = data.item_id;
+
+        string[] splits = data.standard_scale.Split('x');
+        standard_scale = new Vector3(float.Parse(splits[0], CultureInfo.InvariantCulture.NumberFormat),
+            float.Parse(splits[1], CultureInfo.InvariantCulture.NumberFormat),
+            float.Parse(splits[2], CultureInfo.InvariantCulture.NumberFormat));
+
         informationContent.Find("name").gameObject.GetComponent<Text>().text = data.name;
         informationContent.Find("cost").gameObject.GetComponent<Text>().text = "$ " + data.cost;
         informationContent.Find("description_text").gameObject.GetComponent<Text>().text = data.description;
@@ -95,7 +114,7 @@ public class ShopItemInformationController : MonoBehaviour {
         GetShopItemPics(data.item_id);
 
         //Load model
-        StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl, data.standard_scale));
+        StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl));
 
         //Close Back Collision UI
     }
@@ -198,7 +217,7 @@ public class ShopItemInformationController : MonoBehaviour {
         }
     }
 
-    private IEnumerator LoadModel(string name, string url, string s_scale)
+    private IEnumerator LoadModel(string name, string url)
     {
         CleanCache();
         WWW www = new WWW(url);
@@ -327,11 +346,18 @@ public class ShopItemInformationController : MonoBehaviour {
         {
             mobj.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
             mobj.AddComponent<id>().item_id = itemID;
-            mobj.AddComponent<MeshCollider>();
-            mobj.AddComponent<VRTK.Highlighters.VRTK_OutlineObjectCopyHighlighter>();
+            mobj.GetComponent<id>().standard_size = standard_scale;
+
+            if(!mobj.GetComponent<MeshCollider>())
+                mobj.AddComponent<MeshCollider>();
+
             mobj.GetComponent<Model_Rotate>().enabled = false;
+
             mobj.tag = "Model";
-            mobj.AddComponent<Rigidbody>().isKinematic = true;
+
+            mobj.GetComponent<Rigidbody>().isKinematic = true;
+            mobj.GetComponent<Rigidbody>().useGravity = false;
+
         }
         ShopController.Grab(itemID);
 

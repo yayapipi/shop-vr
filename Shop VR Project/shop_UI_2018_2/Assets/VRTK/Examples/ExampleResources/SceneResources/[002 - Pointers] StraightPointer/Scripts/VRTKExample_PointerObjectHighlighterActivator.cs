@@ -16,10 +16,28 @@
         private Transform objParent;
         private MainController mainController;
 
-        void Start()
+        private void Start()
         {
             mainController = MainController.Instance();
             ChangeObjParent();
+        }
+
+        private void Update()
+        {
+            if(mainController.UIPointerState == 3 && Input.GetMouseButtonDown(1) && mainController.GetIsPointerSelect() && !mainController.GetIsPointerGrab() && mainController.obj_point != null)
+            {
+                mainController.obj_point.transform.parent = mainController.obj.transform;
+                ToggleHighlight(mainController.obj_point.transform, Color.clear);
+
+                if (mainController.obj_point.GetComponent<Rigidbody>())
+                {
+                    mainController.obj_point.GetComponent<Rigidbody>().useGravity = mainController.obj_useGravity;
+                    mainController.obj_point.GetComponent<Rigidbody>().isKinematic = mainController.obj_isKinematic;
+                }
+
+                mainController.obj_point = null;
+                mainController.SetIsPointerSelect(false);
+            }
         }
 
         protected virtual void OnEnable()
@@ -135,6 +153,15 @@
                             ToggleHighlight(obj.transform, selectColor);
                             mainController.obj_point = obj;
                             mainController.SetIsPointerSelect(true);
+
+                            if (obj.GetComponent<Rigidbody>())
+                            {
+                                mainController.obj_useGravity = obj.GetComponent<Rigidbody>().useGravity;
+                                mainController.obj_isKinematic = obj.GetComponent<Rigidbody>().isKinematic;
+
+                                obj.GetComponent<Rigidbody>().useGravity = false;
+                                obj.GetComponent<Rigidbody>().isKinematic = true;
+                            }
                         }
                         else if (mainController.obj_point == obj && !mainController.GetIsPointerGrab() && mainController.enablePointerGrab)
                         {
@@ -150,6 +177,15 @@
                             ToggleHighlight(obj.transform, selectColor);
                             mainController.obj_point = obj;
                             mainController.SetIsPointerSelect(true);
+
+                            if (obj.GetComponent<Rigidbody>())
+                            {
+                                mainController.obj_useGravity = obj.GetComponent<Rigidbody>().useGravity;
+                                mainController.obj_isKinematic = obj.GetComponent<Rigidbody>().isKinematic;
+
+                                obj.GetComponent<Rigidbody>().useGravity = false;
+                                obj.GetComponent<Rigidbody>().isKinematic = true;
+                            }
                         }
                         else if (mainController.obj_point == obj && !mainController.GetIsPointerGrab() && mainController.enablePointerGrab)
                         {
@@ -171,6 +207,15 @@
                             ToggleHighlight(obj.transform, selectColor);
                             mainController.obj_point = obj;
                             mainController.SetIsPointerSelect(true);
+
+                            if (obj.GetComponent<Rigidbody>())
+                            {
+                                mainController.obj_useGravity = obj.GetComponent<Rigidbody>().useGravity;
+                                mainController.obj_isKinematic = obj.GetComponent<Rigidbody>().isKinematic;
+
+                                obj.GetComponent<Rigidbody>().useGravity = false;
+                                obj.GetComponent<Rigidbody>().isKinematic = true;
+                            }
                         }
                         else if (mainController.obj_point == obj && !mainController.GetIsPointerGrab() && mainController.enablePointerGrab)
                         {
@@ -211,6 +256,13 @@
                 {
                     mainController.obj_point.transform.parent = mainController.obj.transform;
                     ToggleHighlight(mainController.obj_point.transform, Color.clear);
+
+                    if (mainController.obj_point.GetComponent<Rigidbody>())
+                    {
+                        mainController.obj_point.GetComponent<Rigidbody>().useGravity = mainController.obj_useGravity;
+                        mainController.obj_point.GetComponent<Rigidbody>().isKinematic = mainController.obj_isKinematic;
+                    }
+
                     mainController.obj_point = null;
                     mainController.SetIsPointerSelect(false);
                 }
