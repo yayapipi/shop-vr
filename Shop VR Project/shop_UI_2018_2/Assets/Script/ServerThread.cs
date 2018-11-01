@@ -386,7 +386,7 @@ public class GetUserInventThread
             userinventory[] userInventoryData;
 
             if (type == 0)
-                userInventoryData = sqlConnection.Ruser_invent(userID,0,limitbase,limitoffset);
+                userInventoryData = sqlConnection.Ruser_invent(userID,limitbase,limitoffset);
             else
                 userInventoryData = sqlConnection.Ruser_invent(userID,type, limitbase, limitoffset);
 
