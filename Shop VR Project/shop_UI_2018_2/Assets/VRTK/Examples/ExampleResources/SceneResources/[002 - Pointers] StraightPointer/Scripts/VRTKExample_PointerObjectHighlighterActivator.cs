@@ -121,6 +121,7 @@
 
         private void PointerExit(GameObject obj)
         {
+            ToggleHighlight(obj.transform, Color.clear);
             if (mainController.enablePointerSelect && obj.tag == "Model")
             {
                 if (!mainController.GetIsPointerSelect())
@@ -140,6 +141,27 @@
 
         private void PointerSet(GameObject obj)
         {
+            if (mainController.obj_select != 0 && mainController.enablePointerSelect)
+            {
+                if (mainController.obj_select == 1)
+                {
+                    mainController.obj_select1 = obj;
+                    ToggleHighlight(obj.transform, Color.red);
+                    mainController.obj_select = -1; //Return Call Sucess
+                }
+                if (mainController.obj_select == 2)
+                {
+                    mainController.obj_select2 = obj;
+                    ToggleHighlight(obj.transform, Color.blue);
+                    if (GameObject.ReferenceEquals(mainController.obj_select1, mainController.obj_select2))
+                    {
+                        mainController.obj_select = -404; // Return Error Code (Same Object Selected)
+                    }else{
+                    mainController.obj_select = -2; //Return Call Sucess
+                    }
+                    
+                }
+            }
             if (mainController.enablePointerSelect && obj.tag == "Model")
             {
                 switch (mainController.UIPointerState)
@@ -310,6 +332,11 @@
             string targetName = (target ? target.name : "<NO VALID TARGET>");
             string colliderName = (raycastHit.collider ? raycastHit.collider.name : "<NO VALID COLLIDER>");
             VRTK_Logger.Info("Controller on index '" + index + "' is " + action + " at a distance of " + distance + " on object named [" + targetName + "] on the collider named [" + colliderName + "] - the pointer tip position is/was: " + tipPosition);
+        }
+
+        internal void ToggleHighlight(GameObject obj_select1, Color color)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

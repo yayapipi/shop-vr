@@ -66,10 +66,8 @@ public class RadioMenuController : MonoBehaviour {
                     break;
                 case 2:
                     break;
-                case 10:
+                case 10: case 11:
                     MainController.isViewRotate = false;
-                    break;
-                case 11:
                     break;
                 case 12:
                     //Disable Color Painter
@@ -89,10 +87,8 @@ public class RadioMenuController : MonoBehaviour {
                     break;
                 case 2:
                     break;
-                case 10:
+                case 10: case 11:
                     MainController.isViewRotate = true;
-                    break;
-                case 11:
                     break;
                 case 12:
                     //Disable Object Grab
@@ -143,6 +139,7 @@ public class RadioMenuController : MonoBehaviour {
                 ViewRotatePanel_10.SetActive(false);
                 GrabPanel_11.SetActive(false);
                 DrawPanel_12.SetActive(false);
+                mainController.blade.SetActive(false);
                 SpecialPanel_2.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 panel_back = 1;
                 break;
@@ -200,24 +197,30 @@ public class RadioMenuController : MonoBehaviour {
 
     public void GrabObj()
     {
-        SetPanelBack(panel_type);
-        openpanel(11);
+        if (mainController.blade.active == false)
+        {
+            SetPanelBack(panel_type);
+            openpanel(11);
+        }
     }
 
     public void DeGrabObj()
     {
-        if (panel_back == 10)
+        if (mainController.blade.active == false)
         {
-            grip_back();
-            SetPanelBack(1);
-        }
-        else if (panel_back > 10)
-        {
-            throw new Exception("Error code: 1");
-        }
-        else
-        {
-            grip_back();
+            if (panel_back == 10)
+            {
+                grip_back();
+                SetPanelBack(1);
+            }
+            else if (panel_back > 10)
+            {
+                throw new Exception("Error code: 1");
+            }
+            else
+            {
+                grip_back();
+            }
         }
     }
 
@@ -264,6 +267,31 @@ public class RadioMenuController : MonoBehaviour {
     public void grip_back()
     {
         openpanel(panel_back);
+    }
+
+    public void slice_model()
+    {
+        openpanel(10);
+        panel_back = 2;
+        mainController.blade.SetActive(true);
+    }
+
+    public void object_Depth(int speed)
+    {
+        if (mainController.GetIsPointerSelect())
+        {
+            float step = speed * Time.deltaTime;
+            mainController.obj_point.transform.position = Vector3.MoveTowards(mainController.obj_point.transform.position, mainController.rightController.transform.position, step);
+        }
+    }
+
+    public void auto_alignment()
+    {
+        if (mainController.obj_select == 0)
+        {
+            mainController.descripUI.StartDescription(12);
+            mainController.obj_select = 1;
+        }
     }
 
     public void scale_obj(int btn)

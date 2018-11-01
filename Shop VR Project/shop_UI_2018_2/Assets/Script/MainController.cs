@@ -9,6 +9,7 @@ public class MainController : MonoBehaviour {
     public GameObject shopMain;
     public GameObject inventoryMain;
     public RadioMenuController radioMenu;
+    public DescriptionUIManager descripUI;
     public Transform cameraEye;
     public VRTK.VRTK_ControllerEvents leftController;
     public VRTK.VRTK_ControllerEvents rightController;
@@ -36,6 +37,14 @@ public class MainController : MonoBehaviour {
     public static bool isViewRotateLeft = false;
     public static bool isViewRotateRight = false;
     private static MainController _instance = null;
+
+    [Header("Auto Alignment Object")]
+    public GameObject obj_select1 = null;
+    public GameObject obj_select2 = null;
+    public int obj_select = 0;
+    public float align_speed = 10f;
+    private float align_fraction = 0.0f;
+    private Vector3 align_position;
 
     [Header("Tools")]
     public GameObject drawModule;
@@ -91,7 +100,6 @@ public class MainController : MonoBehaviour {
         }
 
         isOpenUI = 0;
-        
         sqlConnection = new sqlapi();
         userID = 1;
 
@@ -158,6 +166,35 @@ public class MainController : MonoBehaviour {
         RTriggerClickDown_bool = RTriggerClick && !RTriggerClickLast;
         RTriggerClickUp_bool = !RTriggerClick && RTriggerClickLast;
         RTriggerClickLast = RTriggerClick;
+
+        //Auto-Alignment
+        if (obj_select != 0)
+        {
+            //After Select Object 1
+            if (obj_select == -1)
+            {
+                descripUI.StartDescription(13);
+                obj_select = 2;
+            }
+            //After Select Object 2
+            if (obj_select == -2)
+                if (obj_select1 != null && obj_select2 != null)
+                    AutoAlignmentObject();
+            //Moving Animation Must Be Updated
+            if (obj_select == 3)
+            {
+                align_fraction = Time.deltaTime * align_speed;
+                obj_point.transform.position = Vector3.MoveTowards(obj_point.transform.position, align_position, align_fraction);
+            }
+            //Reset Obj_Align Bool
+            if (obj_point.transform.position == align_position)
+                obj_select = 0;
+            if (obj_select == -404)
+            {
+                descripUI.StartDescription(14);
+                obj_select = 0;
+            }
+        }
 	}
 
     void OnApplicationQuit()
@@ -300,6 +337,52 @@ public class MainController : MonoBehaviour {
     {
         return isPointerGrab;
     }
+
+    public void AutoAlignmentObject()
+    {
+        align_position = (obj_select1.transform.position + obj_select2.transform.position) / 2;
+        obj_select = 3;
+    }
+
+    public void AutoScale(float box_size){
+        Vector3 scale = obj_point.transform.localScale;
+        Vector3 size = getTargetSizeByRender(obj_point);
+        //Vector3 size = model_obj.GetComponent<MeshFilter>().mesh.bounds.size;
+        float ratio = box_size / Mathf.Max(size.x, size.y, size.z);
+
+        obj_point.transform.localScale = new Vector3(scale.x * ratio, scale.y * ratio, scale.z * ratio);
+    }
+
+
+    public Vector3 getTargetSizeByRender(GameObject target)
+    {
+        Vector3 vec = Vector3.one;
+        Quaternion localQuaternion = target.transform.rotation;
+        target.transform.rotation = Quaternion.identity;
+        var renders = target.transform.GetComponentsInChildren<Renderer>();
+        if (renders.Length > 0)
+        {
+            Bounds bounds = renders[0].bounds;
+            for (int i = 1; i < renders.Length; i++)
+            {
+                bounds.Encapsulate(renders[i].bounds);
+            }
+
+            if (target.transform.GetComponent<Renderer>())
+            {
+                bounds.Encapsulate(target.transform.GetComponent<Renderer>().bounds);
+            }
+
+            vec = bounds.size;
+        }
+        else
+        {
+            vec = target.transform.GetComponent<Renderer>().bounds.size;
+        }
+        target.transform.rotation = localQuaternion;
+        return vec;
+    }
+
 
     /*================
      |Controller event|

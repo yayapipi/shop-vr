@@ -23,15 +23,25 @@ public class DescriptionUIManager : MonoBehaviour {
 
         dialogue = new Dialogue[] {
             //Base panel
-            new Dialogue("Shop", new string[] {"open the shop"}),
-            new Dialogue("View", new string[] { "rotate view" }),
-            new Dialogue("Setting", new string[] { "open setting menu" }),
-            new Dialogue("Inventory", new string[] { "open the inventory" }),
+    /*0*/   new Dialogue("Shop", new string[] {"open the shop"}),
+    /*1*/   new Dialogue("View", new string[] { "rotate view" }),
+    /*2*/   new Dialogue("Setting", new string[] { "open setting menu" }),
+    /*3*/   new Dialogue("Inventory", new string[] { "open the inventory" }),
             //Model panel
-            new Dialogue("Scale", new string[] { "scale the object" }),
-            new Dialogue("Draw", new string[] { "draw on the object" }),
-            new Dialogue("Put back", new string[] { "put back the object" }),
-            new Dialogue("Rotate", new string[] { "rotate the object" })
+    /*4*/   new Dialogue("Properties", new string[] { "open object properties menu" }),
+    /*5*/   new Dialogue("View", new string[] { "rotate view" }),
+    /*6*/   new Dialogue("Put back", new string[] { "put back the object" }),
+    /*7*/   new Dialogue("Special Function", new string[] { "open speacial function panel" }),
+            //Speacial panel
+   /*8*/    new Dialogue("Paint", new string[] { "paint color on the object" }),
+   /*9*/    new Dialogue("Auto Align", new string[] { "auto align the object position" }),
+   /*10*/   new Dialogue("Slice", new string[] { "slicing the model of object" }),
+   /*11*/   new Dialogue("Auto Scale", new string[] { "auto scaling the object size" }),
+
+             //Select Tooltips
+   /*12*/    new Dialogue("Object1", new string[] { "select object 1" }),
+   /*13*/    new Dialogue("Object2", new string[] { "select object 2" }),
+   /*13*/    new Dialogue("Select Fail", new string[] { "Please select two different object" })
         };
 
         notificationAnimator = notificationObject.GetComponent<Animator>();
