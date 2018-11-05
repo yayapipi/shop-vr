@@ -17,6 +17,11 @@ public class RadioMenuController : MonoBehaviour {
     private MainController mainController;
     private static int panel_type = 0;
     private static int panel_back = 0;
+    private static bool modelset_jud= false;
+
+    public GameObject modelSetting;
+    private GameObject model_SettingObj;
+    public GameObject systemSetting;
 
     /*
     0 base panel    1 shop panel    2 view rotate   3 setting panel     4 backpack panel 
@@ -182,6 +187,20 @@ public class RadioMenuController : MonoBehaviour {
         if (isOpenPanel)
             panel_type = jud;
     }
+
+    public void openModelSetting() {
+        if (!modelset_jud)
+        {
+            model_SettingObj = Instantiate(modelSetting, new Vector3(mainController.cameraEye.position.x, 0, mainController.cameraEye.position.z), Quaternion.Euler(new Vector3(0, mainController.cameraEye.eulerAngles.y, 0)));
+            modelset_jud = true;
+        }
+        else {
+            Destroy(model_SettingObj);
+            modelset_jud = false;
+        }
+
+    }
+
 
     public void SelectObj()
     {

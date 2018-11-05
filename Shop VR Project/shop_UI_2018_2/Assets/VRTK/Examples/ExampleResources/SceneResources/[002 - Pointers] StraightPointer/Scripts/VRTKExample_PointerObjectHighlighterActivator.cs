@@ -204,7 +204,7 @@
                             {
                                 mainController.obj_useGravity = obj.GetComponent<Rigidbody>().useGravity;
                                 mainController.obj_isKinematic = obj.GetComponent<Rigidbody>().isKinematic;
-
+                                Debug.Log("AWD");
                                 obj.GetComponent<Rigidbody>().useGravity = false;
                                 obj.GetComponent<Rigidbody>().isKinematic = true;
                             }

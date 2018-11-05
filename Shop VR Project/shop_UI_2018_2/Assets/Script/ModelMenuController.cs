@@ -75,7 +75,7 @@ public class ModelMenuController : MonoBehaviour
 
         showPos = false;
         showRot = false;
-
+        Debug.Log(KinematicSwitch.isOn);
         if (KinematicSwitch.isOn != isKinematic)
             KinematicSwitch.AnimateSwitch();
         if (GravitySwitch.isOn != useGravity)
