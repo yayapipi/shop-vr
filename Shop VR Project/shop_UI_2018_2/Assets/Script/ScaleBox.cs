@@ -21,9 +21,9 @@ public class ScaleBox : MonoBehaviour {
     public void EnableBox()
     {
         transform.gameObject.SetActive(true);
-        transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+        transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         scale_box = true;
-        Vector3 position = new Vector3(MainController.Instance().obj_point.transform.position.x, MainController.Instance().obj_point.transform.position.y / 2, MainController.Instance().obj_point.transform.position.z);
+        Vector3 position = new Vector3(MainController.Instance().obj_point.transform.position.x, MainController.Instance().obj_point.transform.position.y , MainController.Instance().obj_point.transform.position.z);
         transform.position = position;
     }
 

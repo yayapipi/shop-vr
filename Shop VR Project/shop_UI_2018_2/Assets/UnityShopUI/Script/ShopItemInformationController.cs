@@ -355,6 +355,9 @@ public class ShopItemInformationController : MonoBehaviour {
 
             mobj.tag = "Model";
 
+            if (!mobj.GetComponent<Rigidbody>())
+                mobj.AddComponent<Rigidbody>();
+
             mobj.GetComponent<Rigidbody>().isKinematic = true;
             mobj.GetComponent<Rigidbody>().useGravity = false;
 
