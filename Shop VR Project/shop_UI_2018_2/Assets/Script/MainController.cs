@@ -41,12 +41,11 @@ public class MainController : MonoBehaviour {
     private static MainController _instance = null;
 
     [Header("Auto Alignment Object")]
+    public bool enablePointerSelectOtherObject = false;
     public GameObject obj_select1 = null;
     public GameObject obj_select2 = null;
     public int obj_select = 0;
     public float align_speed = 10f;
-    private float align_fraction = 0.0f;
-    private Vector3 align_position;
 
     [Header("Tools")]
     public GameObject drawModule;
@@ -169,35 +168,6 @@ public class MainController : MonoBehaviour {
         RTriggerClickDown_bool = RTriggerClick && !RTriggerClickLast;
         RTriggerClickUp_bool = !RTriggerClick && RTriggerClickLast;
         RTriggerClickLast = RTriggerClick;
-
-        //Auto-Alignment
-        if (obj_select != 0)
-        {
-            //After Select Object 1
-            if (obj_select == -1)
-            {
-                descripUI.StartDescription(13);
-                obj_select = 2;
-            }
-            //After Select Object 2
-            if (obj_select == -2)
-                if (obj_select1 != null && obj_select2 != null)
-                    AutoAlignmentObject();
-            //Moving Animation Must Be Updated
-            if (obj_select == 3)
-            {
-                align_fraction = Time.deltaTime * align_speed;
-                obj_point.transform.position = Vector3.MoveTowards(obj_point.transform.position, align_position, align_fraction);
-            }
-            //Reset Obj_Align Bool
-            if (obj_point.transform.position == align_position)
-                obj_select = 0;
-            if (obj_select == -404)
-            {
-                descripUI.StartDescription(14);
-                obj_select = 0;
-            }
-        }
 	}
 
     void OnApplicationQuit()
@@ -319,6 +289,11 @@ public class MainController : MonoBehaviour {
             if (radioMenu)
                 radioMenu.SelectObj();
         }
+        else
+        {
+            if (radioMenu)
+                radioMenu.DeSelectObj();
+        }
     }
 
     public bool GetIsPointerSelect()
@@ -344,12 +319,6 @@ public class MainController : MonoBehaviour {
     public bool GetIsPointerGrab()
     {
         return isPointerGrab;
-    }
-
-    public void AutoAlignmentObject()
-    {
-        align_position = (obj_select1.transform.position + obj_select2.transform.position) / 2;
-        obj_select = 3;
     }
 
     public void AutoScale(float box_size){

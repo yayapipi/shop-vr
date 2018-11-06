@@ -89,7 +89,10 @@ public class RadioMenuController : MonoBehaviour {
             switch (jud)
             {
                 case 0:
-                    mainController.modelMenu.DisableModelMenu();
+                    if (panel_type == 1)
+                    {
+                        mainController.modelMenu.DisableModelMenu();
+                    }
                     break;
                 case 1:
                     break;
@@ -212,6 +215,11 @@ public class RadioMenuController : MonoBehaviour {
         }
     }
 
+    public void DeSelectObj()
+    {
+        openpanel(panel_back);
+    }
+
     public void GrabObj()
     {
         if (!mainController.blade.activeSelf)
@@ -283,7 +291,10 @@ public class RadioMenuController : MonoBehaviour {
 
     public void grip_back()
     {
-        openpanel(panel_back);
+        if (panel_type != 1)
+        {
+            openpanel(panel_back);
+        }
     }
 
     public void slice_model()
@@ -308,6 +319,9 @@ public class RadioMenuController : MonoBehaviour {
         {
             mainController.descripUI.StartDescription(12);
             mainController.obj_select = 1;
+            mainController.enablePointerSelectOtherObject = true;
+            mainController.obj_select1 = null;
+            mainController.obj_select2 = null;
         }
     }
 

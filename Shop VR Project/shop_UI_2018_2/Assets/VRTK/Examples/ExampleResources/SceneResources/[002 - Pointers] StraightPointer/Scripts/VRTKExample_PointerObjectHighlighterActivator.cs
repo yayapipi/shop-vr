@@ -1,6 +1,7 @@
 ﻿namespace VRTK.Examples
 {
     using UnityEngine;
+    using System.Collections;
     using VRTK.Highlighters;
 
     public class VRTKExample_PointerObjectHighlighterActivator : MonoBehaviour
@@ -15,6 +16,8 @@
 
         private Transform objParent;
         private MainController mainController;
+
+        private Vector3 align_position;
 
         private void Start()
         {
@@ -99,6 +102,9 @@
             {
                 if (!mainController.GetIsPointerSelect())
                     ToggleHighlight(obj.transform, hoverColor);
+                else if (mainController.enablePointerSelectOtherObject && !GameObject.ReferenceEquals(obj, mainController.obj_point) &&
+                    !GameObject.ReferenceEquals(obj, mainController.obj_select1) && !GameObject.ReferenceEquals(obj, mainController.obj_select2))
+                    ToggleHighlight(obj.transform, hoverColor);
             }
         }
 
@@ -126,6 +132,9 @@
             {
                 if (!mainController.GetIsPointerSelect())
                     ToggleHighlight(obj.transform, Color.clear);
+                else if (mainController.enablePointerSelectOtherObject && !GameObject.ReferenceEquals(obj, mainController.obj_point) && 
+                    !GameObject.ReferenceEquals(obj, mainController.obj_select1) && !GameObject.ReferenceEquals(obj, mainController.obj_select2))
+                    ToggleHighlight(obj.transform, Color.clear);
             }
         }
 
@@ -141,27 +150,36 @@
 
         private void PointerSet(GameObject obj)
         {
-            if (mainController.obj_select != 0 && mainController.enablePointerSelect && obj.tag == "Model")
+            if (mainController.obj_select != 0 && mainController.enablePointerSelect && obj.tag == "Model" && mainController.enablePointerSelectOtherObject && !GameObject.ReferenceEquals(obj, mainController.obj_point) &&
+                !GameObject.ReferenceEquals(obj, mainController.obj_select1) && !GameObject.ReferenceEquals(obj, mainController.obj_select2))
             {
                 if (mainController.obj_select == 1)
                 {
                     mainController.obj_select1 = obj;
                     ToggleHighlight(obj.transform, Color.red);
-                    mainController.obj_select = -1; //Return Call Sucess
+                    mainController.descripUI.StartDescription(13);
+                    mainController.obj_select = 2;
                 }
-                if (mainController.obj_select == 2)
+                else if (mainController.obj_select == 2)
                 {
                     mainController.obj_select2 = obj;
                     ToggleHighlight(obj.transform, Color.blue);
-                    if (GameObject.ReferenceEquals(mainController.obj_select1, mainController.obj_select2))
+
+                    if (mainController.obj_select1 != null && mainController.obj_select2 != null)
                     {
-                        mainController.obj_select = -404; // Return Error Code (Same Object Selected)
-                    }else{
-                    mainController.obj_select = -2; //Return Call Sucess
+                        mainController.enablePointerSelectOtherObject = false;
+                        align_position = (mainController.obj_select1.transform.position + mainController.obj_select2.transform.position) / 2;
+                        StartCoroutine(Align());
                     }
-                    
+                    else
+                    {
+                        //Null Object
+                        mainController.obj_select = 0;
+                        Debug.Log("Error alignment: null object");
+                    }
                 }
             }
+
             if (mainController.enablePointerSelect && obj.tag == "Model")
             {
                 switch (mainController.UIPointerState)
@@ -268,6 +286,8 @@
             }
         }
 
+        //DeSelect depends on RadioMenuController.panel_type and RGripClickDown, but we do not know which script execute first, 
+        //so it's necessarily to call RadioMenuController to DeSelect.
         private void RGripClickDown()
         {
             if (mainController.UIPointerState == 1)
@@ -331,6 +351,22 @@
             string targetName = (target ? target.name : "<NO VALID TARGET>");
             string colliderName = (raycastHit.collider ? raycastHit.collider.name : "<NO VALID COLLIDER>");
             VRTK_Logger.Info("Controller on index '" + index + "' is " + action + " at a distance of " + distance + " on object named [" + targetName + "] on the collider named [" + colliderName + "] - the pointer tip position is/was: " + tipPosition);
+        }
+
+        private IEnumerator Align()
+        {
+            
+
+            while (mainController.obj_point.transform.position != align_position)
+            {
+                Debug.Log("align");
+                mainController.obj_point.transform.position = Vector3.MoveTowards(mainController.obj_point.transform.position, align_position, mainController.align_speed * Time.deltaTime);
+                yield return null;
+            }
+            Debug.Log("align end");
+            ToggleHighlight(mainController.obj_select1.transform, Color.clear);
+            ToggleHighlight(mainController.obj_select2.transform, Color.clear);
+            mainController.obj_select = 0;
         }
     }
 }
