@@ -24,6 +24,7 @@
 
         private void Update()
         {
+            //Degrab by mouse
             if(mainController.UIPointerState == 3 && Input.GetMouseButtonDown(1) && mainController.GetIsPointerSelect() && !mainController.GetIsPointerGrab() && mainController.obj_point != null)
             {
                 mainController.obj_point.transform.parent = mainController.obj.transform;
@@ -121,7 +122,6 @@
 
         private void PointerExit(GameObject obj)
         {
-            ToggleHighlight(obj.transform, Color.clear);
             if (mainController.enablePointerSelect && obj.tag == "Model")
             {
                 if (!mainController.GetIsPointerSelect())
@@ -141,7 +141,7 @@
 
         private void PointerSet(GameObject obj)
         {
-            if (mainController.obj_select != 0 && mainController.enablePointerSelect)
+            if (mainController.obj_select != 0 && mainController.enablePointerSelect && obj.tag == "Model")
             {
                 if (mainController.obj_select == 1)
                 {
@@ -204,7 +204,6 @@
                             {
                                 mainController.obj_useGravity = obj.GetComponent<Rigidbody>().useGravity;
                                 mainController.obj_isKinematic = obj.GetComponent<Rigidbody>().isKinematic;
-                                Debug.Log("AWD");
                                 obj.GetComponent<Rigidbody>().useGravity = false;
                                 obj.GetComponent<Rigidbody>().isKinematic = true;
                             }
@@ -332,11 +331,6 @@
             string targetName = (target ? target.name : "<NO VALID TARGET>");
             string colliderName = (raycastHit.collider ? raycastHit.collider.name : "<NO VALID COLLIDER>");
             VRTK_Logger.Info("Controller on index '" + index + "' is " + action + " at a distance of " + distance + " on object named [" + targetName + "] on the collider named [" + colliderName + "] - the pointer tip position is/was: " + tipPosition);
-        }
-
-        internal void ToggleHighlight(GameObject obj_select1, Color color)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

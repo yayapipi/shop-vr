@@ -17,7 +17,6 @@ public class RadioMenuController : MonoBehaviour {
     private MainController mainController;
     private static int panel_type = 0;
     private static int panel_back = 0;
-    private static bool modelset_jud= false;
 
     public GameObject modelSetting;
     private GameObject model_SettingObj;
@@ -71,7 +70,10 @@ public class RadioMenuController : MonoBehaviour {
                     break;
                 case 2:
                     break;
-                case 10: case 11:
+                case 10:
+                    MainController.isViewRotate = false;
+                    break;
+                case 11:
                     MainController.isViewRotate = false;
                     break;
                 case 12:
@@ -87,12 +89,17 @@ public class RadioMenuController : MonoBehaviour {
             switch (jud)
             {
                 case 0:
+                    mainController.modelMenu.DisableModelMenu();
                     break;
                 case 1:
                     break;
                 case 2:
                     break;
-                case 10: case 11:
+                case 10:
+                    MainController.isViewRotate = true;
+                    mainController.blade.SetActive(false);
+                    break;
+                case 11:
                     MainController.isViewRotate = true;
                     break;
                 case 12:
@@ -144,7 +151,6 @@ public class RadioMenuController : MonoBehaviour {
                 ViewRotatePanel_10.SetActive(false);
                 GrabPanel_11.SetActive(false);
                 DrawPanel_12.SetActive(false);
-                mainController.blade.SetActive(false);
                 SpecialPanel_2.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 panel_back = 1;
                 break;
@@ -188,17 +194,9 @@ public class RadioMenuController : MonoBehaviour {
             panel_type = jud;
     }
 
-    public void openModelSetting() {
-        if (!modelset_jud)
-        {
-            model_SettingObj = Instantiate(modelSetting, new Vector3(mainController.cameraEye.position.x, 0, mainController.cameraEye.position.z), Quaternion.Euler(new Vector3(0, mainController.cameraEye.eulerAngles.y, 0)));
-            modelset_jud = true;
-        }
-        else {
-            Destroy(model_SettingObj);
-            modelset_jud = false;
-        }
-
+    public void openModelSetting()
+    {
+        mainController.modelMenu.SwitchModelMenu();
     }
 
 
@@ -216,7 +214,7 @@ public class RadioMenuController : MonoBehaviour {
 
     public void GrabObj()
     {
-        if (mainController.blade.active == false)
+        if (!mainController.blade.activeSelf)
         {
             SetPanelBack(panel_type);
             openpanel(11);
@@ -225,7 +223,7 @@ public class RadioMenuController : MonoBehaviour {
 
     public void DeGrabObj()
     {
-        if (mainController.blade.active == false)
+        if (!mainController.blade.activeSelf)
         {
             if (panel_back == 10)
             {

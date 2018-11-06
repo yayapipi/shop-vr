@@ -10,39 +10,20 @@ public class ModelMenuController : MonoBehaviour
     public bool useGravity;
     public bool showPos;
     public bool showRot;
-    private MainController mController;
+    private MainController mainController;
     public SwitchAnim KinematicSwitch;
     public SwitchAnim GravitySwitch;
     public SwitchAnim PositionAxisSwitch;
     public SwitchAnim RotationAxisSwitch;
 
-    private static ModelMenuController _instance = null;
-
-    void Awake()
-    {
-        if (_instance == null)
-        {
-            _instance = this;
-        }
-    }
-
-    public static ModelMenuController Instance()
-    {
-        if (_instance == null)
-        {
-            throw new Exception(" could not find the DrawModule object.");
-        }
-        return _instance;
-    }
-
     void Start()
     {
-        mController = MainController.Instance();
+        mainController = MainController.Instance();
     }
 
     public void SwitchModelMenu()
     {
-        mController = MainController.Instance();
+        mainController = MainController.Instance();
 
         if (gameObject.activeSelf)
         {
@@ -56,17 +37,22 @@ public class ModelMenuController : MonoBehaviour
 
     private void EnableModelMenu()
     {
-        gameObject.SetActive(true);
+        if (!gameObject.activeSelf)
+        {
+            gameObject.SetActive(true);
+            transform.position = new Vector3(mainController.cameraEye.position.x, 0, mainController.cameraEye.position.z);
+            transform.rotation = Quaternion.Euler(new Vector3(0, mainController.cameraEye.eulerAngles.y, 0));
+        }
 
-        if(mController.obj_point == null)
+        if(mainController.obj_point == null)
         {
             Debug.Log("obj not exist");
         }
 
-        if (mController.obj_point.GetComponent<Rigidbody>())
+        if (mainController.obj_point.GetComponent<Rigidbody>())
         {
-            isKinematic = mController.obj_isKinematic;
-            useGravity = mController.obj_useGravity;
+            isKinematic = mainController.obj_isKinematic;
+            useGravity = mainController.obj_useGravity;
         }
         else
         {
@@ -75,7 +61,6 @@ public class ModelMenuController : MonoBehaviour
 
         showPos = false;
         showRot = false;
-        Debug.Log(KinematicSwitch.isOn);
         if (KinematicSwitch.isOn != isKinematic)
             KinematicSwitch.AnimateSwitch();
         if (GravitySwitch.isOn != useGravity)
@@ -86,27 +71,27 @@ public class ModelMenuController : MonoBehaviour
             RotationAxisSwitch.AnimateSwitch();
     }
 
-    private void DisableModelMenu()
+    public void DisableModelMenu()
     {
         if(showPos)
             GizmosModule.Instance().DisableTranslateGizmos();
         if (showRot)
             GizmosModule.Instance().DisbleRotationGizmos();
-
-        gameObject.SetActive(false);
+        if(gameObject.activeSelf)
+            gameObject.SetActive(false);
     }
 
 
     public void openKinematic(bool jud)
     {
         isKinematic = jud;
-        mController.obj_isKinematic = jud;
+        mainController.obj_isKinematic = jud;
     }
 
     public void openGravity(bool jud)
     {
         useGravity = jud;
-        mController.obj_useGravity = jud;
+        mainController.obj_useGravity = jud;
     }
 
     public void showPosAxis()
@@ -131,18 +116,18 @@ public class ModelMenuController : MonoBehaviour
 
     public void resPos()
     {
-        mController.obj_point.transform.position = mController.cameraEye.position + new Vector3(mController.cameraEye.forward.x, 0, mController.cameraEye.forward.z) * 5;
+        mainController.obj_point.transform.position = mainController.cameraEye.position + new Vector3(mainController.cameraEye.forward.x, 0, mainController.cameraEye.forward.z) * 5;
     }
 
     public void resRot()
     {
-        mController.obj_point.transform.rotation = Quaternion.identity;
+        mainController.obj_point.transform.rotation = Quaternion.identity;
     }
 
     public void resSca()
     {
-        if (mController.obj_point.GetComponent<id>())
-            mController.obj_point.transform.localScale = mController.obj_point.GetComponent<id>().standard_size;
+        if (mainController.obj_point.GetComponent<id>())
+            mainController.obj_point.transform.localScale = mainController.obj_point.GetComponent<id>().standard_size;
         else
             Debug.Log("id not exist");
     }

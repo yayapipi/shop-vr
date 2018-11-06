@@ -52,6 +52,7 @@ public class MainController : MonoBehaviour {
     public GameObject drawModule;
     public GameObject gizmos;
     public GameObject blade;
+    public ModelMenuController modelMenu;
 
     //Controller state
     [Header("Controller States")]
