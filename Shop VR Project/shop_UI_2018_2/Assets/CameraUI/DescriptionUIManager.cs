@@ -41,7 +41,6 @@ public class DescriptionUIManager : MonoBehaviour {
              //Select Tooltips
    /*12*/    new Dialogue("Object1", new string[] { "select object 1" }),
    /*13*/    new Dialogue("Object2", new string[] { "select object 2" }),
-   /*13*/    new Dialogue("Select Fail", new string[] { "Please select two different object" })
         };
 
         notificationAnimator = notificationObject.GetComponent<Animator>();
