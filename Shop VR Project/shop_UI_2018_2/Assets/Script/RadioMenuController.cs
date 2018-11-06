@@ -11,6 +11,7 @@ public class RadioMenuController : MonoBehaviour {
     public GameObject ViewRotatePanel_10;
     public GameObject GrabPanel_11;
     public GameObject DrawPanel_12;
+    public GameObject ModelAlignmentPanel_13;
     //public GameObject ModelScalePanel;
     //public GameObject ModelRotatePanel;
     private DrawModule drawModule;
@@ -45,6 +46,7 @@ public class RadioMenuController : MonoBehaviour {
         ViewRotatePanel_10.SetActive(false);
         GrabPanel_11.SetActive(false);
         DrawPanel_12.SetActive(false);
+        ModelAlignmentPanel_13.SetActive(false);
         mainController = MainController.Instance();
         drawModule = mainController.drawModule.GetComponent<DrawModule>();
     }
@@ -83,6 +85,10 @@ public class RadioMenuController : MonoBehaviour {
                     //Enable Object Grab
                     mainController.enablePointerGrab = true;
                     break;
+                case 13:
+                    mainController.obj_select = 0;
+                    mainController.enablePointerSelectOtherObject = false;
+                    break;
             }
 
             //open jud feature
@@ -119,6 +125,13 @@ public class RadioMenuController : MonoBehaviour {
                     //Enable Color Painter
                     drawModule.Enable();
                     break;
+                case 13:
+                    mainController.descripUI.StartDescription(12);
+                    mainController.obj_select = 1;
+                    mainController.enablePointerSelectOtherObject = true;
+                    mainController.obj_select1 = null;
+                    mainController.obj_select2 = null;
+                    break;
             }
         }
 
@@ -132,6 +145,7 @@ public class RadioMenuController : MonoBehaviour {
                 ViewRotatePanel_10.SetActive(false);
                 GrabPanel_11.SetActive(false);
                 DrawPanel_12.SetActive(false);
+                ModelAlignmentPanel_13.SetActive(false);
                 BasePanel_0.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 panel_back = 0;
                 break;
@@ -143,6 +157,7 @@ public class RadioMenuController : MonoBehaviour {
                 ViewRotatePanel_10.SetActive(false);
                 GrabPanel_11.SetActive(false);
                 DrawPanel_12.SetActive(false);
+                ModelAlignmentPanel_13.SetActive(false);
                 ModelPanel_1.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 panel_back = 0;
                 break;
@@ -154,6 +169,7 @@ public class RadioMenuController : MonoBehaviour {
                 ViewRotatePanel_10.SetActive(false);
                 GrabPanel_11.SetActive(false);
                 DrawPanel_12.SetActive(false);
+                ModelAlignmentPanel_13.SetActive(false);
                 SpecialPanel_2.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 panel_back = 1;
                 break;
@@ -165,6 +181,7 @@ public class RadioMenuController : MonoBehaviour {
                 ViewRotatePanel_10.SetActive(true);
                 GrabPanel_11.SetActive(false);
                 DrawPanel_12.SetActive(false);
+                ModelAlignmentPanel_13.SetActive(false);
                 ViewRotatePanel_10.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 break;
             case 11:
@@ -175,6 +192,7 @@ public class RadioMenuController : MonoBehaviour {
                 ViewRotatePanel_10.SetActive(false);
                 GrabPanel_11.SetActive(true);
                 DrawPanel_12.SetActive(false);
+                ModelAlignmentPanel_13.SetActive(false);
                 GrabPanel_11.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 break;
             case 12:
@@ -185,7 +203,19 @@ public class RadioMenuController : MonoBehaviour {
                 ViewRotatePanel_10.SetActive(false);
                 GrabPanel_11.SetActive(false);
                 DrawPanel_12.SetActive(true);
+                ModelAlignmentPanel_13.SetActive(false);
                 DrawPanel_12.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
+                break;
+            case 13:
+                //open model alignment panel
+                BasePanel_0.SetActive(false);
+                ModelPanel_1.SetActive(false);
+                SpecialPanel_2.SetActive(false);
+                ViewRotatePanel_10.SetActive(false);
+                GrabPanel_11.SetActive(false);
+                DrawPanel_12.SetActive(false);
+                ModelAlignmentPanel_13.SetActive(true);
+                ModelAlignmentPanel_13.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 break;
             default:
                 Debug.Log("error radio panel index");
@@ -201,7 +231,6 @@ public class RadioMenuController : MonoBehaviour {
     {
         mainController.modelMenu.SwitchModelMenu();
     }
-
 
     public void SelectObj()
     {
@@ -291,7 +320,15 @@ public class RadioMenuController : MonoBehaviour {
 
     public void grip_back()
     {
-        if (panel_type != 1)
+        if (panel_type != 1 && panel_type != 13)
+        {
+            openpanel(panel_back);
+        }
+    }
+
+    public void ModelAlignmentCancelFromVRTKHighlighter()
+    {
+        if (panel_type == 13)
         {
             openpanel(panel_back);
         }
@@ -310,18 +347,6 @@ public class RadioMenuController : MonoBehaviour {
         {
             float step = speed * Time.deltaTime;
             mainController.obj_point.transform.position = Vector3.MoveTowards(mainController.obj_point.transform.position, mainController.rightController.transform.position, step);
-        }
-    }
-
-    public void auto_alignment()
-    {
-        if (mainController.obj_select == 0)
-        {
-            mainController.descripUI.StartDescription(12);
-            mainController.obj_select = 1;
-            mainController.enablePointerSelectOtherObject = true;
-            mainController.obj_select1 = null;
-            mainController.obj_select2 = null;
         }
     }
 
