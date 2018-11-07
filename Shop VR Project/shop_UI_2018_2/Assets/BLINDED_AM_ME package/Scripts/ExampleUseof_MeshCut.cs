@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.IO;
+using System;
 
 public class ExampleUseof_MeshCut : MonoBehaviour {
 
 	public Material capMaterial;
+    public GameObject a1;
     private MainController mainController;
 
 	// Use this for initialization
@@ -39,11 +42,20 @@ public class ExampleUseof_MeshCut : MonoBehaviour {
 
 	void Update()
     {
+        
         if (mainController.UIPointerState == 3 && Input.GetMouseButtonDown(0))
         {
             cut();
+
         }
-	}
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Mesh mesh  = GetCacheItem("C:/Users/user/MeshRender/byte1");
+            GameObject a = Instantiate(a1);
+            a.GetComponent<MeshFilter>().mesh = mesh;
+        }
+    }
 
     private void ControllerCut()
     {
@@ -95,6 +107,8 @@ public class ExampleUseof_MeshCut : MonoBehaviour {
                     if (pieces[0].GetComponent<CapsuleCollider>())
                         Destroy(pieces[0].GetComponent<CapsuleCollider>());
 
+                    CacheItem("C:/Users/user/MeshRender/byte1", pieces[0].GetComponent<MeshFilter>().mesh);
+
 
                     if (!pieces[1].GetComponent<Rigidbody>())
                         pieces[1].AddComponent<Rigidbody>();
@@ -105,7 +119,26 @@ public class ExampleUseof_MeshCut : MonoBehaviour {
         }
     }
 
-	void OnDrawGizmosSelected() {
+    public static void CacheItem(string url, Mesh mesh)
+    {
+        //string path = Path.Combine(Application.persistentDataPath, url);
+        byte[] bytes = MeshSerializer.WriteMesh(mesh, true);
+        Debug.Log(bytes[0]);
+        File.WriteAllBytes(url, bytes);
+    }
+
+    public static Mesh GetCacheItem(string url)
+    {
+        string path = Path.Combine(Application.persistentDataPath, url);
+        if (File.Exists(path) == true)
+        {
+            byte[] bytes = File.ReadAllBytes(path);
+            return MeshSerializer.ReadMesh(bytes);
+        }
+        return null;
+    }
+
+    void OnDrawGizmosSelected() {
 
 		Gizmos.color = Color.green;
 
