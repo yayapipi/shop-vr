@@ -137,12 +137,19 @@ namespace BLINDED_AM_ME{
 			Mesh right_HalfMesh = _rightSide.GetMesh();
 			right_HalfMesh.name = "Split Mesh Right";
 
-			// assign the game objects
-
-			victim.name = "left side";
+            // assign the game objects
+            if (MainController.Instance().obj_point)
+            {
+                victim.name = MainController.Instance().obj_point.name;
+            }
+            else
+            {
+                victim.name = "obj_victim";
+            }
 			victim.GetComponent<MeshFilter>().mesh = left_HalfMesh;
 
 			GameObject leftSideObj = victim;
+
 
 			GameObject rightSideObj = new GameObject("right side", typeof(MeshFilter), typeof(MeshRenderer));
 			rightSideObj.transform.position = victim.transform.position;

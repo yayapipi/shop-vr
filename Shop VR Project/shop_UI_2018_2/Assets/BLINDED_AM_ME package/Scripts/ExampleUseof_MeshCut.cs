@@ -62,10 +62,39 @@ public class ExampleUseof_MeshCut : MonoBehaviour {
             if (Physics.Raycast(transform.position, transform.forward, out hit))
             {
                 GameObject victim = hit.collider.gameObject;
+                bool rigid_weight = false;
 
                 if (victim.tag == "Model")
                 {
                     GameObject[] pieces = BLINDED_AM_ME.MeshCut.Cut(victim, transform.position, transform.right, capMaterial);
+
+                    //  if (pieces[0].GetComponent<Rigidbody>())
+                    //      pieces[0].GetComponent<Rigidbody>().isKinematic = true;
+
+
+                    if (pieces[0].GetComponent<MeshCollider>())
+                    {
+                        if (pieces[0].GetComponent<Rigidbody>())
+                        {
+                            rigid_weight = pieces[0].GetComponent<Rigidbody>().isKinematic;
+                            pieces[0].GetComponent<Rigidbody>().isKinematic = true;
+                        }
+                        Destroy(pieces[0].GetComponent<MeshCollider>());
+                    }
+
+                    pieces[0].AddComponent<MeshCollider>().convex = true;
+                    if (pieces[0].GetComponent<Rigidbody>())
+                    {
+                        pieces[0].GetComponent<Rigidbody>().isKinematic = rigid_weight;
+                    }
+
+                    if (pieces[0].GetComponent<BoxCollider>())
+                        Destroy(pieces[0].GetComponent<BoxCollider>());
+                    if (pieces[0].GetComponent<SphereCollider>())
+                        Destroy(pieces[0].GetComponent<SphereCollider>());
+                    if (pieces[0].GetComponent<CapsuleCollider>())
+                        Destroy(pieces[0].GetComponent<CapsuleCollider>());
+
 
                     if (!pieces[1].GetComponent<Rigidbody>())
                         pieces[1].AddComponent<Rigidbody>();
