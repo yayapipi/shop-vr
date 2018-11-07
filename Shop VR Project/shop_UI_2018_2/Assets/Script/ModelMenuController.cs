@@ -131,4 +131,41 @@ public class ModelMenuController : MonoBehaviour
         else
             Debug.Log("id not exist");
     }
+
+    public void SetToPos()
+    {
+        if (SelectOneObj())
+        {
+            mainController.condition = 1;
+        }
+    }
+
+    public void SetToRot()
+    {
+        if (SelectOneObj())
+        {
+            mainController.condition = 2;
+        }
+    }
+
+    public void SetToScale()
+    {
+        if (SelectOneObj())
+        {
+            mainController.condition = 3;
+        }
+    }
+
+    private bool SelectOneObj()
+    {
+        if(RadioMenuController.getPanelType() <= 10)
+        {
+            mainController.radioMenu.openpanel(20);
+            mainController.radioMenu.SetPanelBack(1);
+            return true;
+        }
+
+        return false;
+    }
+
 }

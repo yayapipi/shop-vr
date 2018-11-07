@@ -17,7 +17,11 @@
         private Transform objParent;
         private MainController mainController;
 
-        private Vector3 align_position;
+        public float align_speed = 10f;
+        private float minDistance = 0.001f;
+        private Vector3 setToPosition;
+        private Quaternion setToRotation;
+        private Vector3 setToScale;
 
         private void Start()
         {
@@ -153,8 +157,10 @@
             if (mainController.obj_select != 0 && mainController.enablePointerSelect && obj.tag == "Model" && obj != null && mainController.enablePointerSelectOtherObject && !GameObject.ReferenceEquals(obj, mainController.obj_point) &&
                 !GameObject.ReferenceEquals(obj, mainController.obj_select1) && !GameObject.ReferenceEquals(obj, mainController.obj_select2))
             {
+                //Select 2 Obj for alignment
                 if (mainController.obj_select == 1)
                 {
+                    //first object
                     mainController.obj_select1 = obj;
                     ToggleHighlight(obj.transform, Color.red);
                     mainController.descripUI.StartDescription(13);
@@ -162,14 +168,44 @@
                 }
                 else if (mainController.obj_select == 2)
                 {
+                    //second object
                     mainController.obj_select2 = obj;
                     ToggleHighlight(obj.transform, Color.blue);
                     mainController.obj_select = 3;
                     mainController.enablePointerSelectOtherObject = false;
                     //obj is not null
-                    align_position = (mainController.obj_select1.transform.position + mainController.obj_select2.transform.position) / 2;
+                    setToPosition = (mainController.obj_select1.transform.position + mainController.obj_select2.transform.position) / 2;
                     StartCoroutine(Align());
                 }
+                
+                //Select 1 obj for model menu
+                else if (mainController.obj_select == 10)
+                {
+                    //first obj
+                    mainController.obj_select1 = obj;
+                    ToggleHighlight(obj.transform, Color.red);
+                    mainController.obj_select = 11;
+                    mainController.enablePointerSelectOtherObject = false;
+                    //obj is not null
+                    switch (mainController.condition)
+                    {
+                        case 0:
+                            Debug.Log("error: mainController.condition == 0");
+                            break;
+                        case 1:
+                            setToPosition = mainController.obj_select1.transform.position;
+                            StartCoroutine(SetToPos());
+                            break;
+                        case 2:
+                            setToRotation = mainController.obj_select1.transform.rotation;
+                            StartCoroutine(SetToRot());
+                            break;
+                        case 3:
+                            StartCoroutine(SetToSca());
+                            break;
+                    }
+                }
+
             }
 
             if (mainController.enablePointerSelect && obj.tag == "Model" && obj != null && !mainController.enablePointerSelectOtherObject && RadioMenuController.getPanelType() != 13)
@@ -303,13 +339,14 @@
                 //Cancel model Alignment
                 if (RadioMenuController.getPanelType() == 13)
                 {
-                    if (mainController.obj_select >= 2 && mainController.obj_select1 != null)
+                    if (mainController.obj_select == 2 && mainController.obj_select1 != null)
                     {
                         ToggleHighlight(mainController.obj_select1.transform, Color.clear);
                     }
 
-                    if (mainController.obj_select >= 3 && mainController.obj_select2 != null)
+                    if (mainController.obj_select == 3 && mainController.obj_select1 != null && mainController.obj_select2 != null)
                     {
+                        ToggleHighlight(mainController.obj_select1.transform, Color.clear);
                         ToggleHighlight(mainController.obj_select2.transform, Color.clear);
                     }
 
@@ -364,9 +401,18 @@
 
         private IEnumerator Align()
         {
-            while (mainController.obj_point.transform.position != align_position)
+            while (mainController.obj_point.transform.position != setToPosition)
             {
-                mainController.obj_point.transform.position = Vector3.MoveTowards(mainController.obj_point.transform.position, align_position, mainController.align_speed * Time.deltaTime);
+                if ((mainController.obj_point.transform.position - setToPosition).magnitude > minDistance)
+                {
+                    //mainController.obj_point.transform.position = Vector3.MoveTowards(mainController.obj_point.transform.position, align_position, mainController.align_speed * Time.deltaTime);
+                    mainController.obj_point.transform.position = Vector3.Lerp(mainController.obj_point.transform.position, setToPosition, align_speed * Time.deltaTime);
+                }
+                else
+                {
+                    mainController.obj_point.transform.position = setToPosition;
+                    break;
+                }
                 yield return null;
             }
             ToggleHighlight(mainController.obj_select1.transform, Color.clear);
@@ -374,6 +420,78 @@
             mainController.obj_select = 0;
             if (RadioMenuController.getPanelType() == 13)
                 mainController.radioMenu.ModelAlignmentCancelFromVRTKHighlighter();
+        }
+
+        private IEnumerator SetToPos()
+        {
+            while (mainController.obj_point.transform.position != setToPosition)
+            {
+                if ((mainController.obj_point.transform.position - setToPosition).magnitude > minDistance)
+                {
+                    //mainController.obj_point.transform.position = Vector3.MoveTowards(mainController.obj_point.transform.position, align_position, mainController.align_speed * Time.deltaTime);
+                    mainController.obj_point.transform.position = Vector3.Lerp(mainController.obj_point.transform.position, setToPosition, align_speed * Time.deltaTime);
+                }
+                else
+                {
+                    mainController.obj_point.transform.position = setToPosition;
+                    break;
+                }
+                yield return null;
+            }
+            ToggleHighlight(mainController.obj_select1.transform, Color.clear);
+            mainController.obj_select = 0;
+            if (RadioMenuController.getPanelType() == 20)
+                mainController.radioMenu.SelectOneObjCancelFromVRTKHighlighter();
+        }
+
+        private IEnumerator SetToRot()
+        {
+            while (mainController.obj_point.transform.rotation != setToRotation)
+            {
+                if (Quaternion.Dot(mainController.obj_point.transform.rotation, setToRotation) > minDistance)
+                {
+                    //mainController.obj_point.transform.position = Vector3.MoveTowards(mainController.obj_point.transform.position, align_position, mainController.align_speed * Time.deltaTime);
+                    mainController.obj_point.transform.rotation = Quaternion.Lerp(mainController.obj_point.transform.rotation, setToRotation, align_speed * Time.deltaTime);
+                }
+                else
+                {
+                    mainController.obj_point.transform.rotation = setToRotation;
+                    break;
+                }
+                yield return null;
+            }
+            ToggleHighlight(mainController.obj_select1.transform, Color.clear);
+            mainController.obj_select = 0;
+            if (RadioMenuController.getPanelType() == 20)
+                mainController.radioMenu.SelectOneObjCancelFromVRTKHighlighter();
+        }
+
+        private IEnumerator SetToSca()
+        {
+            float targetSize = mainController.getTargetSizeByRender(mainController.obj_select1);
+            Vector3 scale = mainController.obj_point.transform.localScale;
+            float size = mainController.getTargetSizeByRender(mainController.obj_point);
+            float ratio = targetSize / size;
+            setToScale = new Vector3(scale.x * ratio, scale.y * ratio, scale.z * ratio);
+
+            while (mainController.obj_point.transform.localScale != setToScale)
+            {
+                if ((mainController.obj_point.transform.localScale - setToScale).magnitude > minDistance)
+                {
+                    //mainController.obj_point.transform.position = Vector3.MoveTowards(mainController.obj_point.transform.position, align_position, mainController.align_speed * Time.deltaTime);
+                    mainController.obj_point.transform.localScale = Vector3.Lerp(mainController.obj_point.transform.localScale, setToScale, align_speed * Time.deltaTime);
+                }
+                else
+                {
+                    mainController.obj_point.transform.localScale = setToScale;
+                    break;
+                }
+                yield return null;
+            }
+            ToggleHighlight(mainController.obj_select1.transform, Color.clear);
+            mainController.obj_select = 0;
+            if (RadioMenuController.getPanelType() == 20)
+                mainController.radioMenu.SelectOneObjCancelFromVRTKHighlighter();
         }
     }
 }

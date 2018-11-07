@@ -40,13 +40,14 @@ public class MainController : MonoBehaviour {
     public static bool isViewRotateLeft = false;
     public static bool isViewRotateRight = false;
     private static MainController _instance = null;
+    public float scaleLimit = 0.5f;
 
-    [Header("Auto Alignment Object")]
+    [Header("Select Other Object")]
     public bool enablePointerSelectOtherObject = false;
+    public int condition = 0;
     public GameObject obj_select1 = null;
     public GameObject obj_select2 = null;
     public int obj_select = 0;
-    public float align_speed = 10f;
 
     [Header("Tools")]
     public GameObject drawModule;
@@ -322,17 +323,18 @@ public class MainController : MonoBehaviour {
         return isPointerGrab;
     }
 
+    //Auto scale
     public void AutoScale(float box_size){
         Vector3 scale = obj_point.transform.localScale;
-        Vector3 size = getTargetSizeByRender(obj_point);
+        float size = getTargetSizeByRender(obj_point);
         //Vector3 size = model_obj.GetComponent<MeshFilter>().mesh.bounds.size;
-        float ratio = box_size / Mathf.Max(size.x, size.y, size.z);
+        float ratio = box_size / size;
 
         obj_point.transform.localScale = new Vector3(scale.x * ratio, scale.y * ratio, scale.z * ratio);
     }
 
 
-    public Vector3 getTargetSizeByRender(GameObject target)
+    public float getTargetSizeByRender(GameObject target)
     {
         Vector3 vec = Vector3.one;
         Quaternion localQuaternion = target.transform.rotation;
@@ -358,7 +360,7 @@ public class MainController : MonoBehaviour {
             vec = target.transform.GetComponent<Renderer>().bounds.size;
         }
         target.transform.rotation = localQuaternion;
-        return vec;
+        return Mathf.Max(vec.x, vec.y, vec.z);
     }
 
 
