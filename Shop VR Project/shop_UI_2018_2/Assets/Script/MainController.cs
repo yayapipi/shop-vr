@@ -12,6 +12,7 @@ public class MainController : MonoBehaviour {
     private GameObject system_settingobj;
     public RadioMenuController radioMenu;
     public DescriptionUIManager descripUI;
+    public Movement movement;
     public Transform cameraEye;
     public VRTK.VRTK_ControllerEvents leftController;
     public VRTK.VRTK_ControllerEvents rightController;

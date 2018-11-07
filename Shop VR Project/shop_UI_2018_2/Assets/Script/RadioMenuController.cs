@@ -73,10 +73,8 @@ public class RadioMenuController : MonoBehaviour {
                 case 2:
                     break;
                 case 10:
-                    MainController.isViewRotate = false;
                     break;
                 case 11:
-                    MainController.isViewRotate = false;
                     break;
                 case 12:
                     //Disable Color Painter
@@ -105,11 +103,9 @@ public class RadioMenuController : MonoBehaviour {
                 case 2:
                     break;
                 case 10:
-                    MainController.isViewRotate = true;
                     mainController.blade.SetActive(false);
                     break;
                 case 11:
-                    MainController.isViewRotate = true;
                     break;
                 case 12:
                     //Disable Object Grab
@@ -324,6 +320,16 @@ public class RadioMenuController : MonoBehaviour {
         {
             openpanel(panel_back);
         }
+    }
+
+    public void ViewRotateLeft()
+    {
+        mainController.movement.ViewRotateLeft(1);
+    }
+
+    public void ViewRotateRight()
+    {
+        mainController.movement.ViewRotateRight(1);
     }
 
     public void ModelAlignmentCancelFromVRTKHighlighter()
