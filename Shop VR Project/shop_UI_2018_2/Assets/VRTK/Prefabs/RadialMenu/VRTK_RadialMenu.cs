@@ -48,6 +48,7 @@ namespace VRTK
             public UnityEvent OnHold = new UnityEvent();
             public UnityEvent OnHoverEnter = new UnityEvent();
             public UnityEvent OnHoverExit = new UnityEvent();
+            public UnityEvent OnHover = new UnityEvent();
         }
 
         public enum ButtonEvent
@@ -330,6 +331,11 @@ namespace VRTK
             if (currentPress != -1)
             {
                 buttons[currentPress].OnHold.Invoke();
+            }
+
+            if (currentHover != -1)
+            {
+                buttons[currentHover].OnHover.Invoke();
             }
         }
 
