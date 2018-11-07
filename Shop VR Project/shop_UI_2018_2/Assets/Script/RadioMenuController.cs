@@ -12,6 +12,7 @@ public class RadioMenuController : MonoBehaviour {
     public GameObject GrabPanel_11;
     public GameObject DrawPanel_12;
     public GameObject ModelAlignmentPanel_13;
+    public GameObject ModelCutPanel_14;
     public GameObject SelectOneObjectPanel_20;
     //public GameObject ModelScalePanel;
     //public GameObject ModelRotatePanel;
@@ -47,6 +48,7 @@ public class RadioMenuController : MonoBehaviour {
         GrabPanel_11.SetActive(false);
         DrawPanel_12.SetActive(false);
         ModelAlignmentPanel_13.SetActive(false);
+        ModelCutPanel_14.SetActive(false);
         SelectOneObjectPanel_20.SetActive(false);
         mainController = MainController.Instance();
         drawModule = mainController.drawModule.GetComponent<DrawModule>();
@@ -80,13 +82,18 @@ public class RadioMenuController : MonoBehaviour {
                 case 12:
                     //Disable Color Painter
                     drawModule.SaveAndDisable();
-
                     //Enable Object Grab
                     mainController.enablePointerGrab = true;
                     break;
                 case 13:
                     mainController.obj_select = 0;
                     mainController.enablePointerSelectOtherObject = false;
+                    break;
+                case 14:
+                    //Disable Model cut
+                    mainController.enablePointerCutMesh = false;
+                    //Enable Object Grab
+                    mainController.enablePointerGrab = true;
                     break;
                 case 20:
                     mainController.obj_select = 0;
@@ -108,7 +115,6 @@ public class RadioMenuController : MonoBehaviour {
                 case 2:
                     break;
                 case 10:
-                    mainController.blade.SetActive(false);
                     break;
                 case 11:
                     break;
@@ -133,6 +139,19 @@ public class RadioMenuController : MonoBehaviour {
                     mainController.obj_select1 = null;
                     mainController.obj_select2 = null;
                     break;
+                case 14:
+                    //Disable Object Grab
+                    mainController.enablePointerGrab = false;
+
+                    //DeGrab
+                    if (mainController.GetIsPointerGrab() && mainController.obj_point != null)
+                    {
+                        mainController.obj_point.transform.parent = mainController.obj.transform;
+                        mainController.SetIsPointerGrab(false);
+                    }
+
+                    mainController.enablePointerCutMesh = true;
+                    break;
                 case 20:
                     //mainController.descripUI.StartDescription(12);
                     mainController.obj_select = 10;
@@ -154,6 +173,7 @@ public class RadioMenuController : MonoBehaviour {
                 GrabPanel_11.SetActive(false);
                 DrawPanel_12.SetActive(false);
                 ModelAlignmentPanel_13.SetActive(false);
+                ModelCutPanel_14.SetActive(false);
                 SelectOneObjectPanel_20.SetActive(false);
                 BasePanel_0.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 panel_back = 0;
@@ -167,6 +187,7 @@ public class RadioMenuController : MonoBehaviour {
                 GrabPanel_11.SetActive(false);
                 DrawPanel_12.SetActive(false);
                 ModelAlignmentPanel_13.SetActive(false);
+                ModelCutPanel_14.SetActive(false);
                 SelectOneObjectPanel_20.SetActive(false);
                 ModelPanel_1.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 panel_back = 0;
@@ -180,6 +201,7 @@ public class RadioMenuController : MonoBehaviour {
                 GrabPanel_11.SetActive(false);
                 DrawPanel_12.SetActive(false);
                 ModelAlignmentPanel_13.SetActive(false);
+                ModelCutPanel_14.SetActive(false);
                 SelectOneObjectPanel_20.SetActive(false);
                 SpecialPanel_2.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 panel_back = 1;
@@ -193,6 +215,7 @@ public class RadioMenuController : MonoBehaviour {
                 GrabPanel_11.SetActive(false);
                 DrawPanel_12.SetActive(false);
                 ModelAlignmentPanel_13.SetActive(false);
+                ModelCutPanel_14.SetActive(false);
                 SelectOneObjectPanel_20.SetActive(false);
                 ViewRotatePanel_10.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 break;
@@ -205,6 +228,7 @@ public class RadioMenuController : MonoBehaviour {
                 GrabPanel_11.SetActive(true);
                 DrawPanel_12.SetActive(false);
                 ModelAlignmentPanel_13.SetActive(false);
+                ModelCutPanel_14.SetActive(false);
                 SelectOneObjectPanel_20.SetActive(false);
                 GrabPanel_11.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 break;
@@ -217,6 +241,7 @@ public class RadioMenuController : MonoBehaviour {
                 GrabPanel_11.SetActive(false);
                 DrawPanel_12.SetActive(true);
                 ModelAlignmentPanel_13.SetActive(false);
+                ModelCutPanel_14.SetActive(false);
                 SelectOneObjectPanel_20.SetActive(false);
                 DrawPanel_12.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 break;
@@ -229,8 +254,22 @@ public class RadioMenuController : MonoBehaviour {
                 GrabPanel_11.SetActive(false);
                 DrawPanel_12.SetActive(false);
                 ModelAlignmentPanel_13.SetActive(true);
+                ModelCutPanel_14.SetActive(false);
                 SelectOneObjectPanel_20.SetActive(false);
                 ModelAlignmentPanel_13.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
+                break;
+            case 14:
+                //open model cut panel
+                BasePanel_0.SetActive(false);
+                ModelPanel_1.SetActive(false);
+                SpecialPanel_2.SetActive(false);
+                ViewRotatePanel_10.SetActive(false);
+                GrabPanel_11.SetActive(false);
+                DrawPanel_12.SetActive(false);
+                ModelAlignmentPanel_13.SetActive(false);
+                ModelCutPanel_14.SetActive(true);
+                SelectOneObjectPanel_20.SetActive(false);
+                ModelCutPanel_14.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 break;
             case 20:
                 //open Select One Object panel
@@ -241,6 +280,7 @@ public class RadioMenuController : MonoBehaviour {
                 GrabPanel_11.SetActive(false);
                 DrawPanel_12.SetActive(false);
                 ModelAlignmentPanel_13.SetActive(false);
+                ModelCutPanel_14.SetActive(false);
                 SelectOneObjectPanel_20.SetActive(true);
                 SelectOneObjectPanel_20.transform.GetComponent<VRTK.VRTK_RadialMenu>().ShowMenu();
                 break;
@@ -278,30 +318,24 @@ public class RadioMenuController : MonoBehaviour {
 
     public void GrabObj()
     {
-        if (!mainController.blade.activeSelf)
-        {
-            SetPanelBack(panel_type);
-            openpanel(11);
-        }
+        SetPanelBack(panel_type);
+        openpanel(11);
     }
 
     public void DeGrabObj()
     {
-        if (!mainController.blade.activeSelf)
+        if (panel_back == 10)
         {
-            if (panel_back == 10)
-            {
-                grip_back();
-                SetPanelBack(1);
-            }
-            else if (panel_back > 10)
-            {
-                throw new Exception("Error code: 1");
-            }
-            else
-            {
-                grip_back();
-            }
+            grip_back();
+            SetPanelBack(1);
+        }
+        else if (panel_back > 10)
+        {
+            throw new Exception("Error code: 1");
+        }
+        else
+        {
+            grip_back();
         }
     }
 
@@ -377,13 +411,6 @@ public class RadioMenuController : MonoBehaviour {
         {
             openpanel(panel_back);
         }
-    }
-
-    public void slice_model()
-    {
-        openpanel(10);
-        panel_back = 2;
-        mainController.blade.SetActive(true);
     }
 
     public void object_Depth(int speed)

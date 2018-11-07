@@ -61,4 +61,9 @@ public class GizmosModule : MonoBehaviour {
         Capsule.SetActive(false);
         rotationGizmos.rotateTarget = MainController.Instance().obj_point;
     }
+
+    public bool isGizmosOpen()
+    {
+        return (translateGizmos.gameObject.activeSelf || rotationGizmos.gameObject.activeSelf);
+    }
 }

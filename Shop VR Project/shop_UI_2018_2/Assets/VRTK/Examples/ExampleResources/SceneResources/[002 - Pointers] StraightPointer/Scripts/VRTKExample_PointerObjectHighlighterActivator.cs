@@ -231,7 +231,7 @@
                                 obj.GetComponent<Rigidbody>().isKinematic = true;
                             }
                         }
-                        else if (mainController.obj_point == obj && !mainController.GetIsPointerGrab() && mainController.enablePointerGrab)
+                        else if (mainController.obj_point == obj && !mainController.GetIsPointerGrab() && mainController.enablePointerGrab && !GizmosModule.Instance().isGizmosOpen())
                         {
                             //Grab
                             mainController.obj_point.transform.parent = objParent;
