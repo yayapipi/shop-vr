@@ -9,11 +9,9 @@ public class InventoryItemController : MonoBehaviour
     public GameObject shopItemInformationPrefab;
 
     private Text amountText;
-    private int amount;
     private GameObject Lock;
     private GameObject UnLock;
     public userinventory userInventData;
-    private shopcartitems shopCartItemsData;
     private GameObject newObj;
     private bool isOpenCart;
     public bool serverLock;
@@ -45,11 +43,24 @@ public class InventoryItemController : MonoBehaviour
         }
     }
 
+    public void SubmitAmount(int newAmount)
+    {
+        if (newAmount != 0)
+        {
+            transform.Find("amount").gameObject.GetComponent<Text>().text = (" " + (newAmount));
+            userInventData.amount = newAmount;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
     public void OpenInformation()
     {
         Transform spawnPoint = InventoryController.Instance().itemInformationSpawnPoint;
         newObj = Instantiate(shopItemInformationPrefab, spawnPoint.position, spawnPoint.rotation, InventoryController.Instance().GetSubUI());
-        newObj.GetComponentInChildren<ShopItemInformationController>().Set(userInventData, clientLock);
+        newObj.GetComponentInChildren<ShopItemInformationController>().Set(userInventData, clientLock, this);
     }
 
     public void SetLock()

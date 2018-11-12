@@ -17,44 +17,14 @@ public class ShopItemInformationController : MonoBehaviour {
 
     private int itemID;
     private Vector3 standard_scale;
-    private int amount;
+    private int itemAmount;
+    private int panelAmount;
     private int minAmount;
     private int maxAmount;
     private int isOpen; //0 not open 1 open shop 2 open cart 3 open invent
     private ShopItemController shopItemController;
+    private InventoryItemController inventoryItemController;
     private bool isLock;
-
-    public void Set(userinventory data, bool clientLock)
-    {
-        //initialize
-        isOpen = 3;
-        minAmount = 1;
-        maxAmount = 100;
-        isLock = clientLock;
-
-        //set
-        amount = minAmount;
-        InventoryController.Instance().Disable();
-        itemID = data.item_id;
-
-        string[] splits = data.standard_scale.Split('x');
-        standard_scale = new Vector3(float.Parse(splits[0], CultureInfo.InvariantCulture.NumberFormat), 
-            float.Parse(splits[1], CultureInfo.InvariantCulture.NumberFormat), 
-            float.Parse(splits[2], CultureInfo.InvariantCulture.NumberFormat));
-
-        informationContent.Find("name").gameObject.GetComponent<Text>().text = data.name;
-        informationContent.Find("cost").gameObject.GetComponent<Text>().text = " " + data.amount;
-        informationContent.Find("description_text").gameObject.GetComponent<Text>().text = data.description;
-        UpdateAmount();
-
-        //Get and load pictures
-        GetInventItemPics(data.item_id);
-
-        //Load model
-        StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl));
-
-        //Close Back Collision UI
-    }
 
     public void Set(shopitems data)
     {
@@ -62,9 +32,10 @@ public class ShopItemInformationController : MonoBehaviour {
         isOpen = 1;
         minAmount = 1;
         maxAmount = 100;
-        
+
         //set
-        amount = minAmount;
+        itemAmount = 0;
+        panelAmount = minAmount;
         ShopController.Instance().Disable();
         itemID = data.item_id;
 
@@ -96,7 +67,8 @@ public class ShopItemInformationController : MonoBehaviour {
 
         //set
         this.shopItemController = shopItemController;
-        amount = data.amount;
+        itemAmount = data.amount;
+        panelAmount = data.amount;
         CartController.Instance().Disable();
         itemID = data.item_id;
 
@@ -119,42 +91,76 @@ public class ShopItemInformationController : MonoBehaviour {
         //Close Back Collision UI
     }
 
+    public void Set(userinventory data, bool clientLock, InventoryItemController inventoryItemController)
+    {
+        //initialize
+        isOpen = 3;
+        minAmount = 1;
+        maxAmount = 100;
+        isLock = clientLock;
+
+        //set
+        itemAmount = data.amount;
+        panelAmount = minAmount;
+        this.inventoryItemController = inventoryItemController;
+        InventoryController.Instance().Disable();
+        itemID = data.item_id;
+
+        string[] splits = data.standard_scale.Split('x');
+        standard_scale = new Vector3(float.Parse(splits[0], CultureInfo.InvariantCulture.NumberFormat),
+            float.Parse(splits[1], CultureInfo.InvariantCulture.NumberFormat),
+            float.Parse(splits[2], CultureInfo.InvariantCulture.NumberFormat));
+
+        informationContent.Find("name").gameObject.GetComponent<Text>().text = data.name;
+        informationContent.Find("cost").gameObject.GetComponent<Text>().text = " " + data.amount;
+        informationContent.Find("description_text").gameObject.GetComponent<Text>().text = data.description;
+        UpdateAmount();
+
+        //Get and load pictures
+        GetInventItemPics(data.item_id);
+
+        //Load model
+        StartCoroutine(LoadModel(data.model_name, "http://140.123.101.103:88/project/public/" + data.model_linkurl));
+
+        //Close Back Collision UI
+    }
+
     public void IncreaseAmount()
     {
-        if(amount < maxAmount)
+        if(panelAmount < maxAmount)
         {
-            amount += 1;
+            panelAmount += 1;
             UpdateAmount();
         }
     }
 
     public void DecreaseAmount()
     {
-        if(amount > minAmount)
+        if(panelAmount > minAmount)
         {
-            amount -= 1;
+            panelAmount -= 1;
             UpdateAmount();
         }
     }
 
     private void UpdateAmount()
     {
-        amountText.text = "amount: " + amount;
+        amountText.text = "amount: " + panelAmount;
     }
 
     /*shop ui*/
     public void Buy()
     {
         gameObject.SetActive(false);
-        ShopController.Buy(itemID, amount, Close);
+        ShopController.Buy(itemID, panelAmount, Close);
     }
 
     public void Cart()
     {
         if(isOpen == 2)
-            shopItemController.SubmitAmount(amount);
+            shopItemController.SubmitAmount(panelAmount);
         gameObject.SetActive(false);
-        ShopController.Cart(itemID, amount, Close);
+        ShopController.Cart(itemID, panelAmount, Close);
     }
 
     /*inventory ui*/
@@ -169,7 +175,10 @@ public class ShopItemInformationController : MonoBehaviour {
         }
         else
         {
-            InventoryController.Sell(itemID, amount, Close);
+            if (isOpen == 3 && itemAmount >= panelAmount)
+                inventoryItemController.SubmitAmount(itemAmount - panelAmount);
+            gameObject.SetActive(false);
+            InventoryController.Sell(itemID, panelAmount, Close);
         }
     }
 
