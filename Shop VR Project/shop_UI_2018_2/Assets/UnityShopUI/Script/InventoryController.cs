@@ -15,6 +15,7 @@ public class InventoryController : MonoBehaviour
 {
     [Header("Related Objects")]
     public Transform itemContent;
+    public Transform typeContent;
     public GameObject ShopItemPanelPrefab;
     public GameObject cartMainPrefab;
     public GameObject messagePrefab;
@@ -79,33 +80,55 @@ public class InventoryController : MonoBehaviour
         //load items
         if (itemScrollRect.verticalNormalizedPosition <= 0.01 && !isLoadToEnd && !isLoadingItems)
             GetInventItems(viewType);
+    }
 
-        if (itemScrollUp.buttonPressed)
-        {
-            itemContent.localPosition += Vector3.down * scrollSpeed * Time.deltaTime;
-        }
+    public void ScrollItemByHold(bool dir)
+    {
+        if (MainController.Instance().UIPointerState == 1 || MainController.Instance().UIPointerState == 3)
+            VerticalScroll(itemContent, dir);
+    }
 
-        if (itemScrollDown.buttonPressed)
+    public void ScrollItemByHover(bool dir)
+    {
+        if (MainController.Instance().UIPointerState == 2)
+            VerticalScroll(itemContent, dir);
+    }
+
+    public void ScrollTypeByHold(bool dir)
+    {
+        if (MainController.Instance().UIPointerState == 1 || MainController.Instance().UIPointerState == 3)
+            HorizontalScroll(typeContent, dir);
+    }
+
+    public void ScrollTypeByHover(bool dir)
+    {
+        if (MainController.Instance().UIPointerState == 2)
+            HorizontalScroll(typeContent, dir);
+    }
+
+    private void VerticalScroll(Transform itemContent, bool dir)
+    {
+        if (dir)
         {
             itemContent.localPosition += Vector3.up * scrollSpeed * Time.deltaTime;
         }
+        else
+        {
+            itemContent.localPosition += Vector3.down * scrollSpeed * Time.deltaTime;
+        }
     }
 
-    /*public void SetViewKind(string kind)
+    private void HorizontalScroll(Transform itemContent, bool dir)
     {
-        if (string.Compare(viewKind, kind) != 0)
+        if (dir)
         {
-            viewKind = kind;
-            counter = 0;
-            isLoadToEnd = false;
-            isLoadingItems = false;
-
-            foreach (Transform child in itemContent)
-                Destroy(child.gameObject);
-
-            GetShopItems(viewKind, viewType);
+            itemContent.localPosition += Vector3.left * scrollSpeed * Time.deltaTime;
         }
-    }*/
+        else
+        {
+            itemContent.localPosition += Vector3.right * scrollSpeed * Time.deltaTime;
+        }
+    }
 
     public void SetViewType(int type)
     {

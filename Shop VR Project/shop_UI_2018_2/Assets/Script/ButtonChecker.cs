@@ -6,13 +6,12 @@ using UnityEngine.Events;
 
 public class ButtonChecker : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler, ISubmitHandler
 {
-    public bool buttonPressed;
-    public bool buttonHover;
+    private bool buttonPressed;
+    private bool buttonHover;
 
     [System.Serializable]
     public class eventButton
     {
-        public Sprite ButtonIcon;
         public UnityEvent OnClick = new UnityEvent();
         public UnityEvent OnHold = new UnityEvent();
         public UnityEvent OnHoverEnter = new UnityEvent();

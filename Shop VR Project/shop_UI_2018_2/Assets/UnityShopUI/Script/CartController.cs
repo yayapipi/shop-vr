@@ -43,24 +43,30 @@ public class CartController : MonoBehaviour
 
     void Update()
     {
-        //RightClick
-        /*
-        if (Input.GetMouseButtonDown(1))
-        {
-            GameObject newObj = Instantiate(cartItemPanelPrefab, itemContent);
-            newObj.transform.localPosition = Vector3.zero;
-            newObj.GetComponent<ShopItemController>().Set(data);  //display texture and other data on UI
-        }
-        */
 
-        if (itemScrollUp.buttonPressed)
-        {
-            itemContent.localPosition += Vector3.down * scrollSpeed * Time.deltaTime;
-        }
+    }
 
-        if (itemScrollDown.buttonPressed)
+    public void ScrollItemByHold(bool dir)
+    {
+        if (MainController.Instance().UIPointerState == 1 || MainController.Instance().UIPointerState == 3)
+            VerticalScroll(itemContent, dir);
+    }
+
+    public void ScrollItemByHover(bool dir)
+    {
+        if (MainController.Instance().UIPointerState == 2)
+            VerticalScroll(itemContent, dir);
+    }
+
+    private void VerticalScroll(Transform itemContent, bool dir)
+    {
+        if (dir)
         {
             itemContent.localPosition += Vector3.up * scrollSpeed * Time.deltaTime;
+        }
+        else
+        {
+            itemContent.localPosition += Vector3.down * scrollSpeed * Time.deltaTime;
         }
     }
 

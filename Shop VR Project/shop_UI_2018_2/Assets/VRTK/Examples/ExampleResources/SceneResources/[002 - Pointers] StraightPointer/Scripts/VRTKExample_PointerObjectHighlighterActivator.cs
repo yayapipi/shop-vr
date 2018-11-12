@@ -56,6 +56,7 @@
 
         void FixedUpdate()
         {
+            //calculate velocity and apply on object while grabbing
             if (trackGrab)
             {
                 Vector3 positionDelta = trackPoint.position - mainController.obj_point.transform.position;
