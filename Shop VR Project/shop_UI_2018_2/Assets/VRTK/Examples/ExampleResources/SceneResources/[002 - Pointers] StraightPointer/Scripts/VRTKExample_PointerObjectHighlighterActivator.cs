@@ -15,6 +15,16 @@
         public bool logSetEvent = true;
 
         private Transform objParent;
+        private bool trackGrab = false;
+        private Transform trackPoint;
+        private Rigidbody objRigidBody;
+        [Tooltip("The maximum amount of velocity magnitude that can be applied to the Interactable Object. Lowering this can prevent physics glitches if Interactable Objects are moving too fast.")]
+        public float velocityLimit = float.PositiveInfinity;
+        [Tooltip("The maximum amount of angular velocity magnitude that can be applied to the Interactable Object. Lowering this can prevent physics glitches if Interactable Objects are moving too fast.")]
+        public float angularVelocityLimit = float.PositiveInfinity;
+        [Tooltip("The maximum difference in distance to the tracked position.")]
+        public float maxDistanceDelta = 10f;
+
         private MainController mainController;
 
         public float align_speed = 10f;
@@ -27,24 +37,53 @@
         {
             mainController = MainController.Instance();
             ChangeObjParent();
+            trackGrab = false;
         }
 
         private void Update()
         {
-            //Degrab by mouse
+            //DeSelect by mouse
             if(mainController.UIPointerState == 3 && Input.GetMouseButtonDown(1) && mainController.GetIsPointerSelect() && !mainController.GetIsPointerGrab() && mainController.obj_point != null)
             {
-                mainController.obj_point.transform.parent = mainController.obj.transform;
-                ToggleHighlight(mainController.obj_point.transform, Color.clear);
+                DeSelect();
+            }
+            //DeGrab by mouse
+            if(mainController.UIPointerState == 3 && Input.GetMouseButtonUp(0) && mainController.GetIsPointerGrab())
+            {
+                DeGrab();
+            }
+        }
 
-                if (mainController.obj_point.GetComponent<Rigidbody>())
+        void FixedUpdate()
+        {
+            if (trackGrab)
+            {
+                Vector3 positionDelta = trackPoint.position - mainController.obj_point.transform.position;
+                Quaternion rotationDelta = trackPoint.rotation * Quaternion.Inverse(mainController.obj_point.transform.rotation);
+
+                float angle;
+                Vector3 axis;
+                rotationDelta.ToAngleAxis(out angle, out axis);
+
+                angle = ((angle > 180) ? angle -= 360 : angle);
+
+                if (angle != 0)
                 {
-                    mainController.obj_point.GetComponent<Rigidbody>().useGravity = mainController.obj_useGravity;
-                    mainController.obj_point.GetComponent<Rigidbody>().isKinematic = mainController.obj_isKinematic;
+                    Vector3 angularTarget = angle * axis;
+                    Vector3 calculatedAngularVelocity = Vector3.MoveTowards(objRigidBody.angularVelocity, angularTarget, maxDistanceDelta);
+                    if (angularVelocityLimit == float.PositiveInfinity || calculatedAngularVelocity.sqrMagnitude < angularVelocityLimit)
+                    {
+                        objRigidBody.angularVelocity = calculatedAngularVelocity;
+                    }
                 }
 
-                mainController.obj_point = null;
-                mainController.SetIsPointerSelect(false);
+                Vector3 velocityTarget = positionDelta / Time.fixedDeltaTime;
+                Vector3 calculatedVelocity = Vector3.MoveTowards(objRigidBody.velocity, velocityTarget, maxDistanceDelta);
+
+                if (velocityLimit == float.PositiveInfinity || calculatedVelocity.sqrMagnitude < velocityLimit)
+                {
+                    objRigidBody.velocity = calculatedVelocity;
+                }
             }
         }
 
@@ -217,99 +256,126 @@
                     case 1:
                         if (!mainController.GetIsPointerSelect())
                         {
-                            //Select
-                            ToggleHighlight(obj.transform, selectColor);
-                            mainController.obj_point = obj;
-                            mainController.SetIsPointerSelect(true);
-
-                            if (obj.GetComponent<Rigidbody>())
-                            {
-                                mainController.obj_useGravity = obj.GetComponent<Rigidbody>().useGravity;
-                                mainController.obj_isKinematic = obj.GetComponent<Rigidbody>().isKinematic;
-
-                                obj.GetComponent<Rigidbody>().useGravity = false;
-                                obj.GetComponent<Rigidbody>().isKinematic = true;
-                            }
+                            Select(obj);
                         }
                         else if (mainController.obj_point == obj && !mainController.GetIsPointerGrab() && mainController.enablePointerGrab && !GizmosModule.Instance().isGizmosOpen())
                         {
-                            //Grab
-                            mainController.obj_point.transform.parent = objParent;
-                            mainController.SetIsPointerGrab(true);
+                            Grab(obj);
                         }
                         break;
                     case 2:
                         if (!mainController.GetIsPointerSelect())
                         {
-                            //Select
-                            ToggleHighlight(obj.transform, selectColor);
-                            mainController.obj_point = obj;
-                            mainController.SetIsPointerSelect(true);
-
-                            if (obj.GetComponent<Rigidbody>())
-                            {
-                                mainController.obj_useGravity = obj.GetComponent<Rigidbody>().useGravity;
-                                mainController.obj_isKinematic = obj.GetComponent<Rigidbody>().isKinematic;
-                                obj.GetComponent<Rigidbody>().useGravity = false;
-                                obj.GetComponent<Rigidbody>().isKinematic = true;
-                            }
+                            Select(obj);
                         }
                         else if (mainController.obj_point == obj && !mainController.GetIsPointerGrab() && mainController.enablePointerGrab)
                         {
-                            //Grab
-                            mainController.obj_point.transform.parent = objParent;
-                            mainController.SetIsPointerGrab(true);
+                            Grab(obj);
                         }
-                        else if (mainController.obj_point == obj && mainController.GetIsPointerGrab())
+                        else if (mainController.GetIsPointerGrab())
                         {
-                            //DeGrab
-                            mainController.obj_point.transform.parent = mainController.obj.transform;
-                            mainController.SetIsPointerGrab(false);
+                            DeGrab();
                         }
                         break;
                     case 3:
                         if (!mainController.GetIsPointerSelect())
                         {
-                            //Select
-                            ToggleHighlight(obj.transform, selectColor);
-                            mainController.obj_point = obj;
-                            mainController.SetIsPointerSelect(true);
-
-                            if (obj.GetComponent<Rigidbody>())
-                            {
-                                mainController.obj_useGravity = obj.GetComponent<Rigidbody>().useGravity;
-                                mainController.obj_isKinematic = obj.GetComponent<Rigidbody>().isKinematic;
-
-                                obj.GetComponent<Rigidbody>().useGravity = false;
-                                obj.GetComponent<Rigidbody>().isKinematic = true;
-                            }
+                            Select(obj);
                         }
                         else if (mainController.obj_point == obj && !mainController.GetIsPointerGrab() && mainController.enablePointerGrab)
                         {
-                            //Grab
-                            mainController.obj_point.transform.parent = objParent;
-                            mainController.SetIsPointerGrab(true);
-                        }
-                        else if (mainController.obj_point == obj && mainController.GetIsPointerGrab())
-                        {
-                            //DeGrab
-                            mainController.obj_point.transform.parent = mainController.obj.transform;
-                            mainController.SetIsPointerGrab(false);
+                            TrackGrab(obj);
                         }
                         break;
                 }
             }
         }
 
+        private void Select(GameObject obj)
+        {
+            ToggleHighlight(obj.transform, selectColor);
+            mainController.obj_point = obj;
+            mainController.SetIsPointerSelect(true);
+
+            if (obj.GetComponent<Rigidbody>())
+            {
+                objRigidBody = obj.GetComponent<Rigidbody>();
+                mainController.obj_useGravity = objRigidBody.useGravity;
+                mainController.obj_isKinematic = objRigidBody.isKinematic;
+
+                objRigidBody.useGravity = false;
+                objRigidBody.isKinematic = true;
+            }
+            else
+            {
+                objRigidBody = null;
+            }
+        }
+
+        private void DeSelect()
+        {
+            mainController.obj_point.transform.parent = mainController.obj.transform;
+            ToggleHighlight(mainController.obj_point.transform, Color.clear);
+
+            if (objRigidBody)
+            {
+                objRigidBody.useGravity = mainController.obj_useGravity;
+                objRigidBody.isKinematic = mainController.obj_isKinematic;
+            }
+
+            mainController.obj_point = null;
+            mainController.SetIsPointerSelect(false);
+        }
+
+        private void Grab(GameObject obj)
+        {
+            mainController.obj_point.transform.parent = objParent;
+            mainController.SetIsPointerGrab(true);
+        }
+
+        private void DeGrab()
+        {
+            objRigidBody.isKinematic = true;
+            trackGrab = false;
+            mainController.obj_point.transform.parent = mainController.obj.transform;
+            mainController.SetIsPointerGrab(false);
+        }
+
+        private void TrackGrab(GameObject obj)
+        {
+            if (!objRigidBody)
+            {
+                Grab(obj);
+                return;
+            }
+
+            objRigidBody.isKinematic = false;
+            trackGrab = true;
+            trackPoint = CreateTrackPoint(objParent, obj);
+
+            mainController.obj_point.transform.parent = objParent;
+            mainController.SetIsPointerGrab(true);
+        }
+
+        private Transform CreateTrackPoint(Transform controllerPoint, GameObject obj)
+        {
+            Transform returnTrackpoint = null;
+
+            returnTrackpoint = new GameObject("precision_grab").transform;
+            returnTrackpoint.SetParent(controllerPoint.transform);
+            returnTrackpoint.position = obj.transform.position;
+            returnTrackpoint.rotation = obj.transform.rotation;
+
+            return returnTrackpoint;
+        }
+
         private void RTriggerClickUp()
         {
             if (mainController.UIPointerState == 1)
             {
-                //DeGrab
                 if (mainController.GetIsPointerGrab() && mainController.obj_point != null)
                 {
-                    mainController.obj_point.transform.parent = mainController.obj.transform;
-                    mainController.SetIsPointerGrab(false);
+                    DeGrab();
                 }
             }
         }
@@ -323,17 +389,7 @@
                 //Deselect
                 if (RadioMenuController.getPanelType() == 1 && mainController.GetIsPointerSelect() && !mainController.GetIsPointerGrab() && mainController.obj_point != null)
                 {
-                    mainController.obj_point.transform.parent = mainController.obj.transform;
-                    ToggleHighlight(mainController.obj_point.transform, Color.clear);
-
-                    if (mainController.obj_point.GetComponent<Rigidbody>())
-                    {
-                        mainController.obj_point.GetComponent<Rigidbody>().useGravity = mainController.obj_useGravity;
-                        mainController.obj_point.GetComponent<Rigidbody>().isKinematic = mainController.obj_isKinematic;
-                    }
-
-                    mainController.obj_point = null;
-                    mainController.SetIsPointerSelect(false);
+                    DeSelect();
                 }
 
                 //Cancel model Alignment
