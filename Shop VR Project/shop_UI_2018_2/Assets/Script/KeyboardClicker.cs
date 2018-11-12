@@ -9,10 +9,12 @@ public class KeyboardClicker : MonoBehaviour {
     private MainController mainController;
     private EventSystem m_EventSystem;
     public static GameObject rayCastObj;
+    private GameObject dragObj;
+    private bool dragging;
     private GameObject rayCastObj_last = null;
-    private RaycastHit obj;
     private GameObject lastPointerDownObj;
     private List<RaycastResult> raycastResults;
+    private RaycastResult currentRaycast;
     private PointerEventData pointer;
     private bool hit;
     private float timer;
@@ -52,6 +54,7 @@ public class KeyboardClicker : MonoBehaviour {
         pointer.position = new Vector2(Screen.width / 2, Screen.height / 2);
 
         raycastResults = new List<RaycastResult>();
+        dragging = false;
     }
 
     void Update()
@@ -71,9 +74,15 @@ public class KeyboardClicker : MonoBehaviour {
                 break;
             case 3:
                 //keyboard
-                RayDetectUIandObj();
+                //RayDetectUIandObj();
+                testRay();
                 MouseDetect();
                 break;
+        }
+
+        if (dragging)
+        {
+            ExecuteEvents.Execute(dragObj, pointer, ExecuteEvents.dragHandler);
         }
     }
 
@@ -188,7 +197,12 @@ public class KeyboardClicker : MonoBehaviour {
     //keyboard
     private void MouseDetect()
     {
-        if(rayCastObj != null)
+        if (Input.GetMouseButtonUp(0))
+        {
+            dragging = false;
+        }
+
+        if (rayCastObj != null)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -196,6 +210,12 @@ public class KeyboardClicker : MonoBehaviour {
                 {
                     //UI button down
                     ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerDownHandler);
+                    ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.initializePotentialDrag);
+                    ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.beginDragHandler);
+
+                    pointer.pointerPressRaycast = currentRaycast;
+                    dragObj = rayCastObj;
+                    dragging = true;
 
                     lastPointerDownObj = rayCastObj;
 
@@ -210,7 +230,7 @@ public class KeyboardClicker : MonoBehaviour {
             }
             else if (Input.GetMouseButtonUp(0))
             {
-                if(lastPointerDownObj != null)
+                if (lastPointerDownObj != null)
                 {
                     if (lastPointerDownObj.GetComponent<Selectable>())
                     {
@@ -222,6 +242,7 @@ public class KeyboardClicker : MonoBehaviour {
 
                         //UI button up
                         ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
+                        ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.endDragHandler);
 
                         //StopAutoClick
                         CancelInvoke("AutoClicker");
@@ -373,6 +394,85 @@ public class KeyboardClicker : MonoBehaviour {
         }
     }
 
+    //implement pointer drag
+    private void testRay()
+    {
+        raycastResults.Clear();
+        m_EventSystem.RaycastAll(pointer, raycastResults);
+        hit = false;
+
+        //Sort raycast results
+        if (raycastResults.Count > 1)
+            raycastResults.Sort(RaycastComparer);
+
+        //Debug.Log("==============");
+
+        //obj filter
+        foreach (RaycastResult h in raycastResults)
+        {
+            //Debug.Log(h.gameObject.name);
+            currentRaycast = h;
+
+            if (h.gameObject.GetComponent<Selectable>() || h.gameObject.tag == "Model" )
+            {
+                hit = true;
+                break;
+            }
+
+            if (h.gameObject.name == "mask" || h.gameObject.GetComponent<MeshRenderer>())
+            {
+                break;
+            }
+        }
+
+        rayCastObj = currentRaycast.gameObject;
+
+        if (hit)
+        {
+            if (rayCastObj != rayCastObj_last)
+            {
+                if (rayCastObj_last && rayCastObj_last.GetComponent<Selectable>())
+                {
+                    //UI exit
+                    ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
+                }
+                else if (rayCastObj_last && rayCastObj_last.tag == "Model" && PointerExit != null)
+                {
+                    //obj exit
+                    PointerExit(rayCastObj_last);
+                }
+
+                if (rayCastObj.GetComponent<Selectable>())
+                {
+                    //UI enter
+                    ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerEnterHandler);
+                }
+                else if (rayCastObj.tag == "Model" && PointerEnter != null)
+                {
+                    //obj enter
+                    PointerEnter(rayCastObj);
+                }
+            }
+            rayCastObj_last = rayCastObj;
+        }
+        else
+        {
+            if (rayCastObj_last && rayCastObj_last.GetComponent<Selectable>())
+            {
+                //UI exit
+                ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
+            }
+            else if (rayCastObj_last && rayCastObj_last.tag == "Model" && PointerExit != null)
+            {
+                //obj exit
+                PointerExit(rayCastObj_last);
+            }
+
+            rayCastObj = null;
+            rayCastObj_last = null;
+        }
+    }
+
     /* Old version RayDetect */
     /*
     private void RayDetect()
@@ -404,7 +504,21 @@ public class KeyboardClicker : MonoBehaviour {
         }
     }
     */
-
+    /*
+    private virtual DestinationMarkerEventArgs SetDestinationMarkerEvent(float distance, Transform target, RaycastHit raycastHit, Vector3 position, VRTK_ControllerReference controllerReference, bool forceDestinationPosition = false, Quaternion? rotation = null)
+    {
+        DestinationMarkerEventArgs e;
+        e.controllerReference = controllerReference;
+        e.distance = distance;
+        e.target = target;
+        e.raycastHit = raycastHit;
+        e.destinationPosition = position;
+        e.destinationRotation = rotation;
+        e.enableTeleport = enableTeleport;
+        e.forceDestinationPosition = forceDestinationPosition;
+        return e;
+    }
+    */
 
     //Raycast results compare function
     private static int RaycastComparer(RaycastResult lhs, RaycastResult rhs)
