@@ -62,7 +62,7 @@ public class GizmoTranslateScript : MonoBehaviour {
         for (int i = 0; i < 3; i++) {
             if (Input.GetMouseButton(0) && detectors[i].pressing) {
 
-                // Get the distance from the camera to the target (used as a scaling factor in translate)
+                // Get the distance from the GetComponent.<Camera>() to the target (used as a scaling factor in translate)
                 float distance = Vector3.Distance(Camera.main.transform.position, translateTarget.transform.position);
                 distance = distance * 2.0f;
 

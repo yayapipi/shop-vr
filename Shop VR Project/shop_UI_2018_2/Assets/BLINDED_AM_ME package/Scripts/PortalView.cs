@@ -152,7 +152,7 @@ namespace BLINDED_AM_ME{
 
 		// Aras Pranckevicius' MirrorReflection4
 		// http://wiki.unity3d.com/index.php/MirrorReflection4 
-		// Given position/normal of the plane, calculates plane in camera space.
+		// Given position/normal of the plane, calculates plane in GetComponent.<Camera>() space.
 		private Vector4 CameraSpacePlane (Camera cam, Vector3 pos, Vector3 normal, float sideSign)
 		{
 			Vector3 offsetPos = pos + normal * -clipPlaneOffset;
