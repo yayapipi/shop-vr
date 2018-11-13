@@ -261,7 +261,7 @@
                         }
                         else if (mainController.obj_point == obj && !mainController.GetIsPointerGrab() && mainController.enablePointerGrab && !GizmosModule.Instance().isGizmosOpen())
                         {
-                            Grab(obj);
+                            TrackGrab(obj);
                         }
                         break;
                     case 2:
@@ -271,9 +271,9 @@
                         }
                         else if (mainController.obj_point == obj && !mainController.GetIsPointerGrab() && mainController.enablePointerGrab)
                         {
-                            Grab(obj);
+                            TrackGrab(obj);
                         }
-                        else if (mainController.GetIsPointerGrab())
+                        else if (mainController.obj_point == obj && mainController.GetIsPointerGrab())
                         {
                             DeGrab();
                         }
@@ -336,7 +336,8 @@
 
         private void DeGrab()
         {
-            objRigidBody.isKinematic = true;
+            if(trackGrab)
+                objRigidBody.isKinematic = true;
             trackGrab = false;
             mainController.obj_point.transform.parent = mainController.obj.transform;
             mainController.SetIsPointerGrab(false);
@@ -353,6 +354,7 @@
             objRigidBody.isKinematic = false;
             trackGrab = true;
             trackPoint = CreateTrackPoint(objParent, obj);
+            mainController.trackPoint = trackPoint;
 
             mainController.obj_point.transform.parent = objParent;
             mainController.SetIsPointerGrab(true);

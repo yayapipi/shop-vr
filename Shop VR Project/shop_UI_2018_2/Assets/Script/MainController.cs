@@ -29,6 +29,7 @@ public class MainController : MonoBehaviour {
 
     [Header("Variables")]
     public GameObject obj_point = null;
+    public Transform trackPoint;
     public bool obj_isKinematic;
     public bool obj_useGravity;
     public bool enablePointerSelect = true;
