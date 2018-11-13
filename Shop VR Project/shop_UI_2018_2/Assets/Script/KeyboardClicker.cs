@@ -78,8 +78,7 @@ public class KeyboardClicker : MonoBehaviour {
                 break;
             case 3:
                 //keyboard
-                //RayDetectUIandObj();
-                testRay();
+                RayDetectUIandObj();
                 MouseDetect();
                 break;
         }
@@ -106,7 +105,7 @@ public class KeyboardClicker : MonoBehaviour {
     {
         if (mainController.ControllerPointerCamera)
         {
-            //none
+            mainController.ControllerPointerCamera.GetComponent<PhysicsRaycaster>().enabled = (mainController.UIPointerState == 1);
         }
         if (mainController.EyetrackerPointerCamera)
         {
@@ -121,33 +120,60 @@ public class KeyboardClicker : MonoBehaviour {
     //Controller
     private void ControllerPointerDown()
     {
-        if (mainController.UIPointerState == 1 && rayCastObj != null)
+        if (mainController.UIPointerState != 1)
+            return;
+
+        if (dragObj)
+        {
+            ExecuteEvents.Execute(dragObj, pointer, ExecuteEvents.initializePotentialDrag);
+            ExecuteEvents.Execute(dragObj, pointer, ExecuteEvents.beginDragHandler);
+
+            dragScrollRect = null;
+
+            if (dragObj.GetComponent<ScrollRect>())
+            {
+                dragScrollRect = dragObj.GetComponent<ScrollRect>();
+                initialDragPosition = dragScrollRect.content.transform.localPosition;
+            }
+            pointer.pointerPressRaycast = currentRaycast;
+            lastDragObj = dragObj;
+            dragging = true;
+        }
+
+        if (rayCastObj)
         {
             if (rayCastObj.GetComponent<Selectable>())
             {
                 //UI button down
                 ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerDownHandler);
 
+                buttonClickable = true;
+
                 lastPointerDownObj = rayCastObj;
 
                 //AutoClick
                 InvokeRepeating("AutoClicker", 1.5f, 0.1f);
-            }/*
-            else if (rayCastObj.tag == "Model" && PointerSet != null)
-            {
-                //obj submit
-                PointerSet(rayCastObj);
-            }*/
+            }
         }
     }
 
     private void ControllerPointerUp()
     {
-        if (mainController.UIPointerState == 1 && lastPointerDownObj != null)
+        if (mainController.UIPointerState != 1)
+            return;
+
+        if (lastDragObj)
+        {
+            ExecuteEvents.Execute(lastDragObj, pointer, ExecuteEvents.endDragHandler);
+            dragging = false;
+            lastDragObj = null;
+        }
+
+        if (lastPointerDownObj)
         {
             if (lastPointerDownObj.GetComponent<Selectable>())
             {
-                if (lastPointerDownObj == rayCastObj)
+                if (lastPointerDownObj == rayCastObj && buttonClickable)
                 {
                     //UI submit
                     ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
@@ -185,7 +211,7 @@ public class KeyboardClicker : MonoBehaviour {
     {
         yield return new WaitForSeconds(0.05f);
 
-        if (mainController.UIPointerState == 2 && rayCastObj != null)
+        if (mainController.UIPointerState == 2 && rayCastObj)
         {
             if (rayCastObj.GetComponent<Selectable>())
             {
@@ -232,6 +258,8 @@ public class KeyboardClicker : MonoBehaviour {
                     //UI button down
                     ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerDownHandler);
 
+                    buttonClickable = true;
+
                     lastPointerDownObj = rayCastObj;
 
                     //AutoClick
@@ -254,7 +282,7 @@ public class KeyboardClicker : MonoBehaviour {
                 lastDragObj = null;
             }
 
-            if (lastPointerDownObj != null)
+            if (lastPointerDownObj)
             {
                 if (lastPointerDownObj.GetComponent<Selectable>())
                 {
@@ -291,6 +319,8 @@ public class KeyboardClicker : MonoBehaviour {
         raycastResults.Clear();
         m_EventSystem.RaycastAll(pointer, raycastResults);
         hit = false;
+        rayCastObj = null;
+        dragObj = null;
 
         //Sort raycast results
         if (raycastResults.Count > 1)
@@ -299,20 +329,25 @@ public class KeyboardClicker : MonoBehaviour {
         //obj filter
         foreach (RaycastResult h in raycastResults)
         {
-            if (h.gameObject.GetComponent<Selectable>())
+            if ((!rayCastObj && h.gameObject.GetComponent<Selectable>() && !h.gameObject.GetComponent<Scrollbar>() && !h.gameObject.GetComponent<Slider>()))
             {
+                rayCastObj = h.gameObject;
                 hit = true;
-                rayCastObj = h.gameObject;
-                break;
             }
-            if (h.gameObject.name == "mask" || h.gameObject.GetComponent<MeshRenderer>())
+
+            if (!dragObj && (h.gameObject.GetComponent<ScrollRect>() || h.gameObject.GetComponent<Scrollbar>() || h.gameObject.GetComponent<Slider>()))
             {
-                rayCastObj = h.gameObject;
+                currentRaycast = h;
+                dragObj = h.gameObject;
+            }
+
+            if (h.gameObject.name == "mask" || h.gameObject.GetComponent<MeshRenderer>() || h.gameObject.GetComponent<Collider>())
+            {
                 break;
             }
         }
 
-        if (hit)
+        if (rayCastObj)
         {
             if (rayCastObj != rayCastObj_last)
             {
@@ -338,86 +373,12 @@ public class KeyboardClicker : MonoBehaviour {
                 ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
             }
 
-            rayCastObj = null;
-            rayCastObj_last = null;
-        }
-    }
-
-    /* Support hover button, but need to pass pointerEventData argument.*/
-    private void RayDetectUIandObj()
-    {
-        raycastResults.Clear();
-        m_EventSystem.RaycastAll(pointer, raycastResults);
-        hit = false;
-
-        //Sort raycast results
-        if (raycastResults.Count > 1)
-            raycastResults.Sort(RaycastComparer);
-
-        //obj filter
-        foreach (RaycastResult h in raycastResults)
-        {
-            if (h.gameObject.GetComponent<Selectable>() || h.gameObject.tag == "Model")
-            {
-                hit = true;
-                rayCastObj = h.gameObject;
-                break;
-            }
-            if (h.gameObject.name == "mask" || h.gameObject.GetComponent<MeshRenderer>())
-            {
-                rayCastObj = h.gameObject;
-                break;
-            }
-        }
-
-        if (hit)
-        {
-            if (rayCastObj != rayCastObj_last)
-            {
-                if (rayCastObj_last && rayCastObj_last.GetComponent<Selectable>())
-                {
-                    //UI exit
-                    ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
-                }
-                else if (rayCastObj_last && rayCastObj_last.tag == "Model" && PointerExit != null)
-                {
-                    //obj exit
-                    PointerExit(rayCastObj_last);
-                }
-
-                if(rayCastObj.GetComponent<Selectable>())
-                {
-                    //UI enter
-                    ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerEnterHandler);
-                }
-                else if (rayCastObj.tag == "Model" && PointerEnter != null)
-                {
-                    //obj enter
-                    PointerEnter(rayCastObj);
-                }
-            }
-            rayCastObj_last = rayCastObj;
-        }
-        else
-        {
-            if (rayCastObj_last && rayCastObj_last.GetComponent<Selectable>())
-            {
-                //UI exit
-                ExecuteEvents.Execute(rayCastObj_last, pointer, ExecuteEvents.pointerExitHandler);
-            }
-            else if (rayCastObj_last && rayCastObj_last.tag == "Model" && PointerExit != null)
-            {
-                //obj exit
-                PointerExit(rayCastObj_last);
-            }
-
-            rayCastObj = null;
             rayCastObj_last = null;
         }
     }
 
     //implement pointer drag
-    private void testRay()
+    private void RayDetectUIandObj()
     {
         raycastResults.Clear();
         m_EventSystem.RaycastAll(pointer, raycastResults);
@@ -428,14 +389,6 @@ public class KeyboardClicker : MonoBehaviour {
         //Sort raycast results
         if (raycastResults.Count > 1)
             raycastResults.Sort(RaycastComparer);
-        /*
-        foreach (RaycastResult h in raycastResults)
-        {
-            Debug.Log(h.gameObject.name);
-        }
-
-        Debug.Log("==============");
-        */
         
         //obj filter
         foreach (RaycastResult h in raycastResults)
@@ -454,7 +407,7 @@ public class KeyboardClicker : MonoBehaviour {
                 dragObj = h.gameObject;
             }
 
-            if (h.gameObject.name == "mask" || h.gameObject.GetComponent<MeshRenderer>())
+            if (h.gameObject.name == "mask" || h.gameObject.GetComponent<MeshRenderer>() || h.gameObject.GetComponent<Collider>())
             {
                 break;
             }
@@ -466,8 +419,6 @@ public class KeyboardClicker : MonoBehaviour {
         {
             if (rayCastObj != rayCastObj_last)
             {
-                buttonClickable = true;
-
                 if (rayCastObj_last && rayCastObj_last.GetComponent<Selectable>())
                 {
                     //UI exit
