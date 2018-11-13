@@ -13,7 +13,7 @@ namespace BLINDED_AM_ME{
 
 		}
 
-		// before a camera renders this 
+		// before a GetComponent.<Camera>() renders this 
 		public void OnWillRenderObject()
 		{
 

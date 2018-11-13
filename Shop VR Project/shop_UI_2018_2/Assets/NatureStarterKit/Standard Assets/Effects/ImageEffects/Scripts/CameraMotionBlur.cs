@@ -50,7 +50,7 @@ namespace UnityStandardAssets.ImageEffects
         public bool  showVelocity = false;
         public float showVelocityScale = 1.0f;
 
-        // camera transforms
+        // GetComponent.<Camera>() transforms
         private Matrix4x4 currentViewProjMat;
         private Matrix4x4 prevViewProjMat;
         private int prevFrameCount;
@@ -368,7 +368,7 @@ namespace UnityStandardAssets.ImageEffects
         }
 
         void StartFrame () {
-            // take only x% of positional changes into account (camera motion)
+            // take only x% of positional changes into account (GetComponent.<Camera>() motion)
             // TODO: possibly do the same for rotational part
             prevFramePos = Vector3.Slerp(prevFramePos, transform.position, 0.75f);
         }

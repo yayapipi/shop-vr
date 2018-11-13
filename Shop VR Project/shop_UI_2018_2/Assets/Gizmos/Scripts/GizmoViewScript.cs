@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 
 /// <summary>
-///     Simple script to handle the functionality of the View Gizmo (i.e. rotates the camera to a
+///     Simple script to handle the functionality of the View Gizmo (i.e. rotates the GetComponent.<Camera>() to a
 ///     predefined position around a specified pivot; front, back, left etc.)
 /// </summary>
 /// 
@@ -91,7 +91,7 @@ public class GizmoViewScript : MonoBehaviour {
         // (within half a second), bug out.
         if (!detectors[6].pressing && (Time.realtimeSinceStartup - lastClick) < 0.5f) return;
 
-        // Find the handle that the user has clicked then move the camera the correspionding positions
+        // Find the handle that the user has clicked then move the GetComponent.<Camera>() the correspionding positions
         for (int i = 0; i < detectors.Length; i++) {
 
             if (Input.GetMouseButton(0) && detectors[i].pressing) {
@@ -265,7 +265,7 @@ public class GizmoViewScript : MonoBehaviour {
                         break;
                 }
 
-                // Rotate the camera to look at the target, store the time of the click
+                // Rotate the GetComponent.<Camera>() to look at the target, store the time of the click
                 cameraContainer.transform.LookAt(targetObject.transform);
                 lastClick = Time.realtimeSinceStartup;
 
