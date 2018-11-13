@@ -8,9 +8,13 @@ using UnityEngine.XR;
 public class KeyboardClicker : MonoBehaviour {
     private MainController mainController;
     private EventSystem m_EventSystem;
-    public static GameObject rayCastObj;
+    public  GameObject rayCastObj;
     private GameObject dragObj;
+    private GameObject lastDragObj;
     private bool dragging;
+    private Vector3 initialDragPosition;
+    private ScrollRect dragScrollRect;
+    private bool buttonClickable;
     private GameObject rayCastObj_last = null;
     private GameObject lastPointerDownObj;
     private List<RaycastResult> raycastResults;
@@ -82,7 +86,12 @@ public class KeyboardClicker : MonoBehaviour {
 
         if (dragging)
         {
-            ExecuteEvents.Execute(dragObj, pointer, ExecuteEvents.dragHandler);
+            ExecuteEvents.Execute(lastDragObj, pointer, ExecuteEvents.dragHandler);
+
+            if (buttonClickable && dragScrollRect && (dragScrollRect.content.transform.localPosition - initialDragPosition).magnitude > 30f)
+            {
+                buttonClickable = false;
+            }
         }
     }
 
@@ -197,25 +206,31 @@ public class KeyboardClicker : MonoBehaviour {
     //keyboard
     private void MouseDetect()
     {
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonDown(0))
         {
-            dragging = false;
-        }
+            if (dragObj)
+            {
+                ExecuteEvents.Execute(dragObj, pointer, ExecuteEvents.initializePotentialDrag);
+                ExecuteEvents.Execute(dragObj, pointer, ExecuteEvents.beginDragHandler);
 
-        if (rayCastObj != null)
-        {
-            if (Input.GetMouseButtonDown(0))
+                dragScrollRect = null;
+
+                if (dragObj.GetComponent<ScrollRect>())
+                {
+                    dragScrollRect = dragObj.GetComponent<ScrollRect>();
+                    initialDragPosition = dragScrollRect.content.transform.localPosition;
+                }
+                pointer.pointerPressRaycast = currentRaycast;
+                lastDragObj = dragObj;
+                dragging = true;
+            }
+
+            if (rayCastObj)
             {
                 if (rayCastObj.GetComponent<Selectable>())
                 {
                     //UI button down
                     ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.pointerDownHandler);
-                    ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.initializePotentialDrag);
-                    ExecuteEvents.Execute(rayCastObj, pointer, ExecuteEvents.beginDragHandler);
-
-                    pointer.pointerPressRaycast = currentRaycast;
-                    dragObj = rayCastObj;
-                    dragging = true;
 
                     lastPointerDownObj = rayCastObj;
 
@@ -228,27 +243,34 @@ public class KeyboardClicker : MonoBehaviour {
                     PointerSet(rayCastObj);
                 }
             }
-            else if (Input.GetMouseButtonUp(0))
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (lastDragObj)
             {
-                if (lastPointerDownObj != null)
+                ExecuteEvents.Execute(lastDragObj, pointer, ExecuteEvents.endDragHandler);
+                dragging = false;
+                lastDragObj = null;
+            }
+
+            if (lastPointerDownObj != null)
+            {
+                if (lastPointerDownObj.GetComponent<Selectable>())
                 {
-                    if (lastPointerDownObj.GetComponent<Selectable>())
+                    if (lastPointerDownObj == rayCastObj && buttonClickable)
                     {
-                        if (lastPointerDownObj == rayCastObj)
-                        {
-                            //UI submit
-                            ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
-                        }
-
-                        //UI button up
-                        ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
-                        ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.endDragHandler);
-
-                        //StopAutoClick
-                        CancelInvoke("AutoClicker");
-
-                        lastPointerDownObj = null;
+                        //UI submit
+                        ExecuteEvents.Execute(rayCastObj, new BaseEventData(m_EventSystem), ExecuteEvents.submitHandler);
                     }
+
+                    //UI button up
+                    ExecuteEvents.Execute(lastPointerDownObj, pointer, ExecuteEvents.pointerUpHandler);
+
+                    //StopAutoClick
+                    CancelInvoke("AutoClicker");
+
+                    lastPointerDownObj = null;
                 }
             }
         }
@@ -400,23 +422,36 @@ public class KeyboardClicker : MonoBehaviour {
         raycastResults.Clear();
         m_EventSystem.RaycastAll(pointer, raycastResults);
         hit = false;
+        rayCastObj = null;
+        dragObj = null;
 
         //Sort raycast results
         if (raycastResults.Count > 1)
             raycastResults.Sort(RaycastComparer);
+        /*
+        foreach (RaycastResult h in raycastResults)
+        {
+            Debug.Log(h.gameObject.name);
+        }
 
-        //Debug.Log("==============");
-
+        Debug.Log("==============");
+        */
+        
         //obj filter
         foreach (RaycastResult h in raycastResults)
         {
             //Debug.Log(h.gameObject.name);
-            currentRaycast = h;
 
-            if (h.gameObject.GetComponent<Selectable>() || h.gameObject.tag == "Model" )
+            if ((!rayCastObj && h.gameObject.GetComponent<Selectable>() && !h.gameObject.GetComponent<Scrollbar>() && !h.gameObject.GetComponent<Slider>()) || h.gameObject.tag == "Model")
             {
+                rayCastObj = h.gameObject;
                 hit = true;
-                break;
+            }
+
+            if (!dragObj && (h.gameObject.GetComponent<ScrollRect>() || h.gameObject.GetComponent<Scrollbar>() || h.gameObject.GetComponent<Slider>()))
+            {
+                currentRaycast = h;
+                dragObj = h.gameObject;
             }
 
             if (h.gameObject.name == "mask" || h.gameObject.GetComponent<MeshRenderer>())
@@ -425,12 +460,14 @@ public class KeyboardClicker : MonoBehaviour {
             }
         }
 
-        rayCastObj = currentRaycast.gameObject;
+        //rayCastObj = currentRaycast.gameObject;
 
-        if (hit)
+        if (rayCastObj)
         {
             if (rayCastObj != rayCastObj_last)
             {
+                buttonClickable = true;
+
                 if (rayCastObj_last && rayCastObj_last.GetComponent<Selectable>())
                 {
                     //UI exit
@@ -468,7 +505,6 @@ public class KeyboardClicker : MonoBehaviour {
                 PointerExit(rayCastObj_last);
             }
 
-            rayCastObj = null;
             rayCastObj_last = null;
         }
     }
@@ -502,21 +538,6 @@ public class KeyboardClicker : MonoBehaviour {
             m_EventSystem.SetSelectedGameObject(null);
             rayCastObj_last = null;
         }
-    }
-    */
-    /*
-    private virtual DestinationMarkerEventArgs SetDestinationMarkerEvent(float distance, Transform target, RaycastHit raycastHit, Vector3 position, VRTK_ControllerReference controllerReference, bool forceDestinationPosition = false, Quaternion? rotation = null)
-    {
-        DestinationMarkerEventArgs e;
-        e.controllerReference = controllerReference;
-        e.distance = distance;
-        e.target = target;
-        e.raycastHit = raycastHit;
-        e.destinationPosition = position;
-        e.destinationRotation = rotation;
-        e.enableTeleport = enableTeleport;
-        e.forceDestinationPosition = forceDestinationPosition;
-        return e;
     }
     */
 
