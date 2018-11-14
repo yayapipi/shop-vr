@@ -26,5 +26,4 @@ public class ScaleBox : MonoBehaviour {
         Vector3 position = new Vector3(MainController.Instance().obj_point.transform.position.x, MainController.Instance().obj_point.transform.position.y , MainController.Instance().obj_point.transform.position.z);
         transform.position = position;
     }
-
 }

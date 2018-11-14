@@ -245,9 +245,8 @@ public class ShopItemInformationController : MonoBehaviour {
 
             Debug.Log("scale by mesh");
             Vector3 scale = model_obj.transform.localScale;
-            Vector3 size = getTargetSizeByRender(model_obj);
-            //Vector3 size = model_obj.GetComponent<MeshFilter>().mesh.bounds.size;
-            float ratio = 2f / Mathf.Max(size.x, size.y, size.z);
+            float size =  MainController.Instance().getTargetSizeByRender(model_obj);
+            float ratio = 2f / size;
 
             model_obj.transform.localScale = new Vector3(scale.x * ratio, scale.y * ratio, scale.z * ratio);
 
@@ -297,35 +296,6 @@ public class ShopItemInformationController : MonoBehaviour {
             Debug.Log(www.error);
         }
         bundle.Unload(false);
-    }
-
-    public Vector3 getTargetSizeByRender(GameObject target)
-    {
-        Vector3 vec = Vector3.one;
-        Quaternion localQuaternion = target.transform.rotation;
-        target.transform.rotation = Quaternion.identity;
-        var renders = target.transform.GetComponentsInChildren<Renderer>();
-        if (renders.Length > 0)
-        {
-            Bounds bounds = renders[0].bounds;
-            for (int i = 1; i < renders.Length; i++)
-            {
-                bounds.Encapsulate(renders[i].bounds);
-            }
-
-            if (target.transform.GetComponent<Renderer>())
-            {
-                bounds.Encapsulate(target.transform.GetComponent<Renderer>().bounds);
-            }
-
-            vec = bounds.size;
-        }
-        else
-        {
-            vec = target.transform.GetComponent<Renderer>().bounds.size;
-        }
-        target.transform.rotation = localQuaternion;
-        return vec;
     }
 
     public void Close()

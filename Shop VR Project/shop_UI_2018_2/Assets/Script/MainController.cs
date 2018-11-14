@@ -9,7 +9,6 @@ public class MainController : MonoBehaviour {
     public GameObject shopMain;
     public GameObject inventoryMain;
     public GameObject systemSetting;
-    private GameObject system_settingobj;
     public RadioMenuController radioMenu;
     public DescriptionUIManager descripUI;
     public Movement movement;
@@ -227,8 +226,7 @@ public class MainController : MonoBehaviour {
             else if (isOpenUI == 3)
             {
                 //close setting
-                CloseUI();
-                Destroy(system_settingobj);
+                SettingController.Instance().Close();
             }
 
             isOpenUI = index;
@@ -245,7 +243,7 @@ public class MainController : MonoBehaviour {
                     break;
                 case 3:
                     //open setting
-                    system_settingobj = Instantiate(systemSetting, new Vector3(cameraEye.position.x, 0, cameraEye.position.z), Quaternion.Euler(new Vector3(0, cameraEye.eulerAngles.y, 0)));
+                    Instantiate(systemSetting, new Vector3(cameraEye.position.x, 0, cameraEye.position.z), Quaternion.Euler(new Vector3(0, cameraEye.eulerAngles.y, 0)));
                     break;
             }
         }
@@ -263,8 +261,7 @@ public class MainController : MonoBehaviour {
             else if (isOpenUI == 3)
             {
                 //close setting
-                Destroy(system_settingobj);
-                CloseUI();
+                SettingController.Instance().Close();
             }
 
             isOpenUI = 0;
