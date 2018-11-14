@@ -20,6 +20,7 @@ public class MainController : MonoBehaviour {
     public Camera KeyboardPointerCamera;
     public static Camera currentPointerCamera;
     public LayerMask gizmoLayer;
+    public Camera DisplayCamera;
 
     public GameObject obj;
     private static int userID;
@@ -168,6 +169,17 @@ public class MainController : MonoBehaviour {
     void Start () {
         //Update user information
         UpdateUserData();
+        StartCoroutine(Display());
+    }
+
+    public IEnumerator Display()
+    {
+        yield return new WaitForSeconds(1f);
+        Debug.Log("Disable");
+        DisplayCamera.enabled = false;
+        yield return new WaitForSeconds(1f);
+        Debug.Log("Enable");
+        DisplayCamera.enabled = true;
     }
 	
 	// Update is called once per frame
