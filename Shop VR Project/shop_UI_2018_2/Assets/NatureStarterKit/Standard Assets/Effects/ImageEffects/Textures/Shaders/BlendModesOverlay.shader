@@ -87,11 +87,13 @@ if (Target <= ½) R = (2xTarget) x Blend
 	
 Subshader {
 	  ZTest Always Cull Off ZWrite Off
+	  Fog { Mode off }  
       ColorMask RGB	  
   		  	
  Pass {    
 
       CGPROGRAM
+      #pragma fragmentoption ARB_precision_hint_fastest
       #pragma vertex vert
       #pragma fragment fragAddSub
       ENDCG
@@ -100,6 +102,7 @@ Subshader {
  Pass {    
 
       CGPROGRAM
+      #pragma fragmentoption ARB_precision_hint_fastest
       #pragma vertex vert
       #pragma fragment fragScreen
       ENDCG
@@ -108,6 +111,7 @@ Subshader {
  Pass {    
 
       CGPROGRAM
+      #pragma fragmentoption ARB_precision_hint_fastest
       #pragma vertex vert
       #pragma fragment fragMultiply
       ENDCG
@@ -116,6 +120,7 @@ Subshader {
  Pass {    
 
       CGPROGRAM
+      #pragma fragmentoption ARB_precision_hint_fastest
       #pragma vertex vert
       #pragma fragment fragOverlay
       ENDCG
@@ -124,6 +129,7 @@ Subshader {
  Pass {    
 
       CGPROGRAM
+      #pragma fragmentoption ARB_precision_hint_fastest
       #pragma vertex vert
       #pragma fragment fragAlphaBlend
       ENDCG

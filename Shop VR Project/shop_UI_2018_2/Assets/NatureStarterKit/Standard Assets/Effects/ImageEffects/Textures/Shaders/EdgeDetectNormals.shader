@@ -279,6 +279,7 @@ Shader "Hidden/EdgeDetect" {
 Subshader {
  Pass {
 	  ZTest Always Cull Off ZWrite Off
+	  Fog { Mode off }      
 
       CGPROGRAM
       #pragma vertex vertThin
@@ -287,6 +288,7 @@ Subshader {
   }
  Pass {
 	  ZTest Always Cull Off ZWrite Off
+	  Fog { Mode off }      
 
       CGPROGRAM
       #pragma vertex vertRobert
@@ -295,6 +297,7 @@ Subshader {
   }
  Pass {
 	  ZTest Always Cull Off ZWrite Off
+	  Fog { Mode off }   
 
       CGPROGRAM
 	  #pragma target 3.0   
@@ -304,6 +307,7 @@ Subshader {
   }
  Pass {
 	  ZTest Always Cull Off ZWrite Off
+	  Fog { Mode off }   
 
       CGPROGRAM
 	  #pragma target 3.0   
@@ -313,6 +317,7 @@ Subshader {
   }
  Pass {
 	  ZTest Always Cull Off ZWrite Off
+	  Fog { Mode off }   
 
       CGPROGRAM
 	  #pragma target 3.0   
