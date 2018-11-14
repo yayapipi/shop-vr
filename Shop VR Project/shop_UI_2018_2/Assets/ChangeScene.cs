@@ -8,6 +8,6 @@ public class ChangeScene : MonoBehaviour
 {
     public void changeScene(string i)
     {
-        SteamVR_LoadLevel.Begin("Scene_room");
+        SteamVR_LoadLevel.Begin(i);
     }
 }
