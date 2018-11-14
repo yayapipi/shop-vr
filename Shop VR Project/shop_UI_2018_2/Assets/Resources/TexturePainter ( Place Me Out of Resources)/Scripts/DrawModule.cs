@@ -85,4 +85,9 @@ public class DrawModule : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
+    void OnDestroy()
+    {
+        _instance = null;
+    }
 }

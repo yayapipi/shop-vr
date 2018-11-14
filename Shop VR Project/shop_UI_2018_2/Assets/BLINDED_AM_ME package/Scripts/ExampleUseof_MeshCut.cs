@@ -107,7 +107,7 @@ public class ExampleUseof_MeshCut : MonoBehaviour {
                     if (pieces[0].GetComponent<CapsuleCollider>())
                         Destroy(pieces[0].GetComponent<CapsuleCollider>());
 
-                    CacheItem("C:/Users/user/MeshRender/byte1", pieces[0].GetComponent<MeshFilter>().mesh);
+                    //CacheItem("C:/Users/lab/Desktop/VR SHOP/MeshRender/byte1", pieces[0].GetComponent<MeshFilter>().mesh);
 
 
                     if (!pieces[1].GetComponent<Rigidbody>())
@@ -124,6 +124,10 @@ public class ExampleUseof_MeshCut : MonoBehaviour {
         //string path = Path.Combine(Application.persistentDataPath, url);
         byte[] bytes = MeshSerializer.WriteMesh(mesh, true);
         Debug.Log(bytes[0]);
+        //string path = Application.dataPath.Substring(0, Application.dataPath.Length - 5);
+        Debug.Log(Application.dataPath);
+        //System.IO.Path.Combine(Path , fileName)
+            
         File.WriteAllBytes(url, bytes);
     }
 

@@ -159,6 +159,11 @@ public class MainController : MonoBehaviour {
         }
     }
 
+    void OnDestroy()
+    {
+        _instance = null;
+    }
+
     // Use this for initialization
     void Start () {
         //Update user information
@@ -225,7 +230,6 @@ public class MainController : MonoBehaviour {
             }
             else if (isOpenUI == 3)
             {
-                //close setting
                 SettingController.Instance().Close();
             }
 
@@ -242,7 +246,6 @@ public class MainController : MonoBehaviour {
                     Instantiate(inventoryMain, new Vector3(cameraEye.position.x, 0, cameraEye.position.z), Quaternion.Euler(new Vector3(0, cameraEye.eulerAngles.y, 0)));
                     break;
                 case 3:
-                    //open setting
                     Instantiate(systemSetting, new Vector3(cameraEye.position.x, 0, cameraEye.position.z), Quaternion.Euler(new Vector3(0, cameraEye.eulerAngles.y, 0)));
                     break;
             }

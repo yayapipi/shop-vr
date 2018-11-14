@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.XR;
+using VRTK;
 
 public class KeyboardClicker : MonoBehaviour {
     private MainController mainController;
@@ -52,6 +53,7 @@ public class KeyboardClicker : MonoBehaviour {
         mainController = MainController.Instance();
         m_EventSystem = EventSystem.current;
         EnablePhysicsRaycaster();
+        EnablePointerInteract();
 
         pointer = new PointerEventData(EventSystem.current);
         pointer.button = PointerEventData.InputButton.Left;
@@ -97,6 +99,7 @@ public class KeyboardClicker : MonoBehaviour {
     private void ChangeState(Camera eventCamera)
     {
         EnablePhysicsRaycaster();
+        EnablePointerInteract();
         rayCastObj = null;
         lastPointerDownObj = null;
     }
@@ -114,6 +117,17 @@ public class KeyboardClicker : MonoBehaviour {
         if (mainController.KeyboardPointerCamera)
         {
             mainController.KeyboardPointerCamera.GetComponent<PhysicsRaycaster>().enabled = (mainController.UIPointerState == 3);
+        }
+    }
+
+    private void EnablePointerInteract()
+    {
+        if (mainController.ControllerPointerCamera)
+        {
+            mainController.rightController.GetComponent<VRTK_Pointer>().enabled = (mainController.UIPointerState == 1);
+            mainController.rightController.GetComponent<VRTK_InteractTouch>().enabled = (mainController.UIPointerState == 0);
+            mainController.rightController.GetComponent<VRTK_InteractUse>().enabled = (mainController.UIPointerState == 0);
+            mainController.rightController.GetComponent<VRTK_InteractGrab>().enabled = (mainController.UIPointerState == 0);
         }
     }
 

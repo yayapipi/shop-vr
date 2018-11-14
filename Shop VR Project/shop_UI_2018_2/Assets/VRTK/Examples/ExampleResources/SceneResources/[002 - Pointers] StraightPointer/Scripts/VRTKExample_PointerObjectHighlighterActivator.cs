@@ -110,6 +110,8 @@
             KeyboardClicker.PointerSet += PointerSet;
             KeyboardClicker.PointerEnter += PointerEnter;
             KeyboardClicker.PointerExit += PointerExit;
+
+            MainController.UIPointerEvent += ResetSelectAndGrab;
         }
 
         protected virtual void OnDisable()
@@ -128,6 +130,8 @@
             KeyboardClicker.PointerSet -= PointerSet;
             KeyboardClicker.PointerEnter -= PointerEnter;
             KeyboardClicker.PointerExit -= PointerExit;
+
+            MainController.UIPointerEvent -= ResetSelectAndGrab;
         }
 
         protected virtual void DestinationMarkerEnter(object sender, DestinationMarkerEventArgs e)
@@ -292,6 +296,47 @@
             }
         }
 
+        private void ResetSelectAndGrab(Camera eventCamera)
+        {
+            int type = RadioMenuController.getPanelType();
+            int old_type = 100;
+
+            while (type != 0)
+            {
+                //1, 11, 13, 20 need to control
+
+                //Select state (1)
+                if (type == 1 && mainController.GetIsPointerSelect() && !mainController.GetIsPointerGrab() && mainController.obj_point != null)
+                {
+                    DeSelect();
+                    Debug.Log("DESELECT");
+                }
+                //Grab state (11)
+                else if (mainController.GetIsPointerGrab() && mainController.obj_point != null)
+                {
+                    DeGrab();
+                    Debug.Log("DEGRAB");
+                }
+                //Cancel model Alignment (13)
+                else if (type == 13)
+                {
+                    CancelmodelAlignment();
+                }
+                else
+                {
+                    mainController.radioMenu.grip_back();
+                    Debug.Log("GRIP");
+                }
+
+                old_type = type;
+                type = RadioMenuController.getPanelType();
+                if (type == old_type)
+                {
+                    Debug.Log("ERROR");
+                }
+            }
+        }
+
         private void Select(GameObject obj)
         {
             ToggleHighlight(obj.transform, selectColor);
@@ -398,21 +443,26 @@
                 //Cancel model Alignment
                 if (RadioMenuController.getPanelType() == 13)
                 {
-                    if (mainController.obj_select == 2 && mainController.obj_select1 != null)
-                    {
-                        ToggleHighlight(mainController.obj_select1.transform, Color.clear);
-                    }
-
-                    if (mainController.obj_select == 3 && mainController.obj_select1 != null && mainController.obj_select2 != null)
-                    {
-                        ToggleHighlight(mainController.obj_select1.transform, Color.clear);
-                        ToggleHighlight(mainController.obj_select2.transform, Color.clear);
-                    }
-
-                    mainController.obj_select = 0;
-                    mainController.radioMenu.ModelAlignmentCancelFromVRTKHighlighter();
+                    CancelmodelAlignment();
                 }
             }
+        }
+
+        private void CancelmodelAlignment()
+        {
+            if (mainController.obj_select == 2 && mainController.obj_select1 != null)
+            {
+                ToggleHighlight(mainController.obj_select1.transform, Color.clear);
+            }
+
+            if (mainController.obj_select == 3 && mainController.obj_select1 != null && mainController.obj_select2 != null)
+            {
+                ToggleHighlight(mainController.obj_select1.transform, Color.clear);
+                ToggleHighlight(mainController.obj_select2.transform, Color.clear);
+            }
+
+            mainController.obj_select = 0;
+            mainController.radioMenu.ModelAlignmentCancelFromVRTKHighlighter();
         }
 
         protected virtual void ToggleHighlight(Transform target, Color color)

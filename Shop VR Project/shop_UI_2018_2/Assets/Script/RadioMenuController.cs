@@ -324,18 +324,10 @@ public class RadioMenuController : MonoBehaviour {
 
     public void DeGrabObj()
     {
+        openpanel(panel_back);
         if (panel_back == 10)
         {
-            grip_back();
             SetPanelBack(1);
-        }
-        else if (panel_back > 10)
-        {
-            throw new Exception("Error code: 1");
-        }
-        else
-        {
-            grip_back();
         }
     }
 
@@ -346,7 +338,14 @@ public class RadioMenuController : MonoBehaviour {
 
     public void SetPanelBack(int jud)
     {
-        panel_back = jud;
+        if (jud > 10)
+        {
+            throw new Exception("Error code: 1");
+        }
+        else
+        {
+            panel_back = jud;
+        }
     }
 
     public void put_back()
@@ -375,13 +374,12 @@ public class RadioMenuController : MonoBehaviour {
 
     public void OpenDraw()
     {
-        //Open Panel Color Selector
         openpanel(12);
     }
 
     public void grip_back()
     {
-        if (panel_type != 1 && panel_type != 13 && panel_back != 20)
+        if (panel_type != 1 && panel_type != 11 && panel_type != 13 && panel_back != 20)
         {
             openpanel(panel_back);
         }
