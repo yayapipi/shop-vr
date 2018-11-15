@@ -75,11 +75,13 @@ namespace CurvedUI
 
         void Awake()
         {
+            /* NOT USED
             // If this canvas is on Default layer, switch it to UI layer..
             // this is to make sure that when using raycasting to detect interactions, 
             // nothing will interfere with it.
             if (RaycastMyLayerOnly && gameObject.layer == 0)
                 this.gameObject.layer = 5;
+                */
 
             //save initial variables
             savedRectSize = RectTransform.rect.size;
@@ -87,6 +89,7 @@ namespace CurvedUI
 
         void Start()
         {
+            /* NOT USED
             if (Application.isPlaying)
             {   
                 
@@ -106,7 +109,7 @@ namespace CurvedUI
                     this.gameObject.AddComponent<CurvedUIRaycaster>();
                 }
             }
-
+            */
             //find needed references
             if (myCanvas == null)
                 myCanvas = GetComponent<Canvas>();
