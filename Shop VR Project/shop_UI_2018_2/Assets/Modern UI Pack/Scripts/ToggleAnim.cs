@@ -1,25 +1,23 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class ToggleAnim : MonoBehaviour {
-
-
+public class ToggleManager : MonoBehaviour
+{
 	[Header("TOGGLE")]
 	public Toggle toggleObject;
 
 	[Header("ANIMATORS")]
 	public Animator toggleAnimator;
 
-	[Header("ANIM NAMES")]
-	public string toggleOn;
-	public string toggleOff;
+    // [Header("ANIM NAMES")]
+    private string toggleOn = "Toggle On";
+    private string toggleOff = "Toggle Off";
 
 	void Start ()
 	{
 		this.toggleObject.GetComponent<Toggle>();
 		toggleObject.onValueChanged.AddListener(TaskOnClick);
 
-        // Backup plan :p
         if (toggleObject.isOn)
         {
             toggleAnimator.Play(toggleOn);

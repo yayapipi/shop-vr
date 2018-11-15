@@ -83,26 +83,26 @@ public class RadialSlider: MonoBehaviour, IPointerEnterHandler, IPointerDownHand
 
 					if (isPercent == true)
 					{
-						valueText.text = ((int)(currentValue) + "%").ToString ();
+						valueText.text = ((int)(angle * maxValue) + "%").ToString ();
 					} 
 
 					else 
 					{
-						valueText.text = ((int)(currentValue)).ToString ();
+						valueText.text = ((int)(angle * maxValue)).ToString ();
 					}
 
 					if (saveValue == true)
 					{
 						PlayerPrefs.SetFloat (sliderID + "RadialValue", currentValue);
 					}
-                }
+				}
 				yield return 0;
 			}        
 		} 
 
 		else 
 		{
-			Debug.LogWarning("Could not find GraphicRaycaster or StandaloneInputModule");    
+			UnityEngine.Debug.LogWarning("Could not find GraphicRaycaster or StandaloneInputModule");    
 		}	    
 	}
 }
