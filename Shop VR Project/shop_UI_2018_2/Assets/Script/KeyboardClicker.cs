@@ -123,13 +123,13 @@ public class KeyboardClicker : MonoBehaviour {
 
     private void EnablePointerInteract()
     {
-        mainController.rightController.GetComponent<VRTK_Pointer>().enabled = false;
-        mainController.rightController.GetComponent<VRTK_InteractTouch>().enabled = false;
-        mainController.rightController.GetComponent<VRTK_InteractUse>().enabled = false;
-        mainController.rightController.GetComponent<VRTK_InteractGrab>().enabled = false;
-
         if (mainController.ControllerPointerCamera)
         {
+            mainController.rightController.GetComponent<VRTK_Pointer>().enabled = false;
+            mainController.rightController.GetComponent<VRTK_InteractTouch>().enabled = false;
+            mainController.rightController.GetComponent<VRTK_InteractUse>().enabled = false;
+            mainController.rightController.GetComponent<VRTK_InteractGrab>().enabled = false;
+
             mainController.rightController.GetComponent<VRTK_Pointer>().enabled = (mainController.UIPointerState == 1);
             mainController.rightController.GetComponent<VRTK_InteractTouch>().enabled = (mainController.UIPointerState == 0);
             mainController.rightController.GetComponent<VRTK_InteractUse>().enabled = (mainController.UIPointerState == 0);

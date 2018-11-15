@@ -169,7 +169,10 @@ public class MainController : MonoBehaviour {
     void Start () {
         //Update user information
         UpdateUserData();
-        StartCoroutine(Display());
+        if (DisplayCamera)
+        {
+            StartCoroutine(Display());
+        }
     }
 
     public IEnumerator Display()
