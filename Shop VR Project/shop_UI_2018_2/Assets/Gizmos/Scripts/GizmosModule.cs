@@ -66,4 +66,9 @@ public class GizmosModule : MonoBehaviour {
     {
         return (translateGizmos.gameObject.activeSelf || rotationGizmos.gameObject.activeSelf);
     }
+
+    void OnDestroy()
+    {
+        _instance = null;
+    }
 }

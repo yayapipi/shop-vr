@@ -300,15 +300,27 @@ public class MainController : MonoBehaviour {
     public void SetIsPointerSelect(bool value)
     {
         isPointerSelect = value;
-        if (isPointerSelect)
+        if (UIPointerState == 1)
         {
-            if (radioMenu)
-                radioMenu.SelectObj();
+            if (isPointerSelect)
+            {
+                    radioMenu.SelectObj();
+            }
+            else
+            {
+                    radioMenu.DeSelectObj();
+            }
         }
-        else
+        else if (UIPointerState == 2)
         {
-            if (radioMenu)
-                radioMenu.DeSelectObj();
+            if (isPointerSelect)
+            {
+                GazeUIMenuController.Instance().SelectObj();
+            }
+            else
+            {
+                GazeUIMenuController.Instance().DeSelectObj();
+            }
         }
     }
 
@@ -320,15 +332,29 @@ public class MainController : MonoBehaviour {
     public void SetIsPointerGrab(bool value)
     {
         isPointerGrab = value;
-        if (isPointerGrab)
+        if (UIPointerState == 1)
         {
-            if (radioMenu)
-                radioMenu.GrabObj();
+            if (isPointerGrab)
+            {
+                if (radioMenu)
+                    radioMenu.GrabObj();
+            }
+            else
+            {
+                if (radioMenu)
+                    radioMenu.DeGrabObj();
+            }
         }
-        else
+        if (UIPointerState == 1)
         {
-            if (radioMenu)
-                radioMenu.DeGrabObj();
+            if (isPointerGrab)
+            {
+                GazeUIMenuController.Instance().GrabObj();
+            }
+            else
+            {
+                GazeUIMenuController.Instance().DeGrabObj();
+            }
         }
     }
 
