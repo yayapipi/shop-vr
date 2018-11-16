@@ -336,7 +336,10 @@ public class KeyboardClicker : MonoBehaviour {
     /* Support hover button, but need to pass pointerEventData argument.*/
     private void RayDetectUI()
     {
-        raycastResults.Clear();
+        if (raycastResults != null)
+            raycastResults.Clear();
+        else
+            Debug.Log("raycastResults = null");
         m_EventSystem.RaycastAll(pointer, raycastResults);
         hit = false;
         rayCastObj = null;
@@ -400,7 +403,10 @@ public class KeyboardClicker : MonoBehaviour {
     //implement pointer drag
     private void RayDetectUIandObj()
     {
-        raycastResults.Clear();
+        if (raycastResults != null)
+            raycastResults.Clear();
+        else
+            Debug.Log("raycastResults = null");
         m_EventSystem.RaycastAll(pointer, raycastResults);
         hit = false;
         rayCastObj = null;

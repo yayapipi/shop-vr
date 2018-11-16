@@ -77,6 +77,7 @@ public class MainController : MonoBehaviour {
     public delegate void CanvasUIPointerEventManager(Camera eventCamera);
     public static event CanvasUIPointerEventManager UIPointerEvent;
     public int UIPointerState = 1;
+    public int LastUIPointerState = 0;
 
     void Awake()
     {
@@ -315,11 +316,11 @@ public class MainController : MonoBehaviour {
         {
             if (isPointerSelect)
             {
-                GazeUIMenuController.Instance().SelectObj();
+                EyetrackerUIController.Instance().SelectObj();
             }
             else
             {
-                GazeUIMenuController.Instance().DeSelectObj();
+                EyetrackerUIController.Instance().DeSelectObj();
             }
         }
     }
@@ -349,11 +350,11 @@ public class MainController : MonoBehaviour {
         {
             if (isPointerGrab)
             {
-                GazeUIMenuController.Instance().GrabObj();
+                EyetrackerUIController.Instance().GrabObj();
             }
             else
             {
-                GazeUIMenuController.Instance().DeGrabObj();
+                EyetrackerUIController.Instance().DeGrabObj();
             }
         }
     }
@@ -485,6 +486,7 @@ public class MainController : MonoBehaviour {
     ===========*/
     private void ChangeUIPointerState()
     {
+        LastUIPointerState = UIPointerState;
         UIPointerState = (UIPointerState + 1) % 3;
 
         switch (UIPointerState)

@@ -302,41 +302,56 @@
 
         private void ResetSelectAndGrab(Camera eventCamera)
         {
-            int type = RadioMenuController.getPanelType();
-            int old_type = 100;
-
-            while (type != 0)
+            if (mainController.LastUIPointerState == 1 && mainController.UIPointerState != 1)
             {
-                //1, 11, 13, 20 need to control
-
-                //Select state (1)
-                if (type == 1 && mainController.GetIsPointerSelect() && !mainController.GetIsPointerGrab() && mainController.obj_point != null)
+                int type = RadioMenuController.getPanelType();
+                int old_type = 100;
+                while (type != 0)
                 {
-                    DeSelect();
-                    Debug.Log("DESELECT");
+                    //1, 11, 13, 20 need to control
+
+                    //Select state (1)
+                    if (type == 1 && mainController.GetIsPointerSelect() && !mainController.GetIsPointerGrab() && mainController.obj_point != null)
+                    {
+                        DeSelect();
+                        Debug.Log("DESELECT");
+                    }
+                    //Grab state (11)
+                    else if (mainController.GetIsPointerGrab() && mainController.obj_point != null)
+                    {
+                        DeGrab();
+                        Debug.Log("DEGRAB");
+                    }
+                    //Cancel model Alignment (13)
+                    else if (type == 13)
+                    {
+                        CancelmodelAlignment();
+                    }
+                    else
+                    {
+                        mainController.radioMenu.grip_back();
+                        Debug.Log("GRIP");
+                    }
+
+                    old_type = type;
+                    type = RadioMenuController.getPanelType();
+                    if (type == old_type)
+                    {
+                        Debug.Log("ERROR");
+                    }
                 }
-                //Grab state (11)
-                else if (mainController.GetIsPointerGrab() && mainController.obj_point != null)
+            }
+            if(mainController.LastUIPointerState == 2 && mainController.UIPointerState != 2)
+            {
+                if (mainController.GetIsPointerGrab() && mainController.obj_point != null)
                 {
                     DeGrab();
                     Debug.Log("DEGRAB");
                 }
-                //Cancel model Alignment (13)
-                else if (type == 13)
+                if (mainController.GetIsPointerSelect() && !mainController.GetIsPointerGrab() && mainController.obj_point != null)
                 {
-                    CancelmodelAlignment();
-                }
-                else
-                {
-                    mainController.radioMenu.grip_back();
-                    Debug.Log("GRIP");
-                }
-
-                old_type = type;
-                type = RadioMenuController.getPanelType();
-                if (type == old_type)
-                {
-                    Debug.Log("ERROR");
+                    DeSelect();
+                    Debug.Log("DESELECT");
                 }
             }
         }

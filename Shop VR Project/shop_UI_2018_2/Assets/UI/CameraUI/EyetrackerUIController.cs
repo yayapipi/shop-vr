@@ -8,6 +8,13 @@ public class EyetrackerUIController : MonoBehaviour
 {
     public GameObject panel_1;
     public GameObject panel_2;
+    public GameObject back;
+    public GameObject panelSwitch;
+    public GameObject left;
+    public GameObject right;
+    public GameObject top;
+    public GameObject bot;
+    public GameObject altButtons;
     private Image[] buttons;
     private MainController mainController;
     private static int panel_type = 0;
@@ -35,6 +42,48 @@ public class EyetrackerUIController : MonoBehaviour
         _instance = null;
     }
 
+    void OnEnable()
+    {
+        MainController.UIPointerEvent += ChangeState;
+    }
+
+    void OnDisable()
+    {
+        MainController.UIPointerEvent -= ChangeState;
+    }
+
+    private void ChangeState(Camera eventCamera)
+    {
+        if(mainController.UIPointerState != 2)
+        {
+            Disable();
+        }
+        else
+        {
+            Enable();
+        }
+    }
+
+    private void Disable()
+    {
+        openpanel(0);
+        back.SetActive(false);
+        panelSwitch.SetActive(false);
+        left.SetActive(false);
+        right.SetActive(false);
+        altButtons.SetActive(false);
+    }
+
+    private void Enable()
+    {
+        openpanel(0);
+        back.SetActive(true);
+        panelSwitch.SetActive(true);
+        left.SetActive(true);
+        right.SetActive(true);
+        altButtons.SetActive(true);
+    }
+
     void Start()
     {
         mainController = MainController.Instance("EyetrackerUIController");
@@ -45,12 +94,12 @@ public class EyetrackerUIController : MonoBehaviour
         buttons = new Image[9];
         for (int i = 0; i < 3; i++)
         {
-            buttons[i] = panel_1.transform.GetChild(i).GetComponent<Image>();
+            buttons[i] = panel_1.transform.GetChild(i).GetChild(0).GetComponent<Image>();
         }
 
         for (int i = 3; i < 9; i++)
         {
-            buttons[i] = panel_1.transform.GetChild(i - 3).GetComponent<Image>();
+            buttons[i] = panel_2.transform.GetChild(i - 3).GetChild(0).GetComponent<Image>();
         }
     }
 
@@ -64,6 +113,7 @@ public class EyetrackerUIController : MonoBehaviour
             switch (panel_type)
             {
                 case 0:
+                    back.SetActive(false);
                     break;
                 case 1:
                     break;
@@ -75,6 +125,7 @@ public class EyetrackerUIController : MonoBehaviour
             switch (jud)
             {
                 case 0:
+                    back.SetActive(true);
                     break;
                 case 1:
                     break;
@@ -116,6 +167,22 @@ public class EyetrackerUIController : MonoBehaviour
         return panel_type;
     }
 
+    public void Highlight(int button_index)
+    {
+        if (button_index < 10)
+        {
+            buttons[button_index].color = new Color(0.5f, 0.5f, 0.5f, buttons[button_index].color.a);
+        }
+    }
+
+    public void DeHighlight(int button_index)
+    {
+        if (button_index < 10)
+        {
+            buttons[button_index].color = new Color(1f, 1f, 1f, buttons[button_index].color.a);
+        }
+    }
+
     public void SelectObj()
     {
     }
@@ -132,7 +199,7 @@ public class EyetrackerUIController : MonoBehaviour
     {
     }
 
-    public void ViewRotateLeft(bool x)
+    public void ViewRotateLeft()
     {
         if (mainController.UIPointerState == 2)
         {
@@ -140,7 +207,7 @@ public class EyetrackerUIController : MonoBehaviour
         }
     }
 
-    public void ViewRotateRight(bool x)
+    public void ViewRotateRight()
     {
         if (mainController.UIPointerState == 2)
         {
@@ -150,41 +217,45 @@ public class EyetrackerUIController : MonoBehaviour
 
     public void Openshop()
     {
-        if (mainController.UIPointerState == 2)
+        if (mainController.UIPointerState == 2 && panel_type != 0)
         {
+            openpanel(0);
             mainController.OpenShop();
         }
     }
 
     public void OpenInventory()
     {
-        if (mainController.UIPointerState == 2)
+        if (mainController.UIPointerState == 2 && panel_type != 0)
         {
+            openpanel(0);
             mainController.OpenInventory();
         }
     }
 
     public void OpenSetting()
     {
-        if (mainController.UIPointerState == 2)
+        if (mainController.UIPointerState == 2 && panel_type != 0)
         {
+            openpanel(0);
             mainController.OpenSetting();
         }
     }
 
     public void openModelSetting()
     {
-        if (mainController.UIPointerState == 2)
+        if (mainController.UIPointerState == 2 && panel_type == 2)
         {
+            openpanel(0);
             mainController.modelMenu.SwitchModelMenu();
         }
     }
 
     public void put_back()
     {
-        if (mainController.UIPointerState == 2)
+        if (mainController.UIPointerState == 2 && panel_type == 2)
         {
-            openpanel(1);
+            openpanel(0);
             ShopController.PutBack(mainController.obj_point.GetComponent<id>().item_id);
             Destroy(mainController.obj_point);
             mainController.SetIsPointerSelect(false);
@@ -205,6 +276,14 @@ public class EyetrackerUIController : MonoBehaviour
         else
         {
             openpanel(2);
+        }
+    }
+
+    public void Back()
+    {
+        if(panel_type == 0)
+        {
+
         }
     }
 }
