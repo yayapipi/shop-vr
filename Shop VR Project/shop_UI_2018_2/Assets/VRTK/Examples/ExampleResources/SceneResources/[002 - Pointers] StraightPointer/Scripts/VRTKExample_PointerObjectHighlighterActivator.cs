@@ -35,7 +35,7 @@
 
         private void Start()
         {
-            mainController = MainController.Instance();
+            mainController = MainController.Instance("VRTKExample_PointerObjectHighlighterActivator");
             ChangeObjParent();
             trackGrab = false;
         }
@@ -107,10 +107,7 @@
                 VRTK_Logger.Error(VRTK_Logger.GetCommonMessage(VRTK_Logger.CommonMessageKeys.REQUIRED_COMPONENT_MISSING_FROM_GAMEOBJECT, "VRTKExample_PointerObjectHighlighterActivator", "VRTK_DestinationMarker", "the Controller Alias"));
             }
 
-            if (mainController.EyetrackerPointerCamera)
-            {
-                GameGaze.EyeBack += EyeBack;
-            }
+            GameGaze.EyeBack += EyeBack;
 
             KeyboardClicker.PointerSet += PointerSet;
             KeyboardClicker.PointerEnter += PointerEnter;
@@ -132,10 +129,7 @@
                 MainController.RGripClickDown -= RGripClickDown;
             }
 
-            if (mainController.EyetrackerPointerCamera)
-            {
-                GameGaze.EyeBack -= EyeBack;
-            }
+            GameGaze.EyeBack -= EyeBack;
 
             KeyboardClicker.PointerSet -= PointerSet;
             KeyboardClicker.PointerEnter -= PointerEnter;

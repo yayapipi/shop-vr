@@ -23,7 +23,7 @@ public class ScaleBox : MonoBehaviour {
         transform.gameObject.SetActive(true);
         transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
         scale_box = true;
-        Vector3 position = new Vector3(MainController.Instance().obj_point.transform.position.x, MainController.Instance().obj_point.transform.position.y , MainController.Instance().obj_point.transform.position.z);
+        Vector3 position = new Vector3(MainController.Instance("ScaleBox").obj_point.transform.position.x, MainController.Instance("ScaleBox").obj_point.transform.position.y , MainController.Instance("ScaleBox").obj_point.transform.position.z);
         transform.position = position;
     }
 }

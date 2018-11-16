@@ -195,11 +195,11 @@ public class MainController : MonoBehaviour {
         sqlConnection.closeSql();
     }
 
-    public static MainController Instance()
+    public static MainController Instance(String g)
     {
         if (_instance == null)
         {
-            throw new Exception("could not find the MainController object.");
+            throw new Exception( g + " could not find the MainController object.");
         }
         return _instance;
     }

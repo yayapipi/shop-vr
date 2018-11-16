@@ -245,7 +245,7 @@ public class ShopItemInformationController : MonoBehaviour {
 
             Debug.Log("scale by mesh");
             Vector3 scale = model_obj.transform.localScale;
-            float size =  MainController.Instance().getTargetSizeByRender(model_obj);
+            float size =  MainController.Instance("ShopItemInformationController").getTargetSizeByRender(model_obj);
             float ratio = 0.5f / size;
 
             model_obj.transform.localScale = new Vector3(scale.x * ratio, scale.y * ratio, scale.z * ratio);

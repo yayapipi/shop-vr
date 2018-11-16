@@ -16,12 +16,12 @@ public class ScaleBoxChild : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject != MainController.Instance().obj_point)
+        if (other.gameObject != MainController.Instance("ScaleBoxChild").obj_point)
         {
             Debug.Log("Collider:" + other.name);
             scalebox.scale_box = false;
-            float size = MainController.Instance().getTargetSizeByRender(transform.parent.gameObject);
-            MainController.Instance().AutoScale(size);
+            float size = MainController.Instance("ScaleBoxChild").getTargetSizeByRender(transform.parent.gameObject);
+            MainController.Instance("ScaleBoxChild").AutoScale(size);
             transform.parent.gameObject.SetActive(false);
         }
     }

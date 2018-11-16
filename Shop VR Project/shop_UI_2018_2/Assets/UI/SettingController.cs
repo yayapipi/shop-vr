@@ -36,7 +36,7 @@ public class SettingController : MonoBehaviour {
 
     public void Close()
     {
-        MainController.Instance().CloseUI();
+        MainController.Instance("SettingController").CloseUI();
         Destroy(transform.parent.gameObject);
     }
 

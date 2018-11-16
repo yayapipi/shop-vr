@@ -14,7 +14,7 @@ public class LightDir : MonoBehaviour
 
     void Start()
     {
-        EyetrackerParent = MainController.Instance().EyetrackerPointerCamera.transform.parent;
+        EyetrackerParent = MainController.Instance("LightDir").EyetrackerPointerCamera.transform.parent;
         //counter = false;
         //WatchObj_last = null;
     }

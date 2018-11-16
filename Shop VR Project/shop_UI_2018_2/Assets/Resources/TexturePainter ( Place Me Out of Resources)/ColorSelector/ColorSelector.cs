@@ -32,7 +32,7 @@ public class ColorSelector : MonoBehaviour {
     }
 
 	void Start () {
-        mainController = MainController.Instance();
+        mainController = MainController.Instance("ColorSelector");
         refCamera = MainController.currentPointerCamera;
 
 		if (refCamera == null)

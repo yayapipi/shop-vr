@@ -38,7 +38,7 @@ public class GizmosModule : MonoBehaviour {
     {
         gameObject.SetActive(true);
         translateGizmos.gameObject.SetActive(true);
-        translateGizmos.translateTarget = MainController.Instance().obj_point;
+        translateGizmos.translateTarget = MainController.Instance("GizmosModule").obj_point;
     }
 
     public void EnableRotationGizmos()
@@ -46,20 +46,20 @@ public class GizmosModule : MonoBehaviour {
         gameObject.SetActive(true);
         rotationGizmos.gameObject.SetActive(true);
         Capsule.SetActive(true);
-        rotationGizmos.rotateTarget = MainController.Instance().obj_point;
+        rotationGizmos.rotateTarget = MainController.Instance("GizmosModule").obj_point;
     }
 
     public void DisableTranslateGizmos()
     {
         translateGizmos.gameObject.SetActive(false);
-        translateGizmos.translateTarget = MainController.Instance().obj_point;
+        translateGizmos.translateTarget = MainController.Instance("GizmosModule").obj_point;
     }
 
     public void DisbleRotationGizmos()
     {
         rotationGizmos.gameObject.SetActive(false);
         Capsule.SetActive(false);
-        rotationGizmos.rotateTarget = MainController.Instance().obj_point;
+        rotationGizmos.rotateTarget = MainController.Instance("GizmosModule").obj_point;
     }
 
     public bool isGizmosOpen()

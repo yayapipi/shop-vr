@@ -36,7 +36,7 @@ public class GazeUIMenuController : MonoBehaviour {
 
 	void Start ()
     {
-        mainController = MainController.Instance();
+        mainController = MainController.Instance("GazeUIMenuController");
         panel_type = 0;
         panel_1.SetActive(false);
         panel_2.SetActive(false);

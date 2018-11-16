@@ -138,9 +138,9 @@ namespace BLINDED_AM_ME{
 			right_HalfMesh.name = "Split Mesh Right";
 
             // assign the game objects
-            if (MainController.Instance().obj_point)
+            if (MainController.Instance("meshcut.cs").obj_point)
             {
-                victim.name = MainController.Instance().obj_point.name;
+                victim.name = MainController.Instance("meshcut.cs").obj_point.name;
             }
             else
             {

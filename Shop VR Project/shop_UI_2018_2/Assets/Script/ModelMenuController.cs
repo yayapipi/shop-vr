@@ -18,12 +18,12 @@ public class ModelMenuController : MonoBehaviour
 
     void Start()
     {
-        mainController = MainController.Instance();
+        mainController = MainController.Instance("ModelMenuController");
     }
 
     public void SwitchModelMenu()
     {
-        mainController = MainController.Instance();
+        mainController = MainController.Instance("ModelMenuController");
 
         if (gameObject.activeSelf)
         {

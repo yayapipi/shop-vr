@@ -76,25 +76,25 @@ public class ShopController : MonoBehaviour
 
     public void ScrollItemByHold(bool dir)
     {
-        if (MainController.Instance().UIPointerState == 1 || MainController.Instance().UIPointerState == 3)
+        if (MainController.Instance("ShopController").UIPointerState == 1 || MainController.Instance("ShopController").UIPointerState == 3)
             VerticalScroll(itemContent, dir);
     }
 
     public void ScrollItemByHover(bool dir)
     {
-        if (MainController.Instance().UIPointerState == 2)
+        if (MainController.Instance("ShopController").UIPointerState == 2)
             VerticalScroll(itemContent, dir);
     }
 
     public void ScrollTypeByHold(bool dir)
     {
-        if (MainController.Instance().UIPointerState == 1 || MainController.Instance().UIPointerState == 3)
+        if (MainController.Instance("ShopController").UIPointerState == 1 || MainController.Instance("ShopController").UIPointerState == 3)
             HorizontalScroll(typeContent, dir);
     }
 
     public void ScrollTypeByHover(bool dir)
     {
-        if (MainController.Instance().UIPointerState == 2)
+        if (MainController.Instance("ShopController").UIPointerState == 2)
             HorizontalScroll(typeContent, dir);
     }
 
@@ -346,7 +346,7 @@ public class ShopController : MonoBehaviour
 
     public void Close()
     {
-        MainController.Instance().CloseUI();
+        MainController.Instance("ShopController").CloseUI();
         Destroy(transform.parent.gameObject);
     }
 

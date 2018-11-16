@@ -12,7 +12,7 @@ public class ExampleUseof_MeshCut : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
-        mainController = MainController.Instance();
+        mainController = MainController.Instance("ExampleUseif_MeshCut");
         this.transform.parent = MainController.currentPointerCamera.transform;
         this.transform.localPosition = new Vector3(0, 0, 0);
         this.transform.localRotation = Quaternion.identity;

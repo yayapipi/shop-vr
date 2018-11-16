@@ -75,7 +75,7 @@ public class CustomGizmoClickDetection : MonoBehaviour {
 
     private void Start()
     {
-        mainController = MainController.Instance();
+        mainController = MainController.Instance("CustomGizmoClickDetection");
         ChangeGizmoCamera();
         gizmoLayer = mainController.gizmoLayer;
     }

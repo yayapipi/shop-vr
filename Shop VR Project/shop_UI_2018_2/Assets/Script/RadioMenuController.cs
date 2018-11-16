@@ -50,7 +50,7 @@ public class RadioMenuController : MonoBehaviour {
         ModelAlignmentPanel_13.SetActive(false);
         ModelCutPanel_14.SetActive(false);
         SelectOneObjectPanel_20.SetActive(false);
-        mainController = MainController.Instance();
+        mainController = MainController.Instance("RadioMenuController");
         drawModule = mainController.drawModule.GetComponent<DrawModule>();
     }
 	

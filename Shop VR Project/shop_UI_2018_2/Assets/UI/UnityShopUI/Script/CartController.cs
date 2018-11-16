@@ -48,13 +48,13 @@ public class CartController : MonoBehaviour
 
     public void ScrollItemByHold(bool dir)
     {
-        if (MainController.Instance().UIPointerState == 1 || MainController.Instance().UIPointerState == 3)
+        if (MainController.Instance("CartController").UIPointerState == 1 || MainController.Instance("CartController").UIPointerState == 3)
             VerticalScroll(itemContent, dir);
     }
 
     public void ScrollItemByHover(bool dir)
     {
-        if (MainController.Instance().UIPointerState == 2)
+        if (MainController.Instance("CartController").UIPointerState == 2)
             VerticalScroll(itemContent, dir);
     }
 

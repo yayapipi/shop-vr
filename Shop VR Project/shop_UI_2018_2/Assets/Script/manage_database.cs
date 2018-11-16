@@ -7,7 +7,7 @@ public class manage_database : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
-        mainController = MainController.Instance();
+        mainController = MainController.Instance("manage_database");
 	}
 	
 	// Update is called once per frame

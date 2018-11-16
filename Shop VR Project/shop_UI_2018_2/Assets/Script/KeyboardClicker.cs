@@ -50,7 +50,7 @@ public class KeyboardClicker : MonoBehaviour {
 
     void Start()
     {
-        mainController = MainController.Instance();
+        mainController = MainController.Instance("KeyboardClicker");
         m_EventSystem = EventSystem.current;
         EnablePhysicsRaycaster();
         Invoke("EnablePointerInteract", 2f);

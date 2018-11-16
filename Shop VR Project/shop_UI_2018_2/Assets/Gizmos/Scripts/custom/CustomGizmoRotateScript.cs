@@ -73,7 +73,7 @@ public class CustomGizmoRotateScript : MonoBehaviour {
         // Set the same position for the target and the gizmo
         transform.position = rotateTarget.transform.position;
         transform.rotation = rotateTarget.transform.rotation;
-        mainController = MainController.Instance();
+        mainController = MainController.Instance("CustomGizmoRotateScript");
         ChangeGizmoCamera();
         plane = new Plane((gizmoCamera.position - rotateTarget.transform.position).normalized, rotateTarget.transform.position);
     }

@@ -38,7 +38,7 @@ public class TexturePainter : MonoBehaviour {
 
     void Start()
     {
-        mainController = MainController.Instance();
+        mainController = MainController.Instance("TexturePainter");
         sceneCamera = MainController.currentPointerCamera;
     }
 

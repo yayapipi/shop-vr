@@ -45,7 +45,7 @@ public class DrawModule : MonoBehaviour
         Texture painterRT_new = Instantiate(texture_color, transform.position, transform.rotation);
         Material baseMaterial_new = Instantiate(baseMaterial, transform.position, transform.rotation);
 
-        Material objMaterial = MainController.Instance().obj_point.GetComponent<Renderer>().material;
+        Material objMaterial = MainController.Instance("DrawModule").obj_point.GetComponent<Renderer>().material;
         Texture objTexture = objMaterial.GetTexture("_MainTex");
         originalMaterial = Instantiate(objMaterial, transform.position, transform.rotation);
 
@@ -64,8 +64,8 @@ public class DrawModule : MonoBehaviour
 
     public void SetPosition()
     {
-        transform.position = new Vector3(MainController.Instance().cameraEye.position.x, 0, MainController.Instance().cameraEye.position.z);
-        transform.rotation = Quaternion.Euler(new Vector3(0, MainController.Instance().cameraEye.eulerAngles.y, 0));
+        transform.position = new Vector3(MainController.Instance("DrawModule").cameraEye.position.x, 0, MainController.Instance("DrawModule").cameraEye.position.z);
+        transform.rotation = Quaternion.Euler(new Vector3(0, MainController.Instance("DrawModule").cameraEye.eulerAngles.y, 0));
     }
 
     public void SaveAndDisable()
@@ -77,7 +77,7 @@ public class DrawModule : MonoBehaviour
     public void CancelAndDisable()
     {
         texturePainter.ClearBrushes();
-        MainController.Instance().obj_point.GetComponent<Renderer>().material = originalMaterial;
+        MainController.Instance("DrawModule").obj_point.GetComponent<Renderer>().material = originalMaterial;
         Invoke("DisableModule", 0.15f);
     }
 

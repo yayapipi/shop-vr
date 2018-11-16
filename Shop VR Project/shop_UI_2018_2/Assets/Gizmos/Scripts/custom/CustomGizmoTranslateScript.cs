@@ -70,7 +70,7 @@ public class CustomGizmoTranslateScript : MonoBehaviour {
         transform.position = translateTarget.transform.position;
         transform.rotation = translateTarget.transform.rotation;
 
-        mainController = MainController.Instance();
+        mainController = MainController.Instance("CustomGizmoTranslateScript");
         ChangeGizmoCamera();
         plane = new Plane((gizmoCamera.position - translateTarget.transform.position).normalized, translateTarget.transform.position);
     }

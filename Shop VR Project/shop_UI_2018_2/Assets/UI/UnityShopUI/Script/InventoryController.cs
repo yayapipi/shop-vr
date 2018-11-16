@@ -84,25 +84,25 @@ public class InventoryController : MonoBehaviour
 
     public void ScrollItemByHold(bool dir)
     {
-        if (MainController.Instance().UIPointerState == 1 || MainController.Instance().UIPointerState == 3)
+        if (MainController.Instance("InventoryController").UIPointerState == 1 || MainController.Instance("InventoryController").UIPointerState == 3)
             VerticalScroll(itemContent, dir);
     }
 
     public void ScrollItemByHover(bool dir)
     {
-        if (MainController.Instance().UIPointerState == 2)
+        if (MainController.Instance("InventoryController").UIPointerState == 2)
             VerticalScroll(itemContent, dir);
     }
 
     public void ScrollTypeByHold(bool dir)
     {
-        if (MainController.Instance().UIPointerState == 1 || MainController.Instance().UIPointerState == 3)
+        if (MainController.Instance("InventoryController").UIPointerState == 1 || MainController.Instance("InventoryController").UIPointerState == 3)
             HorizontalScroll(typeContent, dir);
     }
 
     public void ScrollTypeByHover(bool dir)
     {
-        if (MainController.Instance().UIPointerState == 2)
+        if (MainController.Instance("InventoryController").UIPointerState == 2)
             HorizontalScroll(typeContent, dir);
     }
 
@@ -282,7 +282,7 @@ public class InventoryController : MonoBehaviour
 
         Array.Resize<LockItems>(ref itemArray, i);
         UpdateInventoryLock(itemArray);
-        MainController.Instance().CloseUI();
+        MainController.Instance("InventoryController").CloseUI();
         Destroy(transform.parent.gameObject);
     }
 
