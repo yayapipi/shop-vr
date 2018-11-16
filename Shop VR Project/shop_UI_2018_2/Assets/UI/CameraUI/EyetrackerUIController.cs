@@ -2,32 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GazeUIMenuController : MonoBehaviour {
+public class EyetrackerUIController : MonoBehaviour {
     private MainController mainController;
 
-	// Use this for initialization
-	void Start ()
-    {
-        mainController = MainController.Instance();
-    }
-	
-	// Update is called once per frame
-	void Update ()
+    // Use this for initialization
+    void Start()
     {
 
     }
 
-    public void ViewRotateLeft(bool x)
+    // Update is called once per frame
+    void Update()
     {
-        if (mainController.UIPointerState == 2)
+
+    }
+
+    public void ViewRotateLeft()
+    {
+        if (MainController.Instance().UIPointerState == 2)
         {
             mainController.movement.ViewRotateLeft(0.5f);
         }
     }
 
-    public void ViewRotateRight(bool x)
+    public void ViewRotateRight()
     {
-        if (mainController.UIPointerState == 2)
+        if (MainController.Instance().UIPointerState == 2)
         {
             mainController.movement.ViewRotateRight(0.5f);
         }

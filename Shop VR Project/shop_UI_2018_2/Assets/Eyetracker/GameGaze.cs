@@ -12,6 +12,7 @@ public class GameGaze : MonoBehaviour
     public delegate void EyeTrackerEventManager();
     public static event EyeTrackerEventManager EyeClose;
     public static event EyeTrackerEventManager EyeOpen;
+    public static event EyeTrackerEventManager EyeBack;
     public static float x, y;
 
     void Start ()
@@ -44,6 +45,12 @@ public class GameGaze : MonoBehaviour
                     EyeOpen();
             }
         }
+    }
+
+    public void StartEyeBackEvent()
+    {
+        if (EyeBack != null)
+            EyeBack();
     }
 
 	void OnDestroy ()

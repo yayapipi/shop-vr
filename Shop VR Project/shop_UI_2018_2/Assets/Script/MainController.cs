@@ -38,8 +38,6 @@ public class MainController : MonoBehaviour {
     private bool isPointerSelect = false;
     private bool isPointerGrab = false;
     public static bool isViewRotate = false;
-    public static bool isViewRotateLeft = false;
-    public static bool isViewRotateRight = false;
     private static MainController _instance = null;
     public float scaleLimit = 0.5f;
 

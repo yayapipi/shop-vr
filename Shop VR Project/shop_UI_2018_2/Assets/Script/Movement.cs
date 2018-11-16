@@ -92,13 +92,13 @@ public class Movement : MonoBehaviour {
 
     public void ViewRotateLeft(float speed)
     {
-        Vector3 newRotation = new Vector3(0, -0.5f * speed, 0);
+        Vector3 newRotation = new Vector3(0, -speed, 0);
         transform.Rotate(newRotation);
     }
 
     public void ViewRotateRight(float speed)
     {
-        Vector3 newRotation = new Vector3(0, 0.5f * speed, 0);
+        Vector3 newRotation = new Vector3(0, speed, 0);
         transform.Rotate(newRotation);
     }
 }

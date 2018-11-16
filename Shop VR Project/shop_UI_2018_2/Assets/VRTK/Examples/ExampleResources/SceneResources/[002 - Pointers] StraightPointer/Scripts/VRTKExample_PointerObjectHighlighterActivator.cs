@@ -107,6 +107,11 @@
                 VRTK_Logger.Error(VRTK_Logger.GetCommonMessage(VRTK_Logger.CommonMessageKeys.REQUIRED_COMPONENT_MISSING_FROM_GAMEOBJECT, "VRTKExample_PointerObjectHighlighterActivator", "VRTK_DestinationMarker", "the Controller Alias"));
             }
 
+            if (mainController.EyetrackerPointerCamera)
+            {
+                GameGaze.EyeBack += EyeBack;
+            }
+
             KeyboardClicker.PointerSet += PointerSet;
             KeyboardClicker.PointerEnter += PointerEnter;
             KeyboardClicker.PointerExit += PointerExit;
@@ -125,6 +130,11 @@
 
                 MainController.RTriggerClickUp -= RTriggerClickUp;
                 MainController.RGripClickDown -= RGripClickDown;
+            }
+
+            if (mainController.EyetrackerPointerCamera)
+            {
+                GameGaze.EyeBack -= EyeBack;
             }
 
             KeyboardClicker.PointerSet -= PointerSet;
@@ -446,6 +456,11 @@
                     CancelmodelAlignment();
                 }
             }
+        }
+
+        private void EyeBack()
+        {
+
         }
 
         private void CancelmodelAlignment()
