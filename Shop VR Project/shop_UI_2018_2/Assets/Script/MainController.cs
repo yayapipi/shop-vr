@@ -43,7 +43,6 @@ public class MainController : MonoBehaviour {
     public float scaleLimit = 0.5f;
 
     [Header("RayInformation")]
-    public Vector3 rayPos;
     public Vector3 rayHitPos;
 
     [Header("Select Other Object")]
@@ -194,8 +193,6 @@ public class MainController : MonoBehaviour {
         RTriggerClickDown_bool = RTriggerClick && !RTriggerClickLast;
         RTriggerClickUp_bool = !RTriggerClick && RTriggerClickLast;
         RTriggerClickLast = RTriggerClick;
-
-        rayPos = currentPointerCamera.transform.position;
 	}
 
     void OnApplicationQuit()

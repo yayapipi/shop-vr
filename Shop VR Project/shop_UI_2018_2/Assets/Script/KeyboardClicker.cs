@@ -148,9 +148,6 @@ public class KeyboardClicker : MonoBehaviour {
 
         if (dragObj)
         {
-            ExecuteEvents.Execute(dragObj, pointer, ExecuteEvents.initializePotentialDrag);
-            ExecuteEvents.Execute(dragObj, pointer, ExecuteEvents.beginDragHandler);
-
             dragScrollRect = null;
 
             if (dragObj.GetComponent<ScrollRect>())
@@ -161,6 +158,9 @@ public class KeyboardClicker : MonoBehaviour {
             pointer.pointerPressRaycast = currentRaycastDrag;
             lastDragObj = dragObj;
             dragging = true;
+
+            ExecuteEvents.Execute(dragObj, pointer, ExecuteEvents.initializePotentialDrag);
+            ExecuteEvents.Execute(dragObj, pointer, ExecuteEvents.beginDragHandler);
         }
 
         if (rayCastObj)
@@ -259,9 +259,6 @@ public class KeyboardClicker : MonoBehaviour {
         {
             if (dragObj)
             {
-                ExecuteEvents.Execute(dragObj, pointer, ExecuteEvents.initializePotentialDrag);
-                ExecuteEvents.Execute(dragObj, pointer, ExecuteEvents.beginDragHandler);
-
                 dragScrollRect = null;
 
                 if (dragObj.GetComponent<ScrollRect>())
@@ -272,6 +269,9 @@ public class KeyboardClicker : MonoBehaviour {
                 pointer.pointerPressRaycast = currentRaycastDrag;
                 lastDragObj = dragObj;
                 dragging = true;
+
+                ExecuteEvents.Execute(dragObj, pointer, ExecuteEvents.initializePotentialDrag);
+                ExecuteEvents.Execute(dragObj, pointer, ExecuteEvents.beginDragHandler);
             }
 
             if (rayCastObj)
