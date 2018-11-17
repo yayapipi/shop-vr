@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SettingController : MonoBehaviour {
+public class Setting : MonoBehaviour {
     public Text QualityText = null;
     private int CurrentQuality = 0;
 
@@ -29,38 +28,21 @@ public class SettingController : MonoBehaviour {
     public Slider MusicVolumeSlider = null;
     public Slider SoundVolumeSlider = null;
 
-    private static SettingController _instance = null;
-
     void Awake()
     {
-        if (_instance == null)
-        {
-            _instance = this;
-        }
-
         GetInfoOptions();
     }
 
-    public static SettingController Instance()
+	// Use this for initialization
+	void Start () 
     {
-        if (_instance == null)
-        {
-            throw new Exception("could not find the SettingController object.");
-        }
-        return _instance;
-    }
-
-    public void Close()
-    {
-        MainController.Instance("SettingController").CloseUI();
-        Destroy(transform.parent.gameObject);
-    }
-
-    void OnDestroy()
-    {
-        _instance = null;
-    }
-
+		
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		
+	}
 
     public void GameQuality(bool mas)
     {
@@ -223,14 +205,6 @@ public class SettingController : MonoBehaviour {
 
     void GetInfoOptions()
     {
-        /*
-        if (PlayerPrefs.HasKey("Quality")) { CurrentQuality = PlayerPrefs.GetInt("Quality"); }
-        if (PlayerPrefs.HasKey("AnisoStropic")) { CurrentAS = PlayerPrefs.GetInt("AnisoStropic"); }
-        if (PlayerPrefs.HasKey("AntiAliasing")) { CurrentAA = PlayerPrefs.GetInt("AntiAliasing"); }
-        if (PlayerPrefs.HasKey("BlendWeight")) { CurrentBW = PlayerPrefs.GetInt("BlendWeight"); }
-        if (PlayerPrefs.HasKey("VSync")) { CurrentVSC = PlayerPrefs.GetInt("VSync"); }
-        if (PlayerPrefs.HasKey("Helmet")) { CurrentHelmet = PlayerPrefs.GetInt("Helmet"); }
-        */
         if (PlayerPrefs.HasKey("MainVolume")) { MainVolumeSlider.value = PlayerPrefs.GetInt("MainVolume"); } else { MainVolumeSlider.value = AudioListener.volume; }
         if (PlayerPrefs.HasKey("MusicVolume")) { MusicVolumeSlider.value = PlayerPrefs.GetInt("MusicVolume"); } else { MusicVolumeSlider.value = 1; }
         if (PlayerPrefs.HasKey("SoundVolume")) { SoundVolumeSlider.value = PlayerPrefs.GetInt("SoundVolume"); } else { SoundVolumeSlider.value = 1; }
@@ -291,8 +265,5 @@ public class SettingController : MonoBehaviour {
                 CurrentBW = 2;
                 break;
         }
-
-        helmetText.text = "Off";
-        CurrentHelmet = 0;
     }
 }
