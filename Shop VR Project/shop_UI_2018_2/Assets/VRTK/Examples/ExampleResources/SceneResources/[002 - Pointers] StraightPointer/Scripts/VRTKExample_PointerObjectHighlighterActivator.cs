@@ -36,7 +36,7 @@
         private void Start()
         {
             mainController = MainController.Instance("VRTKExample_PointerObjectHighlighterActivator");
-            ChangeObjParent();
+            ChangeObjParent(null);
             trackGrab = false;
         }
 
@@ -114,6 +114,7 @@
             KeyboardClicker.PointerExit += PointerExit;
 
             MainController.UIPointerEvent += ResetSelectAndGrab;
+            MainController.UIPointerEvent += ChangeObjParent;
         }
 
         protected virtual void OnDisable()
@@ -136,6 +137,7 @@
             KeyboardClicker.PointerExit -= PointerExit;
 
             MainController.UIPointerEvent -= ResetSelectAndGrab;
+            MainController.UIPointerEvent -= ChangeObjParent;
         }
 
         protected virtual void DestinationMarkerEnter(object sender, DestinationMarkerEventArgs e)
@@ -397,6 +399,7 @@
 
         private void Grab(GameObject obj)
         {
+            mainController.grabMode = false;
             mainController.obj_point.transform.parent = objParent;
             mainController.SetIsPointerGrab(true);
         }
@@ -421,6 +424,7 @@
                 return;
             }
 
+            mainController.grabMode = true;
             objRigidBody.isKinematic = false;
             trackGrab = true;
             trackPoint = CreateTrackPoint(objParent, obj);
@@ -524,7 +528,7 @@
             }
         }
 
-        private void ChangeObjParent()
+        private void ChangeObjParent(Camera camera)
         {
             switch (mainController.UIPointerState)
             {

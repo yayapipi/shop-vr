@@ -30,6 +30,7 @@ public class MainController : MonoBehaviour {
     [Header("Variables")]
     public GameObject obj_point = null;
     public Transform trackPoint;
+    public bool grabMode;
     public bool obj_isKinematic;
     public bool obj_useGravity;
     public bool enablePointerSelect = true;
@@ -40,6 +41,10 @@ public class MainController : MonoBehaviour {
     public static bool isViewRotate = false;
     private static MainController _instance = null;
     public float scaleLimit = 0.5f;
+
+    [Header("RayInformation")]
+    public Vector3 rayPos;
+    public Vector3 rayHitPos;
 
     [Header("Select Other Object")]
     public bool enablePointerSelectOtherObject = false;
@@ -189,6 +194,8 @@ public class MainController : MonoBehaviour {
         RTriggerClickDown_bool = RTriggerClick && !RTriggerClickLast;
         RTriggerClickUp_bool = !RTriggerClick && RTriggerClickLast;
         RTriggerClickLast = RTriggerClick;
+
+        rayPos = currentPointerCamera.transform.position;
 	}
 
     void OnApplicationQuit()

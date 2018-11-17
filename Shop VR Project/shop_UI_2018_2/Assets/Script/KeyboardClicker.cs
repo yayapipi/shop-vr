@@ -19,7 +19,8 @@ public class KeyboardClicker : MonoBehaviour {
     private GameObject rayCastObj_last = null;
     private GameObject lastPointerDownObj;
     private List<RaycastResult> raycastResults;
-    private RaycastResult currentRaycast;
+    private RaycastResult currentRaycastObj;
+    private RaycastResult currentRaycastDrag;
     private PointerEventData pointer;
     private bool hit;
     private float timer;
@@ -95,6 +96,8 @@ public class KeyboardClicker : MonoBehaviour {
                 buttonClickable = false;
             }
         }
+
+        mainController.rayHitPos = currentRaycastObj.worldPosition;
     }
 
     private void ChangeState(Camera eventCamera)
@@ -155,7 +158,7 @@ public class KeyboardClicker : MonoBehaviour {
                 dragScrollRect = dragObj.GetComponent<ScrollRect>();
                 initialDragPosition = dragScrollRect.content.transform.localPosition;
             }
-            pointer.pointerPressRaycast = currentRaycast;
+            pointer.pointerPressRaycast = currentRaycastDrag;
             lastDragObj = dragObj;
             dragging = true;
         }
@@ -266,7 +269,7 @@ public class KeyboardClicker : MonoBehaviour {
                     dragScrollRect = dragObj.GetComponent<ScrollRect>();
                     initialDragPosition = dragScrollRect.content.transform.localPosition;
                 }
-                pointer.pointerPressRaycast = currentRaycast;
+                pointer.pointerPressRaycast = currentRaycastDrag;
                 lastDragObj = dragObj;
                 dragging = true;
             }
@@ -354,18 +357,20 @@ public class KeyboardClicker : MonoBehaviour {
         {
             if ((!rayCastObj && h.gameObject.GetComponent<Selectable>() && !h.gameObject.GetComponent<Scrollbar>() && !h.gameObject.GetComponent<Slider>()))
             {
+                currentRaycastObj = h;
                 rayCastObj = h.gameObject;
                 hit = true;
             }
 
             if (!dragObj && (h.gameObject.GetComponent<ScrollRect>() || h.gameObject.GetComponent<Scrollbar>() || h.gameObject.GetComponent<Slider>()))
             {
-                currentRaycast = h;
+                currentRaycastDrag = h;
                 dragObj = h.gameObject;
             }
 
             if (h.gameObject.name == "mask" || h.gameObject.GetComponent<MeshRenderer>() || h.gameObject.GetComponent<Collider>())
             {
+                rayCastObj = h.gameObject;
                 break;
             }
         }
@@ -423,18 +428,20 @@ public class KeyboardClicker : MonoBehaviour {
 
             if ((!rayCastObj && h.gameObject.GetComponent<Selectable>() && !h.gameObject.GetComponent<Scrollbar>() && !h.gameObject.GetComponent<Slider>()) || h.gameObject.tag == "Model")
             {
+                currentRaycastObj = h;
                 rayCastObj = h.gameObject;
                 hit = true;
             }
 
             if (!dragObj && (h.gameObject.GetComponent<ScrollRect>() || h.gameObject.GetComponent<Scrollbar>() || h.gameObject.GetComponent<Slider>()))
             {
-                currentRaycast = h;
+                currentRaycastDrag = h;
                 dragObj = h.gameObject;
             }
 
             if (h.gameObject.name == "mask" || h.gameObject.GetComponent<MeshRenderer>() || h.gameObject.GetComponent<Collider>())
             {
+                rayCastObj = h.gameObject;
                 break;
             }
         }

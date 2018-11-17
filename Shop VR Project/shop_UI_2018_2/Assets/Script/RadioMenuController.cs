@@ -415,8 +415,11 @@ public class RadioMenuController : MonoBehaviour {
     {
         if (mainController.GetIsPointerSelect())
         {
-            float step = speed * Time.deltaTime;
-            mainController.trackPoint.transform.localPosition = Vector3.MoveTowards(mainController.trackPoint.transform.localPosition, Vector3.zero, step);
+            float localSpeed = speed * Time.deltaTime;
+            if (mainController.grabMode)
+                mainController.trackPoint.transform.localPosition = mainController.trackPoint.transform.localPosition + MainController.currentPointerCamera.transform.forward * localSpeed;
+            else
+                mainController.obj_point.transform.position = mainController.obj_point.transform.position + MainController.currentPointerCamera.transform.forward * localSpeed;
         }
     }
 
