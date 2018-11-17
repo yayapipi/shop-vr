@@ -230,6 +230,11 @@ public class MainController : MonoBehaviour {
         StartCoroutine(SwitchUI(3));
     }
 
+    public void CloseAllUI()
+    {
+        StartCoroutine(SwitchUI(0));
+    }
+
     private IEnumerator SwitchUI(int index)
     {
         if (isOpenUI != index)
@@ -346,7 +351,7 @@ public class MainController : MonoBehaviour {
                     radioMenu.DeGrabObj();
             }
         }
-        if (UIPointerState == 1)
+        if (UIPointerState == 2)
         {
             if (isPointerGrab)
             {
@@ -362,6 +367,63 @@ public class MainController : MonoBehaviour {
     public bool GetIsPointerGrab()
     {
         return isPointerGrab;
+    }
+
+    public void ReSetIsPointerSelect(bool value)
+    {
+        isPointerSelect = value;
+        if (LastUIPointerState == 1)
+        {
+            if (isPointerSelect)
+            {
+                radioMenu.SelectObj();
+            }
+            else
+            {
+                radioMenu.DeSelectObj();
+            }
+        }
+        else if (LastUIPointerState == 2)
+        {
+            if (isPointerSelect)
+            {
+                EyetrackerUIController.Instance().SelectObj();
+            }
+            else
+            {
+                EyetrackerUIController.Instance().DeSelectObj();
+            }
+        }
+    }
+
+
+    public void ReSetIsPointerGrab(bool value)
+    {
+        isPointerGrab = value;
+        if (LastUIPointerState == 1)
+        {
+            if (isPointerGrab)
+            {
+                if (radioMenu)
+                    radioMenu.GrabObj();
+            }
+            else
+            {
+                if (radioMenu)
+                    radioMenu.DeGrabObj();
+            }
+        }
+        if (LastUIPointerState == 2)
+        {
+            if (isPointerGrab)
+            {
+                EyetrackerUIController.Instance().GrabObj();
+            }
+            else
+            {
+                EyetrackerUIController.Instance().DeGrabObj();
+            }
+        }
     }
 
     //Auto scale
@@ -505,7 +567,9 @@ public class MainController : MonoBehaviour {
                 break;
         }
 
-        if(UIPointerEvent != null)
+        CloseAllUI();
+
+        if (UIPointerEvent != null)
             UIPointerEvent(currentPointerCamera);
     }
 }

@@ -45,12 +45,12 @@
             //DeSelect by mouse
             if(mainController.UIPointerState == 3 && Input.GetMouseButtonDown(1) && mainController.GetIsPointerSelect() && !mainController.GetIsPointerGrab() && mainController.obj_point != null)
             {
-                DeSelect();
+                DeSelect(true);
             }
             //DeGrab by mouse
             if(mainController.UIPointerState == 3 && Input.GetMouseButtonUp(0) && mainController.GetIsPointerGrab())
             {
-                DeGrab();
+                DeGrab(true);
             }
         }
 
@@ -283,7 +283,7 @@
                         }
                         else if (mainController.obj_point == obj && mainController.GetIsPointerGrab())
                         {
-                            DeGrab();
+                            DeGrab(true);
                         }
                         break;
                     case 3:
@@ -313,13 +313,13 @@
                     //Select state (1)
                     if (type == 1 && mainController.GetIsPointerSelect() && !mainController.GetIsPointerGrab() && mainController.obj_point != null)
                     {
-                        DeSelect();
+                        DeSelect(false);
                         Debug.Log("DESELECT");
                     }
                     //Grab state (11)
                     else if (mainController.GetIsPointerGrab() && mainController.obj_point != null)
                     {
-                        DeGrab();
+                        DeGrab(false);
                         Debug.Log("DEGRAB");
                     }
                     //Cancel model Alignment (13)
@@ -345,12 +345,12 @@
             {
                 if (mainController.GetIsPointerGrab() && mainController.obj_point != null)
                 {
-                    DeGrab();
+                    DeGrab(false);
                     Debug.Log("DEGRAB");
                 }
                 if (mainController.GetIsPointerSelect() && !mainController.GetIsPointerGrab() && mainController.obj_point != null)
                 {
-                    DeSelect();
+                    DeSelect(false);
                     Debug.Log("DESELECT");
                 }
             }
@@ -377,7 +377,7 @@
             }
         }
 
-        private void DeSelect()
+        private void DeSelect(bool set) //0 is reset, 1 is set
         {
             mainController.obj_point.transform.parent = mainController.obj.transform;
             ToggleHighlight(mainController.obj_point.transform, Color.clear);
@@ -389,7 +389,10 @@
             }
 
             mainController.obj_point = null;
-            mainController.SetIsPointerSelect(false);
+            if (set)
+                mainController.SetIsPointerSelect(false);
+            else
+                mainController.ReSetIsPointerSelect(false);
         }
 
         private void Grab(GameObject obj)
@@ -398,13 +401,16 @@
             mainController.SetIsPointerGrab(true);
         }
 
-        private void DeGrab()
+        private void DeGrab(bool set) //0 is reset, 1 is set
         {
             if(trackGrab)
                 objRigidBody.isKinematic = true;
             trackGrab = false;
             mainController.obj_point.transform.parent = mainController.obj.transform;
-            mainController.SetIsPointerGrab(false);
+            if (set)
+                mainController.SetIsPointerGrab(false);
+            else
+                mainController.ReSetIsPointerGrab(false);
         }
 
         private void TrackGrab(GameObject obj)
@@ -442,7 +448,7 @@
             {
                 if (mainController.GetIsPointerGrab() && mainController.obj_point != null)
                 {
-                    DeGrab();
+                    DeGrab(true);
                 }
             }
         }
@@ -456,7 +462,7 @@
                 //Deselect
                 if (RadioMenuController.getPanelType() == 1 && mainController.GetIsPointerSelect() && !mainController.GetIsPointerGrab() && mainController.obj_point != null)
                 {
-                    DeSelect();
+                    DeSelect(true);
                 }
 
                 //Cancel model Alignment
@@ -469,7 +475,19 @@
 
         private void EyeBack()
         {
-
+            if (mainController.UIPointerState == 2)
+            {
+                //Deselect
+                if (mainController.GetIsPointerSelect() && !mainController.GetIsPointerGrab() && mainController.obj_point != null)
+                {
+                    DeSelect(true);
+                }
+                //DeGrab
+                else if(mainController.GetIsPointerGrab() && mainController.obj_point != null)
+                {
+                    DeGrab(true);
+                }
+            }
         }
 
         private void CancelmodelAlignment()

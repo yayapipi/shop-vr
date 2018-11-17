@@ -47,7 +47,7 @@ public class GameGaze : MonoBehaviour
         }
     }
 
-    public void StartEyeBackEvent()
+    public static void StartEyeBackEvent()
     {
         if (EyeBack != null)
             EyeBack();

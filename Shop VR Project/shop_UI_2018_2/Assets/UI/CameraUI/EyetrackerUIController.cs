@@ -189,6 +189,7 @@ public class EyetrackerUIController : MonoBehaviour
 
     public void DeSelectObj()
     {
+        mainController.modelMenu.DisableModelMenu();
     }
 
     public void GrabObj()
@@ -279,11 +280,12 @@ public class EyetrackerUIController : MonoBehaviour
         }
     }
 
+    //DeGrab and DeSelect
     public void Back()
     {
         if(panel_type == 0)
         {
-
+            GameGaze.StartEyeBackEvent();
         }
     }
 }
