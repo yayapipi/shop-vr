@@ -441,7 +441,7 @@ public class KeyboardClicker : MonoBehaviour {
 
             if (h.gameObject.name == "mask" || h.gameObject.GetComponent<MeshRenderer>() || h.gameObject.GetComponent<Collider>())
             {
-                rayCastObj = h.gameObject;
+                currentRaycastObj = h;
                 break;
             }
         }
