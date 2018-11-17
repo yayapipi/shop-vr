@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class ToggleManager : MonoBehaviour
+public class ToggleAnim : MonoBehaviour
 {
 	[Header("TOGGLE")]
 	public Toggle toggleObject;
@@ -10,8 +10,8 @@ public class ToggleManager : MonoBehaviour
 	public Animator toggleAnimator;
 
     // [Header("ANIM NAMES")]
-    private string toggleOn = "Toggle On";
-    private string toggleOff = "Toggle Off";
+    private string toggleOn = "Standart Toggle On";
+    private string toggleOff = "Standart Toggle Off";
 
 	void Start ()
 	{
