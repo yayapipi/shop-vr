@@ -101,6 +101,8 @@ public class EyetrackerUIController : MonoBehaviour
         {
             buttons[i] = panel_2.transform.GetChild(i - 3).GetChild(0).GetComponent<Image>();
         }
+
+        ChangeState(null);
     }
 
     public void openpanel(int jud)
