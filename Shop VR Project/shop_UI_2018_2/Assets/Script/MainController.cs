@@ -21,6 +21,7 @@ public class MainController : MonoBehaviour {
     public static Camera currentPointerCamera;
     public LayerMask gizmoLayer;
     public Camera DisplayCamera;
+    public Transform Environment;
 
     public GameObject obj;
     private static int userID;
@@ -186,6 +187,41 @@ public class MainController : MonoBehaviour {
         }
 
         StartCoroutine(InitializeSetting());
+        /*
+        if (Environment)
+        {
+            StartCoroutine(AddMeshCollider());
+        }*/
+    }
+
+    private IEnumerator AddMeshCollider()
+    {
+        int i = 0;
+        Transform[] allChildren = Environment.GetComponentsInChildren<Transform>();
+        foreach (Transform child in allChildren)
+        {
+            if (child.gameObject.GetComponent<BoxCollider>())
+            {
+                Destroy(child.gameObject.GetComponent<BoxCollider>());
+            }
+            if (child.gameObject.GetComponent<MeshFilter>() != null)
+            {
+                if (child.gameObject.GetComponent<MeshCollider>() == null)
+                {
+                    child.gameObject.AddComponent<MeshCollider>();
+                }
+                child.gameObject.GetComponent<MeshCollider>().convex = false;
+            }
+            if (i % 100 == 0)
+            {
+                yield return null;
+            }
+            i++;
+        }
+
+        Debug.Log("Mesh collider finished");
+        yield return new WaitForSeconds(2f);
+        transform.parent.position = Vector3.zero;
     }
 
     private IEnumerator InitializeSetting()
