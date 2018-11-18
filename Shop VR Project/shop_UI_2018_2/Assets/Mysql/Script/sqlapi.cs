@@ -255,8 +255,8 @@ public class sqlapi
         try
         {
             //SqlAccess sql = new SqlAccess();
-            DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "user_inventories.user_id", "items.id" }, new string[] {"=", "="}, new string[] { userid.ToString()
-                , "user_inventories.item_id" }, new string[] { }, new string[] { }, new string[] { limitbase.ToString() }, new string[] { limitoffset.ToString() }).Tables[0];
+            DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "user_inventories.user_id", "items.id", "items.enabled" }, new string[] {"=", "=", "="}, new string[] { userid.ToString()
+                , "user_inventories.item_id", "1" }, new string[] { }, new string[] { }, new string[] { limitbase.ToString() }, new string[] { limitoffset.ToString() }).Tables[0];
             int i = 0;
             foreach (DataRow row in RT.Rows)
             {
@@ -305,8 +305,8 @@ public class sqlapi
         try
         {
             //SqlAccess sql = new SqlAccess();
-            DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "user_inventories.user_id", "items.id" , "items.main_type" }, new string[] { "=", "=", "=" }, new string[] { userid.ToString()
-                , "user_inventories.item_id", type.ToString() }, new string[] { }, new string[] { }, new string[] { limitbase.ToString() }, new string[] { limitoffset.ToString() }).Tables[0];
+            DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "user_inventories.user_id", "items.id" , "items.main_type", "items.enabled" }, new string[] { "=", "=", "=", "=" }, new string[] { userid.ToString()
+                , "user_inventories.item_id", type.ToString(), "1" }, new string[] { }, new string[] { }, new string[] { limitbase.ToString() }, new string[] { limitoffset.ToString() }).Tables[0];
             int i = 0;
             foreach (DataRow row in RT.Rows)
             {
@@ -389,7 +389,7 @@ public class sqlapi
         try
         {
             //SqlAccess sql = new SqlAccess();
-            DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "shop_carts.user_id", "items.id", "shop_items.item_id" }, new string[] { "=", "=", "=" }, new string[] { userid.ToString(), "shop_carts.item_id", "shop_carts.item_id" },
+            DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "shop_carts.user_id", "items.id", "shop_items.item_id", "items.enabled" }, new string[] { "=", "=", "=", "=" }, new string[] { userid.ToString(), "shop_carts.item_id", "shop_carts.item_id", "1" },
                 new string[] { }, new string[] { }, new string[] { }, new string[] { }).Tables[0];
 
             int i = 0;
@@ -573,7 +573,7 @@ public class sqlapi
         {
             Debug.Log("sqlapi: " + "shopid,itemid:" + shopid + "," + itemid);
             //SqlAccess sql = new SqlAccess();
-            DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "shop_items.shop_id", "shop_items.item_id", "items.id" }, new string[] { "=", "=","=" }, new string[] { shopid.ToString(), itemid.ToString(), itemid.ToString() },
+            DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "shop_items.shop_id", "shop_items.item_id", "items.id", "items.enabled" }, new string[] { "=", "=","=", "=" }, new string[] { shopid.ToString(), itemid.ToString(), itemid.ToString(), "1" },
                  new string[] {  }, new string[] {  }, new string[] { }, new string[] {}).Tables[0];
             int i = 0;
             foreach (DataRow row in RT.Rows)
@@ -634,7 +634,7 @@ public class sqlapi
         {
             //Debug.Log("sqlapi: " + "tables,id:" + tables + "," + ids);
             //SqlAccess sql = new SqlAccess();
-            DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "shop_items.shop_id", "items.id" }, new string[] { "=", "=" }, new string[] { ids.ToString(), "shop_items.item_id" },
+            DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "shop_items.shop_id", "items.id", "items.enabled" }, new string[] { "=", "=", "=" }, new string[] { ids.ToString(), "shop_items.item_id", "1" },
                  new string[] { orderby }, new string[] { sc }, new string[] { limitbase.ToString() }, new string[] { limitoffset.ToString() }).Tables[0];
             int i = 0;
             int length = RT.Rows.Count;
@@ -700,7 +700,7 @@ public class sqlapi
         {
             Debug.Log("sqlapi: " + "tables,id:" + tables + "," + ids + "," + type);
             //SqlAccess sql = new SqlAccess();
-            DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "shop_items.shop_id", "items.id", "items.main_type" }, new string[] { "=", "=", "="}, new string[] { ids.ToString(), "shop_items.item_id", type.ToString() },
+            DataTable RT = sql.SelectWhere(tables, new string[] { "*" }, new string[] { "shop_items.shop_id", "items.id", "items.main_type", "items.enabled" }, new string[] { "=", "=", "=", "="}, new string[] { ids.ToString(), "shop_items.item_id", type.ToString(), "1" },
                  new string[] { orderby }, new string[] { sc }, new string[] { limitbase.ToString() }, new string[] { limitoffset.ToString() }).Tables[0];
             int i = 0;
             foreach (DataRow row in RT.Rows)
