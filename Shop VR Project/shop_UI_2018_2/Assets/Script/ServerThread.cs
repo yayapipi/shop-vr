@@ -422,7 +422,7 @@ public class GrabThread
             userinvent uinvent = sqlConnection.getuserinvent(userData.id, sitems[0].item_id);
             if (uinvent.user_id > 0)
             {
-                if (uinvent.amount > 0)
+                if (uinvent.amount > 1)
                     sqlConnection.Up_userinvent(userData.id, sitems[0].item_id, uinvent.amount-1);
                 else if(uinvent.amount == 1)
                     sqlConnection.Del_userinvent(userData.id, sitems[0].item_id);

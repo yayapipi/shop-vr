@@ -45,7 +45,7 @@ public class InventoryItemController : MonoBehaviour
 
     public void SubmitAmount(int newAmount)
     {
-        if (newAmount != 0)
+        if (newAmount > 0)
         {
             transform.Find("amount").gameObject.GetComponent<Text>().text = (" " + (newAmount));
             userInventData.amount = newAmount;
