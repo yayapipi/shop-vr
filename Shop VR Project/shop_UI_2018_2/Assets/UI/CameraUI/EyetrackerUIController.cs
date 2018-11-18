@@ -12,6 +12,8 @@ public class EyetrackerUIController : MonoBehaviour
     public GameObject panelSwitch;
     public GameObject left;
     public GameObject right;
+    public GameObject visorGlow;
+    public GameObject visor;
     public GameObject top;
     public GameObject bot;
     public GameObject altButtons;
@@ -32,7 +34,7 @@ public class EyetrackerUIController : MonoBehaviour
     {
         if (_instance == null)
         {
-            throw new Exception(" could not find the GazeUIMenuController object.");
+            throw new Exception(" could not find the EyetrackerUIController object.");
         }
         return _instance;
     }
@@ -87,9 +89,6 @@ public class EyetrackerUIController : MonoBehaviour
     void Start()
     {
         mainController = MainController.Instance("EyetrackerUIController");
-        panel_type = 0;
-        panel_1.SetActive(false);
-        panel_2.SetActive(false);
 
         buttons = new Image[9];
         for (int i = 0; i < 3; i++)
@@ -103,6 +102,12 @@ public class EyetrackerUIController : MonoBehaviour
         }
 
         ChangeState(null);
+    }
+
+    public void HelmetSet(bool isOn)
+    {
+        visorGlow.SetActive(isOn);
+        visor.SetActive(isOn);
     }
 
     public void openpanel(int jud)

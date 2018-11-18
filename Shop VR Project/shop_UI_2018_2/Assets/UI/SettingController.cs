@@ -6,24 +6,28 @@ using UnityEngine.UI;
 
 public class SettingController : MonoBehaviour {
     public Text QualityText = null;
-    private int CurrentQuality = 0;
+    public static int CurrentQuality = 0;
 
     public Text AntiStropicText = null;
-    private int CurrentAS = 0;
+    public static int CurrentAS = 0;
 
     public Text AntiAliasingText = null;
-    private int CurrentAA = 0;
+    public static int CurrentAA = 0;
     private string[] AAOptions = new string[] { "X0", "X2", "X4", "X8" };
 
     public Text vSyncText = null;
-    private int CurrentVSC = 0;
+    public static int CurrentVSC = 0;
     private string[] VSCOptions = new string[] { "Don't Sync", "Every V Blank", "Every Second V Blank" };
 
     public Text blendWeightsText = null;
-    private int CurrentBW = 0;
+    public static int CurrentBW = 0;
 
     public Text helmetText = null;
-    private int CurrentHelmet = 0;
+    public static int CurrentHelmet = 0;
+
+    public static float MainVolume;
+    public static float MusicVolume;
+    public static float SoundVolume;
 
     public Slider MainVolumeSlider = null;
     public Slider MusicVolumeSlider = null;
@@ -40,7 +44,7 @@ public class SettingController : MonoBehaviour {
 
         GetInfoOptions();
     }
-
+    
     public static SettingController Instance()
     {
         if (_instance == null)
@@ -60,7 +64,6 @@ public class SettingController : MonoBehaviour {
     {
         _instance = null;
     }
-
 
     public void GameQuality(bool mas)
     {
@@ -145,17 +148,28 @@ public class SettingController : MonoBehaviour {
         }
     }
 
-    public void Apply()
+    public void Apply(bool save)
     {
-        PlayerPrefs.SetInt("Quality", CurrentQuality);
-        PlayerPrefs.SetInt("AnisoStropic", CurrentAS);
-        PlayerPrefs.SetInt("AntiAliasing", CurrentAA);
-        PlayerPrefs.SetInt("VSync", CurrentVSC);
-        PlayerPrefs.SetInt("BlendWeight", CurrentBW);
-        PlayerPrefs.SetInt("Helmet", CurrentHelmet);
-        PlayerPrefs.SetFloat("MainVolume", AudioListener.volume);
-        PlayerPrefs.SetFloat("MusicVolume", AudioListener.volume);
-        PlayerPrefs.SetFloat("SoundVolume", AudioListener.volume);
+        MainVolume = MainVolumeSlider.value;
+        MusicVolume = MusicVolumeSlider.value;
+        SoundVolume = SoundVolumeSlider.value;
+        StaticApply(save);
+    }
+
+    public static void StaticApply(bool save)
+    {
+        if (save)
+        {
+            PlayerPrefs.SetInt("Quality", CurrentQuality);
+            PlayerPrefs.SetInt("AnisoStropic", CurrentAS);
+            PlayerPrefs.SetInt("AntiAliasing", CurrentAA);
+            PlayerPrefs.SetInt("VSync", CurrentVSC);
+            PlayerPrefs.SetInt("BlendWeight", CurrentBW);
+            PlayerPrefs.SetInt("Helmet", CurrentHelmet);
+            PlayerPrefs.SetFloat("MainVolume", AudioListener.volume);
+            PlayerPrefs.SetFloat("MusicVolume", AudioListener.volume);
+            PlayerPrefs.SetFloat("SoundVolume", AudioListener.volume);
+        }
 
         QualitySettings.SetQualityLevel(CurrentQuality);
 
@@ -214,85 +228,49 @@ public class SettingController : MonoBehaviour {
                 break;
         }
 
-        //helmet
+        EyetrackerUIController.Instance().HelmetSet(CurrentHelmet == 1);
 
-        AudioListener.volume = MainVolumeSlider.value;
-        //music
-        //sound
+        AudioListener.volume = MainVolume;
+        //music set
+        //sound set
     }
 
     void GetInfoOptions()
     {
-        /*
-        if (PlayerPrefs.HasKey("Quality")) { CurrentQuality = PlayerPrefs.GetInt("Quality"); }
-        if (PlayerPrefs.HasKey("AnisoStropic")) { CurrentAS = PlayerPrefs.GetInt("AnisoStropic"); }
-        if (PlayerPrefs.HasKey("AntiAliasing")) { CurrentAA = PlayerPrefs.GetInt("AntiAliasing"); }
-        if (PlayerPrefs.HasKey("BlendWeight")) { CurrentBW = PlayerPrefs.GetInt("BlendWeight"); }
-        if (PlayerPrefs.HasKey("VSync")) { CurrentVSC = PlayerPrefs.GetInt("VSync"); }
-        if (PlayerPrefs.HasKey("Helmet")) { CurrentHelmet = PlayerPrefs.GetInt("Helmet"); }
-        */
-        if (PlayerPrefs.HasKey("MainVolume")) { MainVolumeSlider.value = PlayerPrefs.GetInt("MainVolume"); } else { MainVolumeSlider.value = AudioListener.volume; }
-        if (PlayerPrefs.HasKey("MusicVolume")) { MusicVolumeSlider.value = PlayerPrefs.GetInt("MusicVolume"); } else { MusicVolumeSlider.value = 1; }
-        if (PlayerPrefs.HasKey("SoundVolume")) { SoundVolumeSlider.value = PlayerPrefs.GetInt("SoundVolume"); } else { SoundVolumeSlider.value = 1; }
-
         QualityText.text = QualitySettings.names[CurrentQuality];
 
-        switch (QualitySettings.anisotropicFiltering)
-        {
-            case AnisotropicFiltering.Disable:
-                AntiStropicText.text = AnisotropicFiltering.Disable.ToString();
-                CurrentAS = 0;
-                break;
-            case AnisotropicFiltering.Enable:
-                AntiStropicText.text = AnisotropicFiltering.Enable.ToString();
-                CurrentAS = 1;
-                break;
-            case AnisotropicFiltering.ForceEnable:
-                AntiStropicText.text = AnisotropicFiltering.ForceEnable.ToString();
-                CurrentAS = 2;
-                break;
-        }
-
-        switch (QualitySettings.antiAliasing)
+        switch (CurrentAS)
         {
             case 0:
-                AntiAliasingText.text = AAOptions[0];
-                CurrentAS = 0;
+                AntiStropicText.text = AnisotropicFiltering.Disable.ToString();
+                break;
+            case 1:
+                AntiStropicText.text = AnisotropicFiltering.Enable.ToString();
                 break;
             case 2:
-                AntiAliasingText.text = AAOptions[1];
-                CurrentAS = 1;
-                break;
-            case 4:
-                AntiAliasingText.text = AAOptions[2];
-                CurrentAS = 2;
-                break;
-            case 8:
-                AntiAliasingText.text = AAOptions[3];
-                CurrentAS = 3;
+                AntiStropicText.text = AnisotropicFiltering.ForceEnable.ToString();
                 break;
         }
 
-        vSyncText.text = VSCOptions[QualitySettings.vSyncCount];
-        CurrentVSC = QualitySettings.vSyncCount;
+        AntiAliasingText.text = AAOptions[CurrentAS];
+        vSyncText.text = VSCOptions[CurrentVSC];
 
-        switch (QualitySettings.blendWeights)
+        switch (CurrentBW)
         {
-            case BlendWeights.OneBone:
+            case 0:
                 blendWeightsText.text = BlendWeights.OneBone.ToString();
-                CurrentBW = 0;
                 break;
-            case BlendWeights.TwoBones:
+            case 1:
                 blendWeightsText.text = BlendWeights.TwoBones.ToString();
-                CurrentBW = 1;
                 break;
-            case BlendWeights.FourBones:
+            case 2:
                 blendWeightsText.text = BlendWeights.FourBones.ToString();
-                CurrentBW = 2;
                 break;
         }
 
         helmetText.text = "Off";
-        CurrentHelmet = 0;
+        MainVolumeSlider.value = MainVolume;
+        MusicVolumeSlider.value = MusicVolume;
+        SoundVolumeSlider.value = SoundVolume;
     }
 }

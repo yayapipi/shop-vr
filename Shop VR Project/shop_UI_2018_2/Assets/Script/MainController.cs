@@ -58,6 +58,14 @@ public class MainController : MonoBehaviour {
     public GameObject blade;
     public ModelMenuController modelMenu;
 
+    [Header("Setting")]
+    [HideInInspector]
+    public float MainVolume;
+    [HideInInspector]
+    public float MusicVolume;
+    [HideInInspector]
+    public float SoundVolume;
+
     //Controller state
     [Header("Controller States")]
     public bool RTriggerTouch = false;
@@ -176,6 +184,73 @@ public class MainController : MonoBehaviour {
         {
             StartCoroutine(Display());
         }
+
+        StartCoroutine(InitializeSetting());
+    }
+
+    private IEnumerator InitializeSetting()
+    {
+        yield return new WaitForSeconds(1f);
+
+        if (PlayerPrefs.HasKey("Quality")) { SettingController.CurrentQuality = PlayerPrefs.GetInt("Quality"); } else { SettingController.CurrentQuality = QualitySettings.GetQualityLevel(); }
+        if (PlayerPrefs.HasKey("AnisoStropic")) { SettingController.CurrentAS = PlayerPrefs.GetInt("AnisoStropic"); }
+        else
+        {
+            switch (QualitySettings.anisotropicFiltering)
+            {
+                case AnisotropicFiltering.Disable:
+                    SettingController.CurrentAS = 0;
+                    break;
+                case AnisotropicFiltering.Enable:
+                    SettingController.CurrentAS = 1;
+                    break;
+                case AnisotropicFiltering.ForceEnable:
+                    SettingController.CurrentAS = 2;
+                    break;
+            }
+        }
+        if (PlayerPrefs.HasKey("AntiAliasing")) { SettingController.CurrentAA = PlayerPrefs.GetInt("AntiAliasing"); }
+        else
+        {
+            switch (QualitySettings.antiAliasing)
+            {
+                case 0:
+                    SettingController.CurrentAS = 0;
+                    break;
+                case 2:
+                    SettingController.CurrentAS = 1;
+                    break;
+                case 4:
+                    SettingController.CurrentAS = 2;
+                    break;
+                case 8:
+                    SettingController.CurrentAS = 3;
+                    break;
+            }
+        }
+        if (PlayerPrefs.HasKey("BlendWeight")) { SettingController.CurrentBW = PlayerPrefs.GetInt("BlendWeight"); }
+        else
+        {
+            switch (QualitySettings.blendWeights)
+            {
+                case BlendWeights.OneBone:
+                    SettingController.CurrentBW = 0;
+                    break;
+                case BlendWeights.TwoBones:
+                    SettingController.CurrentBW = 1;
+                    break;
+                case BlendWeights.FourBones:
+                    SettingController.CurrentBW = 2;
+                    break;
+            }
+        }
+        if (PlayerPrefs.HasKey("VSync")) { SettingController.CurrentVSC = PlayerPrefs.GetInt("VSync"); } else { SettingController.CurrentVSC = QualitySettings.vSyncCount; }
+        if (PlayerPrefs.HasKey("Helmet")) { SettingController.CurrentHelmet = PlayerPrefs.GetInt("Helmet"); } else { SettingController.CurrentHelmet = 0; }
+        if (PlayerPrefs.HasKey("MainVolume")) { SettingController.MainVolume = PlayerPrefs.GetInt("MainVolume"); } else { SettingController.MainVolume = AudioListener.volume; }
+        if (PlayerPrefs.HasKey("MusicVolume")) { SettingController.MusicVolume = PlayerPrefs.GetInt("MusicVolume"); } else { SettingController.MusicVolume = 1; }
+        if (PlayerPrefs.HasKey("SoundVolume")) { SettingController.SoundVolume = PlayerPrefs.GetInt("SoundVolume"); } else { SettingController.SoundVolume = 1; }
+
+        SettingController.StaticApply(false);
     }
 
     public IEnumerator Display()
