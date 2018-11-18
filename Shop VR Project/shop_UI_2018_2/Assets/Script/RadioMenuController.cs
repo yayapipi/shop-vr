@@ -20,14 +20,53 @@ public class RadioMenuController : MonoBehaviour {
     private MainController mainController;
     private static int panel_type = 0;
     private static int panel_back = 0;
-
-    public GameObject modelSetting;
-    private GameObject model_SettingObj;
+    private static RadioMenuController _instance = null;
 
     /*
     0 base panel    1 shop panel    2 view rotate   3 setting panel     4 backpack panel 
     5 Model panel   6 scale panel   7 draw panel    8 putback panel     9 rotate panel
     */
+
+    void Awake()
+    {
+        if (_instance == null)
+        {
+            _instance = this;
+        }
+    }
+
+    public static RadioMenuController Instance()
+    {
+        if (_instance == null)
+        {
+            throw new Exception(" could not find the RadioMenuController object.");
+        }
+        return _instance;
+    }
+
+    void OnDestroy()
+    {
+        _instance = null;
+    }
+
+    public void Enable()
+    {
+        openpanel(panel_type);
+    }
+
+    public void Disable()
+    {
+        BasePanel_0.SetActive(false);
+        ModelPanel_1.SetActive(false);
+        SpecialPanel_2.SetActive(false);
+        ViewRotatePanel_10.SetActive(false);
+        GrabPanel_11.SetActive(false);
+        DrawPanel_12.SetActive(false);
+        ModelAlignmentPanel_13.SetActive(false);
+        ModelCutPanel_14.SetActive(false);
+        SelectOneObjectPanel_20.SetActive(false);
+    }
+
     void OnEnable()
     {
         MainController.RGripClickDown += grip_back;
