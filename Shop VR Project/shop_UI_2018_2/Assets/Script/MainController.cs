@@ -338,13 +338,13 @@ public class MainController : MonoBehaviour {
             switch (index)
             {
                 case 1:
-                    Instantiate(shopMain, new Vector3(cameraEye.position.x, 0, cameraEye.position.z), Quaternion.Euler(new Vector3(0, cameraEye.eulerAngles.y, 0)));
+                    Instantiate(shopMain, new Vector3(cameraEye.position.x, cameraEye.position.y-1.24f, cameraEye.position.z), Quaternion.Euler(new Vector3(0, cameraEye.eulerAngles.y, 0)));
                     break;
                 case 2:
-                    Instantiate(inventoryMain, new Vector3(cameraEye.position.x, 0, cameraEye.position.z), Quaternion.Euler(new Vector3(0, cameraEye.eulerAngles.y, 0)));
+                    Instantiate(inventoryMain, new Vector3(cameraEye.position.x, cameraEye.position.y-1.24f, cameraEye.position.z), Quaternion.Euler(new Vector3(0, cameraEye.eulerAngles.y, 0)));
                     break;
                 case 3:
-                    Instantiate(systemSetting, new Vector3(cameraEye.position.x, 0, cameraEye.position.z), Quaternion.Euler(new Vector3(0, cameraEye.eulerAngles.y, 0)));
+                    Instantiate(systemSetting, new Vector3(cameraEye.position.x, cameraEye.position.y-1.24f, cameraEye.position.z), Quaternion.Euler(new Vector3(0, cameraEye.eulerAngles.y, 0)));
                     break;
             }
         }

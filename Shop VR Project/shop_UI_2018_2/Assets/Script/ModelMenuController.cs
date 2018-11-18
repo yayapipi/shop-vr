@@ -40,7 +40,7 @@ public class ModelMenuController : MonoBehaviour
         if (!gameObject.activeSelf)
         {
             gameObject.SetActive(true);
-            transform.position = new Vector3(mainController.cameraEye.position.x, 0, mainController.cameraEye.position.z);
+            transform.position = new Vector3(mainController.cameraEye.position.x, mainController.cameraEye.position.y - 1.24f, mainController.cameraEye.position.z);
             transform.rotation = Quaternion.Euler(new Vector3(0, mainController.cameraEye.eulerAngles.y, 0));
         }
 

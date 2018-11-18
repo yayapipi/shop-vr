@@ -64,7 +64,8 @@ public class DrawModule : MonoBehaviour
 
     public void SetPosition()
     {
-        transform.position = new Vector3(MainController.Instance("DrawModule").cameraEye.position.x, 0, MainController.Instance("DrawModule").cameraEye.position.z);
+        float posy = MainController.Instance("DrawModule").cameraEye.position.y - 1.24f;
+        transform.position = new Vector3(MainController.Instance("DrawModule").cameraEye.position.x, posy, MainController.Instance("DrawModule").cameraEye.position.z);
         transform.rotation = Quaternion.Euler(new Vector3(0, MainController.Instance("DrawModule").cameraEye.eulerAngles.y, 0));
     }
 

@@ -21,10 +21,10 @@ namespace Devdog.SciFiDesign
             DontDestroyOnLoad(this);
         }
 
-        protected virtual void OnLevelWasLoaded(int level)
-        {
-            Destroy(gameObject, waitDestroyTimeAfterLoad);
-        }
+     //   protected virtual void OnLevelWasLoaded(int level)
+       // {
+           // Destroy(gameObject, waitDestroyTimeAfterLoad);
+        //}
 
         public virtual void LoadScene(string name)
         {

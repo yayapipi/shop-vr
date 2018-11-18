@@ -417,7 +417,7 @@ public class RadioMenuController : MonoBehaviour {
         {
             float localSpeed = speed * Time.deltaTime;
             if (mainController.grabMode)
-                mainController.trackPoint.transform.localPosition = mainController.trackPoint.transform.localPosition + MainController.currentPointerCamera.transform.forward * localSpeed;
+                mainController.trackPoint.transform.position = mainController.trackPoint.transform.position + MainController.currentPointerCamera.transform.forward * localSpeed;
             else
                 mainController.obj_point.transform.position = mainController.obj_point.transform.position + MainController.currentPointerCamera.transform.forward * localSpeed;
         }
