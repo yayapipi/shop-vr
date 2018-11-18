@@ -358,6 +358,9 @@ public class ShopItemInformationController : MonoBehaviour {
             mobj.GetComponent<Rigidbody>().useGravity = false;
 
         }
+
+        inventoryItemController.SubmitAmount(itemAmount - 1);
+
         ShopController.Grab(itemID);
 
     }
