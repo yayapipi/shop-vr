@@ -37,6 +37,7 @@
         {
             mainController = MainController.Instance("VRTKExample_PointerObjectHighlighterActivator");
             ChangeObjParent(null);
+            SwitchRadioMenu(null);
             trackGrab = false;
         }
 
@@ -115,6 +116,7 @@
 
             MainController.UIPointerEvent += ResetSelectAndGrab;
             MainController.UIPointerEvent += ChangeObjParent;
+            MainController.UIPointerEvent += SwitchRadioMenu;
         }
 
         protected virtual void OnDisable()
@@ -138,6 +140,7 @@
 
             MainController.UIPointerEvent -= ResetSelectAndGrab;
             MainController.UIPointerEvent -= ChangeObjParent;
+            MainController.UIPointerEvent -= SwitchRadioMenu;
         }
 
         protected virtual void DestinationMarkerEnter(object sender, DestinationMarkerEventArgs e)
@@ -343,7 +346,7 @@
                     }
                 }
             }
-            if(mainController.LastUIPointerState == 2 && mainController.UIPointerState != 2)
+            else if(mainController.LastUIPointerState == 2 && mainController.UIPointerState != 2)
             {
                 if (mainController.GetIsPointerGrab() && mainController.obj_point != null)
                 {
@@ -355,6 +358,21 @@
                     DeSelect(false);
                     Debug.Log("DESELECT");
                 }
+            }
+            else
+            {
+            }
+        }
+
+        private void SwitchRadioMenu(Camera eventCamera)
+        {
+            if (mainController.UIPointerState == 1)
+            {
+                RadioMenuController.Instance().Enable();
+            }
+            else
+            {
+                RadioMenuController.Instance().Disable();
             }
         }
 
