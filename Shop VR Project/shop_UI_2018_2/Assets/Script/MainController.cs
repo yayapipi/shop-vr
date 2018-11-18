@@ -304,7 +304,18 @@ public class MainController : MonoBehaviour {
         RTriggerClickDown_bool = RTriggerClick && !RTriggerClickLast;
         RTriggerClickUp_bool = !RTriggerClick && RTriggerClickLast;
         RTriggerClickLast = RTriggerClick;
-	}
+
+        if(Input.GetKeyDown(KeyCode.C) && DisplayCamera)
+        {
+            StartCoroutine(Display());
+        }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            SteamVR_LoadLevel.Begin("Scene_Select");
+        }
+
+    }
 
     void OnApplicationQuit()
     {
