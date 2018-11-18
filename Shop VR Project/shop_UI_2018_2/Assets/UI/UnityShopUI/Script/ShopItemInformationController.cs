@@ -327,12 +327,29 @@ public class ShopItemInformationController : MonoBehaviour {
             mobj.AddComponent<id>().item_id = itemID;
             mobj.GetComponent<id>().standard_size = standard_scale;
 
-            if(!mobj.GetComponent<MeshCollider>())
-                mobj.AddComponent<MeshCollider>();
+            //Add collider
+            Transform[] allChildren = mobj.transform.GetComponentsInChildren<Transform>(true);
+            foreach (Transform child in allChildren)
+            {
+                child.gameObject.tag = "ModelChild";
 
-            mobj.GetComponent<Model_Rotate>().enabled = false;
+                if (child.gameObject.GetComponent<BoxCollider>())
+                {
+                    Destroy(child.gameObject.GetComponent<BoxCollider>());
+                }
+                if (child.gameObject.GetComponent<MeshRenderer>() != null)
+                {
+                    if(child.gameObject.GetComponent<MeshCollider>() == null)
+                    {
+                        child.gameObject.AddComponent<MeshCollider>();
+                        child.gameObject.GetComponent<MeshCollider>().convex = true;
+                    }
+                }
+            }
 
             mobj.tag = "Model";
+
+            mobj.GetComponent<Model_Rotate>().enabled = false;
 
             if (!mobj.GetComponent<Rigidbody>())
                 mobj.AddComponent<Rigidbody>();

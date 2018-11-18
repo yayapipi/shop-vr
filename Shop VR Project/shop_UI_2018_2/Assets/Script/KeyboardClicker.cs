@@ -370,7 +370,7 @@ public class KeyboardClicker : MonoBehaviour {
 
             if (h.gameObject.name == "mask" || h.gameObject.GetComponent<MeshRenderer>() || h.gameObject.GetComponent<Collider>())
             {
-                rayCastObj = h.gameObject;
+                currentRaycastObj = h;
                 break;
             }
         }
@@ -426,10 +426,17 @@ public class KeyboardClicker : MonoBehaviour {
         {
             //Debug.Log(h.gameObject.name);
 
-            if ((!rayCastObj && h.gameObject.GetComponent<Selectable>() && !h.gameObject.GetComponent<Scrollbar>() && !h.gameObject.GetComponent<Slider>()) || h.gameObject.tag == "Model")
+            if ((!rayCastObj && h.gameObject.GetComponent<Selectable>() && !h.gameObject.GetComponent<Scrollbar>() && !h.gameObject.GetComponent<Slider>()) || h.gameObject.tag == "Model" || h.gameObject.tag == "ModelChild")
             {
                 currentRaycastObj = h;
-                rayCastObj = h.gameObject;
+                if(h.gameObject.tag == "Model" || h.gameObject.tag == "ModelChild")
+                {
+                    rayCastObj = FindModel(h.gameObject);
+                }
+                else
+                {
+                    rayCastObj = h.gameObject;
+                }
                 hit = true;
             }
 
@@ -490,6 +497,22 @@ public class KeyboardClicker : MonoBehaviour {
             }
 
             rayCastObj_last = null;
+        }
+    }
+
+    private GameObject FindModel(GameObject obj)
+    {
+        if(obj.tag == "Model")
+        {
+            return obj;
+        }
+        else if(obj.tag == "ModelChild")
+        {
+            return FindModel(obj.transform.parent.gameObject);
+        }
+        else
+        {
+            return null;
         }
     }
 
