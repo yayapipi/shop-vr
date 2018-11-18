@@ -2,6 +2,7 @@
 
 using UnityEngine;
 
+
 [ExecuteInEditMode]
 [AddComponentMenu("Image Effects/Edge Detection (Color)")]
 public class EdgeDetectEffect : ImageEffectBase
