@@ -39,7 +39,7 @@ class TonemappingEditor extends Editor
 		
 		var cam : Camera = (target as Tonemapping).GetComponent.<Camera>();
 		if(cam != null) {
-			if(!cam.allowHDR) {
+			if(!cam.hdr) {
 				EditorGUILayout.HelpBox("The camera is not HDR enabled. This will likely break the Tonemapper.", MessageType.Warning);
 			}
 			else if(!(target as Tonemapping).validRenderTextureFormat) {
