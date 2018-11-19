@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class EyetrackerUIController : MonoBehaviour
 {
+    [Header("panels")]
     public GameObject panel_1;
     public GameObject panel_2;
     public GameObject back;
@@ -16,7 +17,13 @@ public class EyetrackerUIController : MonoBehaviour
     public GameObject visor;
     public GameObject top;
     public GameObject bot;
+    [Header("buttons")]
     public GameObject altButtons;
+    public GameObject Bpanel_1;
+    public GameObject Bpanel_2;
+    public GameObject Bback;
+
+
     private Image[] buttons;
     private MainController mainController;
     private static int panel_type = 0;
@@ -121,6 +128,7 @@ public class EyetrackerUIController : MonoBehaviour
             {
                 case 0:
                     back.SetActive(false);
+                    Bback.SetActive(false);
                     break;
                 case 1:
                     break;
@@ -133,6 +141,7 @@ public class EyetrackerUIController : MonoBehaviour
             {
                 case 0:
                     back.SetActive(true);
+                    Bback.SetActive(true);
                     break;
                 case 1:
                     break;
@@ -148,16 +157,22 @@ public class EyetrackerUIController : MonoBehaviour
                 //close all panel
                 panel_1.SetActive(false);
                 panel_2.SetActive(false);
+                Bpanel_1.SetActive(false);
+                Bpanel_2.SetActive(false);
                 break;
             case 1:
                 //open base panel
                 panel_1.SetActive(true);
                 panel_2.SetActive(false);
+                Bpanel_1.SetActive(true);
+                Bpanel_2.SetActive(false);
                 break;
             case 2:
                 //open model panel
                 panel_1.SetActive(false);
                 panel_2.SetActive(true);
+                Bpanel_1.SetActive(false);
+                Bpanel_2.SetActive(true);
                 break;
             default:
                 Debug.Log("error gaze panel index");

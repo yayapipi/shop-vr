@@ -21,7 +21,7 @@ public class MainController : MonoBehaviour {
     public static Camera currentPointerCamera;
     public LayerMask gizmoLayer;
     public Camera DisplayCamera;
-    public Transform Environment;
+    public Transform EnvironmentScene;
 
     public GameObject obj;
     private static int userID;
@@ -197,7 +197,7 @@ public class MainController : MonoBehaviour {
     private IEnumerator AddMeshCollider()
     {
         int i = 0;
-        Transform[] allChildren = Environment.GetComponentsInChildren<Transform>();
+        Transform[] allChildren = EnvironmentScene.GetComponentsInChildren<Transform>();
         foreach (Transform child in allChildren)
         {
             if (child.gameObject.GetComponent<BoxCollider>())
@@ -282,9 +282,9 @@ public class MainController : MonoBehaviour {
         }
         if (PlayerPrefs.HasKey("VSync")) { SettingController.CurrentVSC = PlayerPrefs.GetInt("VSync"); } else { SettingController.CurrentVSC = QualitySettings.vSyncCount; }
         if (PlayerPrefs.HasKey("Helmet")) { SettingController.CurrentHelmet = PlayerPrefs.GetInt("Helmet"); } else { SettingController.CurrentHelmet = 0; }
-        if (PlayerPrefs.HasKey("MainVolume")) { SettingController.MainVolume = PlayerPrefs.GetInt("MainVolume"); } else { SettingController.MainVolume = AudioListener.volume; }
-        if (PlayerPrefs.HasKey("MusicVolume")) { SettingController.MusicVolume = PlayerPrefs.GetInt("MusicVolume"); } else { SettingController.MusicVolume = 1; }
-        if (PlayerPrefs.HasKey("SoundVolume")) { SettingController.SoundVolume = PlayerPrefs.GetInt("SoundVolume"); } else { SettingController.SoundVolume = 1; }
+        if (PlayerPrefs.HasKey("MainVolume")) { SettingController.MainVolume = PlayerPrefs.GetFloat("MainVolume"); } else { SettingController.MainVolume = AudioListener.volume; }
+        if (PlayerPrefs.HasKey("MusicVolume")) { SettingController.MusicVolume = PlayerPrefs.GetFloat("MusicVolume"); } else { SettingController.MusicVolume = 1; }
+        if (PlayerPrefs.HasKey("SoundVolume")) { SettingController.SoundVolume = PlayerPrefs.GetFloat("SoundVolume"); } else { SettingController.SoundVolume = 1; }
 
         SettingController.StaticApply(false);
     }

@@ -268,7 +268,7 @@ public class SettingController : MonoBehaviour {
                 break;
         }
 
-        helmetText.text = "Off";
+        helmetText.text = CurrentHelmet == 1 ? "On" : "Off";
         MainVolumeSlider.value = MainVolume;
         MusicVolumeSlider.value = MusicVolume;
         SoundVolumeSlider.value = SoundVolume;
