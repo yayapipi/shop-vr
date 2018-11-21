@@ -470,12 +470,10 @@ public class PutBackThread
             {
                 if (uinvent.amount > 0)
                     sqlConnection.Up_userinvent(userData.id, sitems[0].item_id, uinvent.amount + 1);
-                else
-                    sqlConnection.Add_userinvent(userData.id, sitems[0].item_id, 1);
             }
             else
             {
-                EventManager.SetMessage("item not found", "Please try again");
+                sqlConnection.Add_userinvent(userData.id, sitems[0].item_id, 1);
             }
         }
         else
